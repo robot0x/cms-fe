@@ -13,6 +13,7 @@ ul,ol,li{list-style:none;}
 img{vertical-align: middle;border:none;display:inline-block;}
 a{text-decoration: none;border: none;}
 input{outline:none;border:none;}
+*{box-sizing: border-box;}
 // .fade-enter-active, .fade-leave-active {
 //   transition: opacity .5s
 // }

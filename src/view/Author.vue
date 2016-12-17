@@ -1,7 +1,10 @@
 <template>
  <transition name="slide-fade">
     <div>
-      你好，我是{{msg}}页
+      <el-button @click="visible = true">按钮</el-button>
+      <el-dialog v-model="visible" title="Hello world">
+        <p>你好，我是{{msg}}页</p>
+      </el-dialog>
     </div>
   </transition>
 </template>
@@ -10,7 +13,8 @@
 export default {
   data () {
     return {
-      msg: 'Author'
+      msg: 'Author',
+      visible: false
     }
   }
 }
