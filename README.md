@@ -1,6 +1,6 @@
 # cms-fe
 
-> 有调CMS（内容管理系统）
+> 有调CMS（内容管理系统）前端
 
 ## Build Setup
 
