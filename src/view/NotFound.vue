@@ -10,7 +10,7 @@
 export default {
   data () {
     return {
-      msg: 'Monthly'
+      msg: '404'
     }
   }
 }

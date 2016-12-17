@@ -6,25 +6,22 @@
       <nav>
         <ul>
           <li>
-
+            <router-link to="/content" keep-alive>内容</router-link>
           </li>
           <li>
-            <router-link to="/content">内容</router-link>
+            <router-link to="/edit" keep-alive>编辑</router-link>
           </li>
           <li>
-            <router-link to="/edit">编辑</router-link>
+            <router-link to="/monthly" keep-alive>月份归档</router-link>
           </li>
           <li>
-            <router-link to="/monthly">月份归档</router-link>
-          </li>
-          <li>
-            <router-link to="/author">作者归档</router-link>
+            <router-link to="/author" keep-alive>作者归档</router-link>
           </li>
         </ul>
       </nav>
     </header>
     <main>
-      <router-view></router-view>
+        <router-view></router-view>
     </main>
   </div>
 </template>
@@ -46,8 +43,8 @@ $color:#2c3e50;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  // color: $logoColor;
-  background-color: $color;
+  color: $color;
+  // background-color: $color;
   margin-top: 60px;
 }
 </style>
