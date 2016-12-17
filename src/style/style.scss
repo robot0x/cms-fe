@@ -1,0 +1,60 @@
+#app{
+  padding-top: 60px;
+}
+// 头部导航条样式 --start
+header{
+  // background-color: #324057;
+  // background-color: rgba(50,64,87,.8);
+  box-sizing: border-box;
+  background-color: rgba(50,64,87,.8);
+  line-height: 60px;
+  color: #fff;
+  padding: 0 30px;
+  font-family: "Microsoft Yahei";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99999999;
+}
+
+header li{
+  display: inline-block;
+  margin-right: 16px;
+}
+
+.nav-link{
+  color:#fff;
+  display: inline-block;
+  span{
+    margin-left: 6px;
+  }
+}
+
+header li:first-child{
+  margin-right: 32px;
+  border:none;
+  .nav-link{
+    img{
+      width: 30px;
+      height: 30px;
+    }
+  }
+}
+header li:last-child{
+  .nav-link{
+    span{
+      margin-left: 0;
+    }
+  }
+}
+.author{
+  float: right;
+  img{
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    margin-right: 5px;
+  }
+}
+// 头部导航条样式 --end

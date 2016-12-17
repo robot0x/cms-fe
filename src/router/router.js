@@ -5,6 +5,7 @@ import Content from '../view/Content'
 import Edit from '../view/Edit'
 import Monthly from '../view/Monthly'
 import Author from '../view/Author'
+import Help from '../view/Help'
 import NotFound from '../view/NotFound'
 
 Vue.use(VueRouter)
@@ -18,11 +19,12 @@ Vue.use(VueRouter)
 // 或者，只是一个组件配置对象。
 // 我们晚点再讨论嵌套路由。
 const routes = [
-  { path: '/', component: Content },
-  { path: '/content', redirect: '/' },
+  { path: '/', redirect: '/content' },
+  { path: '/content', component: Content },
   { path: '/edit', component: Edit },
   { path: '/monthly', component: Monthly },
   { path: '/author', component: Author },
+  { path: '/help', component: Help },
   { path: '*', component: NotFound }
 ]
 // 3. 创建 router 实例，然后传 `routes` 配置
@@ -30,6 +32,7 @@ const routes = [
 const router = new VueRouter({
   saveScrollPosition: true,
   transitionOnLoad: true,
+  linkActiveClass: 'router-link-active',
   routes // （缩写）相当于 routes: routes
 })
 

@@ -6,6 +6,7 @@ import router from './router/router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import './sass-lib/_common.scss'
+import './style/style.scss'
 
 Vue.use(ElementUI)
 

@@ -2,7 +2,8 @@ html{
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
    text-rendering: optimizeLegibility;
-   font-family: "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Microsoft Yahei", heiti, Arial, sans-serif;
+  //  font-family: "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Microsoft Yahei", heiti, Arial, sans-serif;
+   font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
    font: 16px/1.5;
    height:100%;
 }
@@ -29,4 +30,8 @@ input{outline:none;border:none;}
 .slide-fade-enter, .slide-fade-leave-active {
   transform: translateX(10px);
   opacity: 0;
+}
+
+.router-link-active{
+  border-bottom:4px #fff solid;
 }
