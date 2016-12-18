@@ -1,12 +1,30 @@
-#app{
-  padding-top: 64px;
+// 路由渐变样式及active样式 --start
+$headerHeight: 60px;
+$headerActiveBorderHeight: 4px;
+.slide-fade-enter-active {
+  transition: all .4s ease;
 }
+.slide-fade-leave-active {
+  transition: all .1s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-active {
+  transform: translateX(10px);
+  opacity: 0;
+}
+.router-link-active{
+  border-bottom:$headerActiveBorderHeight #fff solid;
+}
+// 路由渐变样式及active样式 --end
+
 // 头部导航条样式 --start
+#app{
+  padding-top: $headerHeight + $headerActiveBorderHeight;
+}
 header{
   // background-color: #324057;
   // background-color: rgba(50,64,87,.8);
   background-color: rgba(50,64,87,.8);
-  line-height: 60px;
+  line-height: $headerHeight;
   color: #fff;
   padding: 0 30px;
   font-family: "Microsoft Yahei";
@@ -14,12 +32,12 @@ header{
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 99999999;
+  z-index: 9999;
 }
 
 header li{
   display: inline-block;
-  margin-right: 16px;
+  margin-right: 24px;
 }
 
 .nav-link{
@@ -37,22 +55,17 @@ header li:first-child{
     img{
       width: 30px;
       height: 30px;
+      margin-right: 8px;
     }
   }
 }
-header li:last-child{
-  .nav-link{
-    span{
-      margin-left: 0;
-    }
-  }
-}
+
 .author{
   float: right;
   img{
     width: 30px;
     height: 30px;
-    border-radius: 100%;
+    border-radius: 50%;
     margin-right: 5px;
   }
 }

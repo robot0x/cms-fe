@@ -21,18 +21,3 @@ input{outline:none;border:none;}
 // .fade-enter, .fade-leave-active {
 //   opacity: 0
 // }
-
-.slide-fade-enter-active {
-  transition: all .4s ease;
-}
-.slide-fade-leave-active {
-  transition: all .1s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-fade-enter, .slide-fade-leave-active {
-  transform: translateX(10px);
-  opacity: 0;
-}
-
-.router-link-active{
-  border-bottom:4px #fff solid;
-}
