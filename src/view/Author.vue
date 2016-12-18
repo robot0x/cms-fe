@@ -11,6 +11,7 @@
 <script>
 import Vue from 'vue'
 import { Loading, Button, Dialog } from 'element-ui'
+
 // Vue.use(ElementUI)
 Vue.use(Loading)
 Vue.use(Button)
