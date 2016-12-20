@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 // 不同的路由规则分别对应的页面视图
-import Content from '../view/Content'
-import Edit from '../view/Edit'
-import Monthly from '../view/Monthly'
-import Author from '../view/Author'
-import Help from '../view/Help'
-import NotFound from '../view/NotFound'
+import Content from '../views/Content'
+import Edit from '../views/Edit'
+import Monthly from '../views/Monthly'
+import Author from '../views/Author'
+import Help from '../views/Help'
+import Login from '../views/Login'
+import Register from '../views/Register'
+import NotFound from '../views/NotFound'
 
 Vue.use(VueRouter)
 
@@ -25,6 +27,8 @@ const routes = [
   { path: '/monthly', component: Monthly },
   { path: '/author', component: Author },
   { path: '/help', component: Help },
+  { path: '/login', component: Login },
+  { path: '/register', component: Register },
   { path: '*', component: NotFound }
 ]
 // 3. 创建 router 实例，然后传 `routes` 配置

@@ -54,7 +54,7 @@ import Hello from './components/Hello'
 import logo from './assets/diaox2-logo-40.png'
 import headshot from './assets/default-headshot.jpg'
 export default {
-  name: 'app',
+  // name: 'app',
   components: {
     Hello
   },
