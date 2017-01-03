@@ -1,8 +1,8 @@
 {
   "name": "cms-fe",
   "version": "1.0.0",
-  "description": "有调CMS（内容管理系统）前端",
   "author": "李彦峰",
+  "description": "有调CMS（内容管理系统）前端",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
