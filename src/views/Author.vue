@@ -10,21 +10,19 @@
 </template>
 <script>
 import Vue from 'vue'
-import { Loading, Button, Dialog } from 'element-ui'
-
+// import { Loading, Button, Dialog } from 'element-ui'
 // Vue.use(ElementUI)
-Vue.use(Loading)
-Vue.use(Button)
-Vue.use(Dialog)
-
-let loadingInstance = Loading.service({
-  text: '玩命加载中...',
-  target: document.getElementById('wrapper')
-})
-
-setTimeout(() => {
-  loadingInstance.close()
-}, 4000)
+// Vue.use(Loading)
+// Vue.use(Button)
+// Vue.use(Dialog)
+//
+// let loadingInstance = Loading.service({
+//   text: '玩命加载中...',
+//   target: document.getElementById('wrapper')
+// })
+// setTimeout(() => {
+//   loadingInstance.close()
+// }, 4000)
 
 export default {
   data () {

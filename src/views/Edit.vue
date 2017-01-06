@@ -8,12 +8,12 @@
 
 <script>
 import Vue from 'vue'
-import { Loading, Button, Dialog } from 'element-ui'
 import RawEditor from '../components/RawEditor.vue'
 import RenderEditor from '../components/RenderEditor'
-Vue.use(Loading)
-Vue.use(Button)
-Vue.use(Dialog)
+// import { Loading, Button, Dialog } from 'element-ui'
+// Vue.use(Loading)
+// Vue.use(Button)
+// Vue.use(Dialog)
 
 export default {
   name: 'hello',
