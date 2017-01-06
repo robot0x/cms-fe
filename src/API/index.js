@@ -1,8 +1,18 @@
 // https://github.com/liaoruoxue/pm2rd/issues/73
 const API = (function () {
-  const fetchURL = '//c.diaox2.com/view/app'
+  // const fetchURL = '//c.diaox2.com/view/app'
+  const fetchURL = '//127.0.0.1:3000'
   // 下列接口都是GET请求
   return {
+    articles: {
+      url: `${fetchURL}/articles`
+    },
+    images: {
+      url: `${fetchURL}/images`
+    },
+    authors: {
+      url: `${fetchURL}/authors`
+    },
     // 礼物搜索接口
     giftq: {
       url: `${fetchURL}/giftq`

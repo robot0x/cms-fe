@@ -4,6 +4,7 @@ require('es6-promise').polyfill()
 import Vue from 'vue'
 import App from './App'
 import router from './router/router'
+import store from './store'
 import 'element-ui/lib/theme-default/index.css'
 import './sass-lib/_common.scss'
 import './style/style.scss'
@@ -12,21 +13,45 @@ import fetch from 'isomorphic-fetch'
 import API from './API'
 
 /* eslint-disable no-new */
-new Vue({
+var vm = new Vue({
   el: '#app',
   template: '<App/>',
   components: { App },
-  router
-})
-
-fetch(API.giftDefault.url)
-.then(function (response) {
-  if (response.status >= 400) {
-    throw new Error('Bad response from server')
+  router,
+  store,
+  // store,
+  beforeCreate () {
+    console.log('beforeCreate ....')
+  },
+  created () {
+    console.log('created ....')
+  },
+  mounted () {
+    console.log('mounted ....');
+    console.log(this.$el); // 只有在mounted之后，this.$el才不是undefined
+  },
+  updated () {
+    console.log('updated ....');
+  },
+  destoryed () {
+    console.log('destoryed ....');
   }
-  console.log(response)
-  return response.json()
 })
-.then(function (stories) {
-  console.log(stories)
+// 除了在vm实例中用this指向vm，也可以在外面使用 vm 的实例方法或属性
+console.log(vm.$el);
+vm.$nextTick(() => {
+  console.log('main.js vm.$nextTick ....');
 })
+// fetch(API.articles.url + '?id=121223', {
+//   method: 'GET'
+// })
+// .then(function (response) {
+//   if (response.status >= 400) {
+//     throw new Error('Bad response from server')
+//   }
+//   console.log(response)
+//   return response.json()
+// })
+// .then(function (result) {
+//   console.log(result)
+// })

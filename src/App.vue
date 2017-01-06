@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png">
-    <hello></hello> -->
+    <!-- <img src="./assets/logo.png"> -->
+    <!-- <test :tototo="toto" hi="hi 你好！" :my-number="9999" size="1"></test> -->
+    <!-- <hello></hello> -->
     <div id="wrapper">
       <header>
         <nav>
@@ -44,19 +45,22 @@
         </nav>
       </header>
       <main>
-          <router-view></router-view>
+        <router-view></router-view>
       </main>
     </div>
   </div>
 </template>
 <script>
-import Hello from './components/Hello'
+// import Hello from './components/Hello'
+// import Test from './components/Test'
 import logo from './assets/diaox2-logo-40.png'
 import headshot from './assets/default-headshot.jpg'
 export default {
   // name: 'app',
+  // 本组件要用到的组件都要在 components 中声明，否则不起作用且会报错
   components: {
-    Hello
+    // Hello
+    // Test
   },
   data () {
     return {
@@ -64,6 +68,19 @@ export default {
       headshot,
       authorName: '李彦峰'
     }
+  },
+  mounted () {
+    const store = this.$store
+    const state = store.state
+    console.log('count:', state.count);
+    store.commit('INCREMENT')
+    console.log('count:', state.count);
+    store.dispatch('increment')
+    console.log('count:', state.count);
+    console.log('count:', store.getters.getCountPlusTen);
+
+    console.log('title:', state.article.title);
+    console.log('title:', state.article.getters);
   }
 }
 </script>

@@ -1,11 +1,15 @@
 <template>
   <div class="">
-    RawEditer.vue
+    {{message}}
   </div>
 </template>
 
 <script>
 export default {
-  name: 'raw-editer'
+  data () {
+    return {
+      message: '我是RawEditer组件'
+    }
+  }
 }
 </script>
