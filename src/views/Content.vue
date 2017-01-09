@@ -32,9 +32,11 @@
            label="操作">
            <template scope="scope">
             <el-button
+              @click="handleEdit(scope.$index, scope.row)"
               size="small">编辑</el-button>
             <el-button
               size="small"
+              @click="handleDelete(scope.$index, scope.row)"
               type="danger">删除</el-button>
           </template>
          </el-table-column>
@@ -68,13 +70,10 @@ import Vue from 'vue'
 //   loadingInstance.close()
 // }, 2000)
 
-import { Table, TableColumn, Button, Pagination } from 'element-ui'
+import ElementUI from 'element-ui'
 import fetch from 'isomorphic-fetch'
 import API from '../API'
-Vue.use(Table)
-Vue.use(TableColumn)
-Vue.use(Button)
-Vue.use(Pagination)
+Vue.use(ElementUI)
 
 export default {
   name: 'hello',
@@ -102,6 +101,30 @@ export default {
           author: 'zhaoxinyue',
           last_update_time: '01/04/2017 - 19:02'
         }]
+    }
+  },
+  methods: {
+    handleEdit (index, row) {
+      console.log(index, row);
+    },
+    handleDelete (index, row) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示',{
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+      //   .catch(() => {
+      //     this.$message({
+      //       type: 'info',
+      //       message: '已取消删除'
+      //     })
+      // })
+      console.log(index, row);
     }
   },
   created () {
