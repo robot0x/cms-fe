@@ -1,11 +1,156 @@
 <template>
-  <div class="">
-    RenderEditer.vue
+  <div class="component-render-editor">
+    <div class="article-area" v-html="html"></div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  name: 'rander-editer'
+  computed: {
+    ...mapGetters(['html'])
+  }
 }
+
 </script>
+<style lang="scss">
+  .component-render-editor{
+    box-sizing: border-box;
+    height: 100%;
+    // padding: 15px;
+    resize: none;
+    border: none;
+    // background-color: #f5f5f5;
+    outline: none;
+    font-family: inherit;
+    font-size: 18px;
+    color: #616161;
+    box-shadow: 4px 5px 3px #aaa;
+    white-space: normal;
+    overflow-y: scroll;
+    word-wrap: break-word;
+    overflow-x: hidden;
+  }
+  // 文章渲染样式
+  $fontFamily:"Hiragino Sans GB", "Helvetica Neue", Helvetica, "Microsoft Yahei", heiti, Arial, sans-serif;
+
+  .article-area {
+
+    background:#fff;
+    line-height: 2;
+    font-size: 18px;
+    color: #666;
+    padding-bottom: 30px;
+    width: 100%;
+
+    h1,h2,h3,h4,h5 {font-weight:normal;}
+
+    h1 {
+      height:100px;
+      line-height:100px;
+      text-align:center;
+      color:#333;
+      font-size:20px;
+      font-weight: normal;
+      font-family:$fontFamily;
+    }
+
+
+    p {
+      padding: 24px 40px 0;
+      a {
+        color:#e60012;
+      }
+      img {
+        display: block!important;
+        margin: 0 auto;
+      }
+    }
+
+
+    h2, h3 {
+      color: #333;
+       margin: 30px 0 0 40px;
+       font-weight: 400;
+       font-size: 16px;
+       line-height: 1;
+       border-left: 6px #ff0014 solid;
+       padding-left: 6px;
+    }
+
+
+    h3 {
+      border-left-width: 4px;
+    }
+
+    ul {
+      padding-right:40px;
+      margin-top: 30px;
+      li {
+        position: relative;
+        padding-left: 50px;
+      }
+
+      li::before {
+        content: '';
+        position: absolute;
+        height: 6px;
+        width: 6px;
+        border-radius: 50%;
+        background: #ff0014;
+        left: 40px;
+        top: 14px;
+      }
+    }
+
+    ol {
+      margin-top: 30px;
+      margin-left: 40px;
+      counter-reset: diaodiao;
+      li {
+        p {
+          display: inline;
+          padding: 0;
+        }
+      }
+      li::before {
+        content: '';
+        counter-increment: diaodiao;
+        content: counter(diaodiao) "、"
+      }
+    }
+
+
+    blockquote {
+      display: block;
+      background: #f4f4f4;
+      margin: 30px 40px 0;
+      padding: 10px 20px 30px;
+      position: relative;
+
+      p {
+        strong {
+          color: #333;
+          font-weight: normal;
+          font-size: 18px;
+        }
+      }
+    }
+
+    blockquote::before{
+      content: '';
+      position: absolute;
+      border: 20px solid transparent;
+      border-top-color: #fff;
+      border-right-color: #fff;
+      top: 0;
+      right: 0;
+    }
+
+
+  }
+
+
+
+</style>

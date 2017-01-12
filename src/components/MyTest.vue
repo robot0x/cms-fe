@@ -1,6 +1,6 @@
 <template>
   <!-- 一个组件整体是隐藏还是显示，可以在组件的根元素上使用 v-if or v-show -->
-  <div v-if="ok">
+  <div class="component-my-test" v-if="ok">
     hi all，这里是 MyTest 组件
     <div>
       这里是MyTest组件的input：

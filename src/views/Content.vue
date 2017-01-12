@@ -1,6 +1,7 @@
 <template>
   <transition name="slide-fade">
-     <div class="content">
+     <div class="page-content">
+       <search></search>
        <el-table
          :data="articles"
          stripe
@@ -41,7 +42,6 @@
           </template>
          </el-table-column>
        </el-table>
-
        <div class="pagination-bar">
          <el-pagination
            :page-sizes="[100, 200, 300, 400]"
@@ -53,30 +53,18 @@
      </div>
    </transition>
 </template>
-
 <script>
-import Vue from 'vue'
-// import { Loading, Button, Dialog } from 'element-ui'
-// Vue.use(Loading)
-// Vue.use(Button)
-// Vue.use(Dialog)
-//
-// let loadingInstance = Loading.service({
-//   text: '玩命加载中...',
-//   target: document.getElementById('wrapper')
-// })
-//
-// setTimeout(() => {
-//   loadingInstance.close()
-// }, 2000)
-
-import ElementUI from 'element-ui'
+// import Hello from '../components/Search'
 import fetch from 'isomorphic-fetch'
 import API from '../API'
-Vue.use(ElementUI)
+import Search from '../components/Search'
 
 export default {
   name: 'hello',
+  components: {
+    // Hello,
+    Search
+  },
   data () {
     return {
       articles: [
@@ -108,7 +96,7 @@ export default {
       console.log(index, row);
     },
     handleDelete (index, row) {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示',{
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示',{
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

@@ -9,8 +9,14 @@ import 'element-ui/lib/theme-default/index.css'
 import './sass-lib/_common.scss'
 import './style/style.scss'
 import 'babel-polyfill'
-import fetch from 'isomorphic-fetch'
-import API from './API'
+// import fetch from 'isomorphic-fetch'
+// import API from './API'
+import ElementUI from 'element-ui'
+Vue.use(ElementUI)
+// import { Loading, Button, Dialog } from 'element-ui'
+// Vue.use(Loading)
+// Vue.use(Button)
+// Vue.use(Dialog)
 
 /* eslint-disable no-new */
 var vm = new Vue({

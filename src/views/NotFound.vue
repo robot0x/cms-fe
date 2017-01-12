@@ -1,6 +1,6 @@
 <template>
   <transition name="slide-fade">
-     <div>
+     <div class="page-notfound">
        你好，我是{{msg}}页
      </div>
    </transition>

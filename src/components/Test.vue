@@ -1,5 +1,5 @@
 <template>
-  <div v-on:click="increment">
+  <div class="component-test" v-on:click="increment">
     <h1>{{tototo}}</h1>
     <h2>{{hi}}</h2>
     <h3>{{myNumber}}</h3>
@@ -27,7 +27,7 @@
       <p>我是通过 slot 插入到 MyTest 中的p元素 二</p>
       <raw-editor></raw-editor>
       <p slot="upon-button">
-        我会被插在按钮智商
+        我会被插在按钮之上
       </p>
     </my-test>
     <!-- <my-test @click.native.stop="myTestClick('还可以传递参数哦！，第二个参数$event是原生dom事件', $event)" v-bind:value="price" v-on:input="price = arguments[0]"></my-test> -->

@@ -1,30 +1,104 @@
 <template>
-    <div>
-      <raw-editor></raw-editor>
-      <render-editor></render-editor>
-    </div>
+ <transition name="slide-fade">
+   <div class="page-edit"
+      v-loading.fullscreen.lock="loading"
+      element-loading-text="正在保存中...">
+      <panel title="操作" closeable close>
+        <el-upload
+          action="//jsonplaceholder.typicode.com/posts/"
+          type="drag"
+          :multiple="true">
+          <i class="el-icon-upload"></i>
+          <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
+        <span slot="panel-heading-middle">
+          <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
+          <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
+        </span>
+      </panel>
+      <div class="editor-area">
+        <raw-editor class="raw-editor"></raw-editor>
+        <render-editor class="render-editor"></render-editor>
+     </div>
+   </div>
+ </transition>
 </template>
-
-
 <script>
 import Vue from 'vue'
-import RawEditor from '../components/RawEditor.vue'
+import RawEditor from '../components/RawEditor'
 import RenderEditor from '../components/RenderEditor'
-// import { Loading, Button, Dialog } from 'element-ui'
-// Vue.use(Loading)
-// Vue.use(Button)
-// Vue.use(Dialog)
+import Panel from '../components/Panel'
 
 export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      loading: false
     }
+  },
+  methods: {
+    clearCache () {
+      this.$confirm('此操作将删除本篇文章在本地的缓存，是否继续?', '提示',{
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '缓存删除成功'
+        })
+      })
+    },
+    save () {
+      this.loading = true
+      setTimeout(() => {
+        this.loading = false
+        // this.$notify({
+        //   title: '成功',
+        //   message: '这是一条成功的提示消息',
+        //   type: 'success'
+        // })
+        this.$message({
+          type: 'success',
+          message: '文章保存成功'
+        })
+      }, 1000)
+    }
+  },
+  computed: {
+
   },
   components: {
     RawEditor,
-    RenderEditor
+    RenderEditor,
+    Panel
   }
 }
 </script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss" scoped>
+ .page-edit {
+   padding: 10px;
+ }
+
+ .editor-area {
+   height: 100%;
+   display: flex;
+   background: #f7f7f7;
+ }
+
+ .raw-editor {
+   margin-right: 10px;
+ }
+
+ .raw-editor, .render-editor {
+   flex: 1;
+ }
+
+ .el-button {
+   margin-left: 10px;
+   color: #fff;
+   font-family: 'Microsoft Yahei';
+ }
+</style>

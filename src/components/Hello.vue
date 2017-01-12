@@ -1,7 +1,8 @@
 <template>
-  <div class="hello">
+  <div class="component-hello">
     <test
-      :tototo="toto" hi="hi 你好！"
+      :tototo="toto"
+      hi="hi 你好！"
       :my-number="9999"
       size="1"
       @increment="incrementTotal"

@@ -3,7 +3,6 @@
     <!-- <img src="./assets/logo.png"> -->
     <!-- <test :tototo="toto" hi="hi 你好！" :my-number="9999" size="1"></test> -->
     <!-- <hello></hello> -->
-    <div id="wrapper">
       <header>
         <nav>
           <ul>
@@ -23,6 +22,11 @@
               </router-link>
             </li>
             <li>
+              <router-link class="nav-link" to="/archive" keep-alive>
+                <i class="el-icon-menu"></i><span>归档</span>
+              </router-link>
+            </li>
+            <!-- <li>
               <router-link class="nav-link" to="/monthly" keep-alive>
                 <i class="el-icon-date"></i><span>月份归档</span>
               </router-link>
@@ -36,7 +40,7 @@
               <router-link class="nav-link" to="/help" keep-alive active-class="router-link-active">
                 帮助
               </router-link>
-            </li>
+            </li> -->
             <li class="author">
               <img :src="headshot" :alt="authorName">
               <span>{{authorName}}</span>
@@ -47,7 +51,8 @@
       <main>
         <router-view></router-view>
       </main>
-    </div>
+      <!-- 到顶部、到底部组件 -->
+      <to></to>
   </div>
 </template>
 <script>
@@ -55,10 +60,12 @@
 // import Test from './components/Test'
 import logo from './assets/diaox2-logo-40.png'
 import headshot from './assets/default-headshot.jpg'
+import To from './components/To'
+
 export default {
-  // name: 'app',
   // 本组件要用到的组件都要在 components 中声明，否则不起作用且会报错
   components: {
+    To,
     // Hello
     // Test
   },
@@ -84,3 +91,9 @@ export default {
   }
 }
 </script>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss">
+ #app, #wrapper, main{
+   height: 100%;
+ }
+</style>

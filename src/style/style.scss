@@ -20,7 +20,7 @@ $headerActiveBorderHeight: 4px;
 }
 /* 路由渐变样式及active样式 --end*/
 #app{
-  padding-top: $headerHeight + $headerActiveBorderHeight;
+  /* padding-top: $headerHeight + $headerActiveBorderHeight;*/
   min-width: 768px;
 }
 
@@ -28,16 +28,17 @@ $headerActiveBorderHeight: 4px;
 header{
   /* background-color: #324057;*/
   /* background-color: rgba(50,64,87,.8);*/
-  background-color: rgba(50,64,87,.8);
+  /* background-color: rgba(50,64,87,.8);*/
+  background-color: #324057;
   line-height: $headerHeight;
   color: #fff;
   padding: 0 30px;
   font-family: "Microsoft Yahei";
-  position: fixed;
-  top: 0;
-  left: 0;
+  /* position: fixed;*/
+  /* top: 0;*/
+  /* left: 0;*/
   width: 100%;
-  z-index: 9999;
+  /* z-index: 9999;*/
   min-width: 768px;
 }
 

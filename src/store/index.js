@@ -7,6 +7,7 @@ import * as getters from './getters'
 import article from './modules/article'
 import image from './modules/image'
 import author from './modules/author'
+import markdown from './modules/markdown'
 
 const debug = process.env.NODE_ENV !== 'production'
 
@@ -21,7 +22,8 @@ export default new Vuex.Store({
   modules: {
     article,
     image,
-    author
+    author,
+    markdown
   },
   state: {
     count: 1999

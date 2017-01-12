@@ -3,13 +3,13 @@ import VueRouter from 'vue-router'
 // 不同的路由规则分别对应的页面视图
 import Content from '../views/Content'
 import Edit from '../views/Edit'
-import Monthly from '../views/Monthly'
-import Author from '../views/Author'
-import Help from '../views/Help'
+import Archive from '../views/Archive'
+// import Monthly from '../views/Monthly'
+// import Author from '../views/Author'
+// import Help from '../views/Help'
 import Login from '../views/Login'
 import Register from '../views/Register'
 import NotFound from '../views/NotFound'
-
 Vue.use(VueRouter)
 
 // 0. 如果使用模块化机制编程，導入Vue和VueRouter，要调用 Vue.use(VueRouter)
@@ -24,9 +24,10 @@ const routes = [
   { path: '/', redirect: '/content' },
   { path: '/content', component: Content },
   { path: '/edit', component: Edit },
-  { path: '/monthly', component: Monthly },
-  { path: '/author', component: Author },
-  { path: '/help', component: Help },
+  { path: '/archive', component: Archive },
+  // { path: '/monthly', component: Monthly },
+  // { path: '/author', component: Author },
+  // { path: '/help', component: Help },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   { path: '*', component: NotFound }
