@@ -48,9 +48,7 @@
           </ul>
         </nav>
       </header>
-      <main>
-        <router-view></router-view>
-      </main>
+      <router-view></router-view>
       <!-- 到顶部、到底部组件 -->
       <to></to>
   </div>
@@ -93,7 +91,63 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
- #app, #wrapper, main{
-   height: 100%;
+  #app {
+    /* padding-top: $headerHeight + $headerActiveBorderHeight;*/
+    min-width: 768px;
+    height: 100%;
+ }
+ $headerHeight: 60px;
+
+ /* 头部导航条样式 --start*/
+ header{
+   /* background-color: #324057;*/
+   /* background-color: rgba(50,64,87,.8);*/
+   /* background-color: rgba(50,64,87,.8);*/
+   background-color: #324057;
+   line-height: $headerHeight;
+   color: #fff;
+   padding: 0 30px;
+   font-family: "Microsoft Yahei";
+   /* position: fixed;*/
+   /* top: 0;*/
+   /* left: 0;*/
+   width: 100%;
+   /* z-index: 9999;*/
+   min-width: 768px;
+ }
+
+ header li{
+   display: inline-block;
+   margin-right: 24px;
+ }
+
+ .nav-link{
+   color:#fff;
+   display: inline-block;
+   span{
+     margin-left: 6px;
+   }
+ }
+
+ header li:first-child{
+   margin-right: 32px;
+   border:none;
+   .nav-link{
+     img{
+       width: 30px;
+       height: 30px;
+       margin-right: 8px;
+     }
+   }
+ }
+
+ .author{
+   float: right;
+   img{
+     width: 30px;
+     height: 30px;
+     border-radius: 50%;
+     margin-right: 5px;
+   }
  }
 </style>

@@ -6,11 +6,10 @@
       <i v-if="closeable" class="el-icon-arrow-down" @click="closeHandle"></i>
     </div>
     <div class="panel-body" :class="{close: closed}">
-      <slot></slot>
+      <slot name="panel-body"></slot>
     </div>
   </div>
 </template>
-
 <script>
 export default {
   props: {
@@ -40,13 +39,11 @@ export default {
   }
 }
 </script>
-
 <style scoped>
   .component-panel {
     margin-bottom: 20px;
     background-color: #fff;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    box-sizing: border-box;
     border: 1px solid #eaeefb;
     border-radius: 4px;
   }
@@ -59,31 +56,26 @@ export default {
     border-color: #ddd;
     padding: 10px 15px;
     color: #fff;
-    box-sizing: border-box;
     position: relative;
   }
 
-  .panel-body{
-    padding: 15px;
-    box-sizing: border-box;
-
+  .panel-body {
     overflow: hidden;
     transition: all .2s ease-in-out;
-
     height: auto;
-    pdding: 15px;
+    /*pdding: 15px;*/
   }
 
   .close {
     height: 0;
     padding: 0;
   }
-  .el-icon-arrow-down{
+
+  .el-icon-arrow-down {
     position: absolute;
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
   }
-
 </style>

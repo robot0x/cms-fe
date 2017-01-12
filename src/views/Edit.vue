@@ -4,34 +4,40 @@
       v-loading.fullscreen.lock="loading"
       element-loading-text="正在保存中...">
       <panel title="操作" closeable close>
-        <el-upload
-          action="//jsonplaceholder.typicode.com/posts/"
-          type="drag"
-          :multiple="true">
-          <i class="el-icon-upload"></i>
-          <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
         <span slot="panel-heading-middle">
           <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
           <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
         </span>
+        <div slot="panel-body" class="panel-body">
+          <el-upload
+            action="//jsonplaceholder.typicode.com/posts/"
+            type="drag"
+            :multiple="true">
+            <i class="el-icon-upload"></i>
+            <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </div>
       </panel>
       <div class="editor-area">
         <raw-editor class="raw-editor"></raw-editor>
         <render-editor class="render-editor"></render-editor>
-     </div>
+      </div>
    </div>
  </transition>
 </template>
 <script>
-import Vue from 'vue'
 import RawEditor from '../components/RawEditor'
 import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
 
 export default {
-  name: 'hello',
+  // name: 'hello', // 叫hello也没关系
+  components: {
+    RawEditor,
+    RenderEditor,
+    Panel
+  },
   data () {
     return {
       loading: false
@@ -65,14 +71,6 @@ export default {
         })
       }, 1000)
     }
-  },
-  computed: {
-
-  },
-  components: {
-    RawEditor,
-    RenderEditor,
-    Panel
   }
 }
 </script>
@@ -100,5 +98,9 @@ export default {
    margin-left: 10px;
    color: #fff;
    font-family: 'Microsoft Yahei';
+ }
+
+ .panel-body {
+   padding: 15px;
  }
 </style>
