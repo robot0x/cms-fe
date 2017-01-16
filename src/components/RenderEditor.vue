@@ -56,8 +56,7 @@ export default {
       font-family:$fontFamily;
     }
 
-
-    p {
+    & > p {
       padding: 24px 40px 0;
       a {
         color:#e60012;
@@ -65,6 +64,7 @@ export default {
       img {
         display: block!important;
         margin: 0 auto;
+        width: 596px;
       }
     }
 
@@ -87,12 +87,12 @@ export default {
     ul {
       padding-right:40px;
       margin-top: 30px;
-      li {
+      & > li {
         position: relative;
         padding-left: 50px;
       }
 
-      li::before {
+      & > li::before {
         content: '';
         position: absolute;
         height: 6px;
@@ -108,13 +108,13 @@ export default {
       margin-top: 30px;
       margin-left: 40px;
       counter-reset: diaodiao;
-      li {
+      & > li {
         p {
           display: inline;
           padding: 0;
         }
       }
-      li::before {
+      & > li::before {
         content: '';
         counter-increment: diaodiao;
         content: counter(diaodiao) "、"
@@ -128,13 +128,22 @@ export default {
       margin: 30px 40px 0;
       padding: 10px 20px 30px;
       position: relative;
-
-      p {
+      & > p {
+        padding: 24px 40px 0;
         strong {
           color: #333;
           font-weight: normal;
           font-size: 18px;
         }
+      }
+
+      ul, ol {
+        margin-top: 0;
+        padding: 0;
+      }
+
+      a {
+        color: #e60012;
       }
     }
 
@@ -148,7 +157,14 @@ export default {
       right: 0;
     }
 
-
+    .editorhead {
+        color: #ff0014;
+        padding: 0 50px 0 40px;
+    }
+    .editorcontent{
+      padding: 0 50px 0 40px;
+      color: #999;
+    }
   }
 
 
