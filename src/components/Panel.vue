@@ -1,6 +1,6 @@
 <template>
   <div class="component-panel">
-    <div class="panel-heading">
+    <div class="panel-heading" :style="{backgroundColor: headingColor}">
       {{title}}
       <slot name="panel-heading-middle"></slot>
       <i v-if="closeable" class="el-icon-arrow-down" @click="closeHandle"></i>
@@ -25,9 +25,17 @@ export default {
       default () {
         return false
       }
+    },
+    headingColor: {
+      type: String,
+      default () {
+        return '#99A9BF'
+      }
     }
   },
   data () {
+    console.log(typeof this.border);
+    console.log(this.border);
     return {
       closed: this.close
     }
@@ -41,7 +49,7 @@ export default {
 </script>
 <style scoped>
   .component-panel {
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
     background-color: #fff;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
     border: 1px solid #eaeefb;

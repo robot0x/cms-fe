@@ -3,34 +3,28 @@
     <div class="article-area" v-html="html"></div>
   </div>
 </template>
-
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
-  computed: {
-    ...mapGetters(['html'])
-  }
+  computed: { ...mapGetters(['html']) }
 }
 
 </script>
 <style lang="scss">
-  .component-render-editor{
-    box-sizing: border-box;
+  .component-render-editor {
     height: 100%;
-    // padding: 15px;
     resize: none;
     border: none;
     // background-color: #f5f5f5;
-    outline: none;
     font-family: inherit;
     font-size: 18px;
     color: #616161;
     box-shadow: 4px 5px 3px #aaa;
     white-space: normal;
-    overflow-y: scroll;
     word-wrap: break-word;
     overflow-x: hidden;
+    position: relative;
+    background:#fff;
   }
   // 文章渲染样式
   $fontFamily:"Hiragino Sans GB", "Helvetica Neue", Helvetica, "Microsoft Yahei", heiti, Arial, sans-serif;
@@ -42,8 +36,9 @@ export default {
     font-size: 18px;
     color: #666;
     padding-bottom: 30px;
-    width: 100%;
-
+    max-width: 800px;
+    height: 100%;
+    margin: 0 auto;
     h1,h2,h3,h4,h5 {font-weight:normal;}
 
     h1 {
@@ -161,6 +156,7 @@ export default {
         color: #ff0014;
         padding: 0 50px 0 40px;
     }
+
     .editorcontent{
       padding: 0 50px 0 40px;
       color: #999;

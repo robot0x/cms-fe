@@ -4,8 +4,8 @@ import VueRouter from 'vue-router'
 import Content from '../views/Content'
 import Edit from '../views/Edit'
 import Archive from '../views/Archive'
-// import Monthly from '../views/Monthly'
-// import Author from '../views/Author'
+import Monthly from '../views/Monthly'
+import Author from '../views/Author'
 // import Help from '../views/Help'
 import Login from '../views/Login'
 import Register from '../views/Register'
@@ -22,15 +22,27 @@ Vue.use(VueRouter)
 // 我们晚点再讨论嵌套路由。
 const routes = [
   { path: '/', redirect: '/content' },
-  { path: '/content', component: Content },
-  { path: '/edit', component: Edit },
-  { path: '/archive', component: Archive },
+  { path: '/content/', name: 'content', component: Content },
+  // 不带参数（新增）
+  { path: '/edit/', name: 'edit0', component: Edit },
+  // 带参数
+  { path: '/edit/:id', name: 'edit', component: Edit },
+  {
+    path: '/archive/',
+    name: 'archive',
+    component: Archive,
+    children: [
+      { path: '', component: Monthly }, // 进入到 Archive.vue 页面中，默认加载 Monthly.vue
+      { path: 'monthly', name: 'monthly', component: Monthly },
+      { path: 'author', name: 'author', component: Author }
+    ]
+  },
   // { path: '/monthly', component: Monthly },
   // { path: '/author', component: Author },
   // { path: '/help', component: Help },
-  { path: '/login', component: Login },
-  { path: '/register', component: Register },
-  { path: '*', component: NotFound }
+  { path: '/login/', name: 'login', component: Login },
+  { path: '/register/', name: 'register', component: Register },
+  { path: '*', name: '404', component: NotFound }
 ]
 // 3. 创建 router 实例，然后传 `routes` 配置
 // 你还可以传别的配置参数, 不过先这么简单着吧。

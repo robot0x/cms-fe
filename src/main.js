@@ -3,7 +3,7 @@
 require('es6-promise').polyfill()
 import Vue from 'vue'
 import App from './App'
-import router from './router/router'
+import router from './router'
 import store from './store'
 import 'element-ui/lib/theme-default/index.css'
 import './style/style.scss'

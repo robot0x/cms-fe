@@ -7,6 +7,9 @@ const API = (function () {
     articles: {
       url: `${fetchURL}/articles`
     },
+    articleContent: {
+      url: `${fetchURL}/articles`
+    },
     images: {
       url: `${fetchURL}/images`
     },

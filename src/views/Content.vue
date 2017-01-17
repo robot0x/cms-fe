@@ -93,7 +93,8 @@ export default {
   },
   methods: {
     handleEdit (index, row) {
-      console.log(index, row);
+      console.log(index, row)
+      this.$router.push({ name: 'edit', params: { id: 123 }})
     },
     handleDelete (index, row) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示',{

@@ -48,9 +48,11 @@
           </ul>
         </nav>
       </header>
-      <router-view></router-view>
+      <main>
+        <router-view></router-view>
+        <to></to>
+      </main>
       <!-- 到顶部、到底部组件 -->
-      <to></to>
   </div>
 </template>
 <script>
@@ -94,12 +96,13 @@ export default {
   #app {
     /* padding-top: $headerHeight + $headerActiveBorderHeight;*/
     min-width: 768px;
+    display: flex;
+    flex-direction: column;
     height: 100%;
  }
- $headerHeight: 60px;
-
  /* 头部导航条样式 --start*/
- header{
+ $headerHeight: 60px;
+ header {
    /* background-color: #324057;*/
    /* background-color: rgba(50,64,87,.8);*/
    /* background-color: rgba(50,64,87,.8);*/
@@ -149,5 +152,8 @@ export default {
      border-radius: 50%;
      margin-right: 5px;
    }
+ }
+ main {
+   flex: 1;
  }
 </style>

@@ -7,6 +7,7 @@
       </el-select>
       <el-button slot="append" icon="search"></el-button>
     </el-input>
+    <el-button type="primary" icon="plus" @click="newArticle" class="new-article">新建文章</el-button>
   </div>
 </template>
 <script>
@@ -19,7 +20,14 @@ export default {
     }
   },
   methods: {
-
+    newArticle () {
+      // alert('newArticle')
+      console.log(this.$route)
+      // this.$route.push('edit')
+      console.log(this.$router)
+      // 默认跳转到无参数 edit 视图
+      this.$router.push({ name: 'edit0' })
+    }
   }
 }
 </script>
@@ -35,5 +43,8 @@ export default {
   }
   .el-input{
     width: 50%;
+  }
+  .new-article {
+    margin-left: 10px;
   }
 </style>

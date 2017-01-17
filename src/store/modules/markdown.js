@@ -9,7 +9,7 @@ function rendeEds(content, eds) {
     <p class="editorhead">${eds}</p>
     <p class="editorcontent">${content}</p>
   `
-  console.log(content)
+  // console.log(content)
   return html
 }
 
@@ -54,8 +54,8 @@ const getters = {
     }
 
     renderer.code = (content, type) => {
-      console.log(content)
-      console.log(type)
+      // console.log(content)
+      // console.log(type)
       const EDS = 'eds'
       let eds = ''
       if( type.indexOf(EDS) !== -1 ) {
@@ -63,7 +63,7 @@ const getters = {
         type = EDS
       }
 
-      console.log('eds:', eds);
+      // console.log('eds:', eds);
 
       let ret = ''
       switch (type) {
@@ -77,9 +77,15 @@ const getters = {
           ret = rendeArticle(content)
           break;
       }
-      console.log(ret)
+      // console.log(ret)
       return ret
     }
+
+    // renderer.image = (content) => {
+    //   console.log('image .....');
+    //   console.log(content);
+    //   return content
+    // }
 
     options.renderer = renderer
 
@@ -91,6 +97,7 @@ const getters = {
     // console.log(tokens);
     // console.log(lexer.rules);
     return marked(state.md, (err, content) => {
+      // console.log(content)
       return content
     })
   }
