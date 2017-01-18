@@ -1,5 +1,4 @@
 <template>
-  <transition name="slide-fade">
      <div class="page-monthly">
        <el-row>
           <el-col :span="4">
@@ -62,63 +61,18 @@
            </el-menu>
           </el-col>
           <el-col :span="20">
-            <el-table
-              :data="articles"
-              stripe
-              style="width: 100%">
-              <el-table-column
-                prop="title"
-                fit
-                label="标题">
-              </el-table-column>
-              <el-table-column
-                prop="ctype"
-                label="类型"
-                width="100px"
-                >
-              </el-table-column>
-              <el-table-column
-                prop="author"
-                width="180px"
-                label="作者">
-              </el-table-column>
-              <el-table-column
-                prop="last_update_time"
-                width="180px"
-                sortable
-                label="更新">
-              </el-table-column>
-              <el-table-column
-                width="180px"
-                label="操作">
-                <template scope="scope">
-                 <el-button
-                   @click="handleEdit(scope.$index, scope.row)"
-                   size="small">编辑</el-button>
-                 <el-button
-                   size="small"
-                   @click="handleDelete(scope.$index, scope.row)"
-                   type="danger">删除</el-button>
-               </template>
-              </el-table-column>
-            </el-table>
-            <div class="pagination-bar">
-              <el-pagination
-                :page-sizes="[100, 200, 300, 400]"
-                :page-size="100"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="4001">
-              </el-pagination>
-           </div>
+            <data-grid></data-grid>
           </el-col>
        </el-row>
-
      </div>
-   </transition>
 </template>
 
 <script>
+import DataGrid from '../components/DataGrid'
 export default {
+  components: {
+    DataGrid
+  },
   data () {
     return {
       articles: [

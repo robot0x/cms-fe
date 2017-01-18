@@ -1,15 +1,44 @@
 <template>
- <transition name="slide-fade">
     <div class="page-author">
-      <el-button @click="visible = true">按钮</el-button>
-      <el-dialog v-model="visible" title="Hello world">
-        <p>你好，我是{{msg}}页</p>
-      </el-dialog>
+      <el-row>
+         <el-col :span="4">
+            <el-menu default-openeds=1	class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" theme="dark">
+              <el-menu-item index="1-1">8023wei (218)</el-menu-item>
+              <el-menu-item index="1-2">949815562 (1)</el-menu-item>
+              <el-menu-item index="1-3">a574427792 (152)</el-menu-item>
+              <el-menu-item index="1-4">Anyuna (4)</el-menu-item>
+              <el-menu-item index="1-5">august (6)</el-menu-item>
+              <el-menu-item index="1-6">chengmingjia (2)</el-menu-item>
+              <el-menu-item index="1-7">chenguanglin (153)</el-menu-item>
+              <el-menu-item index="1-8">chenyisahn (24)</el-menu-item>
+              <el-menu-item index="1-9">cuicui (11)</el-menu-item>
+              <el-menu-item index="1-10">dayuan (477)</el-menu-item>
+              <el-menu-item index="1-11">diamond (584)</el-menu-item>
+              <el-menu-item index="1-12">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-13">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-14">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-15">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-16">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-17">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-18">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-19">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-20">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-21">dongxu (207)</el-menu-item>
+              <el-menu-item index="1-22">dongxu (207)</el-menu-item>
+          </el-menu>
+         </el-col>
+         <el-col :span="20">
+           <data-grid></data-grid>
+         </el-col>
+      </el-row>
     </div>
-  </transition>
 </template>
 <script>
+import DataGrid from '../components/DataGrid'
 export default {
+  components: {
+    DataGrid
+  },
   data () {
     return {
       msg: 'Author',

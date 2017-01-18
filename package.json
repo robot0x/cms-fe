@@ -14,12 +14,12 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.20.0",
-    "element-ui": "^1.1.2",
+    "element-ui": "^1.1.5",
     "es6-promise": "^4.0.5",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
     "marked": "^0.3.6",
-    "vue": "^2.1.8",
+    "vue": "^2.1.10",
     "vue-router": "^2.1.1",
     "vuex": "^2.1.1"
   },
@@ -80,7 +80,7 @@
     "url-loader": "^0.5.7",
     "vue-loader": "^10.0.0",
     "vue-style-loader": "^1.0.0",
-    "vue-template-compiler": "^2.1.0",
+    "vue-template-compiler": "^2.1.10",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.8.3",
     "webpack-hot-middleware": "^2.12.2",

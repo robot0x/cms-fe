@@ -11,11 +11,11 @@
 <script>
 export default {
   methods: {
-    up(){
+    up () {
       document.body.scrollTop = document.documentElement.scrollTop = 0
     },
-    down(){
-      document.body.scrollTop = document.documentElement.scrollTop = 2000
+    down () {
+      document.body.scrollTop = document.documentElement.scrollTop = 2000000
     }
   }
 }

@@ -58,7 +58,6 @@ export default {
    transition: all ease .3s;
    width: 100%;
    position: relative;
-   resize: none;
  }
 
  .component-raw-editor textarea {
@@ -75,6 +74,7 @@ export default {
     font-size: 18px;
     color: #616161;
     width: 100%;
+    resize: none;
   }
 
   .operate-area {

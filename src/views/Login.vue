@@ -1,9 +1,7 @@
 <template>
-  <transition name="slide-fade">
-     <div class="page-login">
-       你好，我是{{msg}}页
-     </div>
-   </transition>
+   <div class="page-login">
+     你好，我是{{msg}}页
+   </div>
 </template>
 
 <script>

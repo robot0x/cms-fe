@@ -1,31 +1,29 @@
 <template>
- <transition name="slide-fade">
-   <div class="page-edit"
-      v-loading.fullscreen.lock="loading"
-      element-loading-text="正在保存中...">
-      <panel title="操作" closeable close class="panel">
-        <span slot="panel-heading-middle">
-          <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
-          <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
-        </span>
-        <div slot="panel-body" class="panel-body">
-          <el-upload
-            action="//jsonplaceholder.typicode.com/posts/"
-            type="drag"
-            :multiple="true">
-            <i class="el-icon-upload"></i>
-            <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
-        </div>
-      </panel>
-      <div class="editor-area">
-        <raw-editor class="raw-editor" :class="{'left-small': leftSmall}"></raw-editor>
-        <render-editor class="render-editor" :class="{'right-small': rightSmall}"></render-editor>
-        <max-window @open="open"></max-window>
+ <div class="page-edit"
+    v-loading.fullscreen.lock="loading"
+    element-loading-text="正在保存中...">
+    <panel title="操作" closeable close class="panel">
+      <span slot="panel-heading-middle">
+        <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
+        <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
+      </span>
+      <div slot="panel-body" class="panel-body">
+        <el-upload
+          action="//jsonplaceholder.typicode.com/posts/"
+          type="drag"
+          :multiple="true">
+          <i class="el-icon-upload"></i>
+          <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
       </div>
-   </div>
- </transition>
+    </panel>
+    <div class="editor-area">
+      <raw-editor class="raw-editor" :class="{'left-small': leftSmall}"></raw-editor>
+      <render-editor class="render-editor" :class="{'right-small': rightSmall}"></render-editor>
+      <max-window @open="open"></max-window>
+    </div>
+ </div>
 </template>
 <script>
 import RawEditor from '../components/RawEditor'

@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <!-- <img src="./assets/logo.png"> -->
-    <!-- <test :tototo="toto" hi="hi 你好！" :my-number="9999" size="1"></test> -->
-    <!-- <hello></hello> -->
+      <!-- <img src="./assets/logo.png"> -->
+      <!-- <test :tototo="toto" hi="hi 你好！" :my-number="9999" size="1"></test> -->
+      <!-- <hello></hello> -->
       <header>
         <nav>
           <ul>
@@ -49,7 +49,9 @@
         </nav>
       </header>
       <main>
-        <router-view></router-view>
+        <transition name="slide-fade">
+          <router-view></router-view>
+        </transition>
         <to></to>
       </main>
       <!-- 到顶部、到底部组件 -->
@@ -119,12 +121,12 @@ export default {
    min-width: 768px;
  }
 
- header li{
+ header li {
    display: inline-block;
    margin-right: 24px;
  }
 
- .nav-link{
+ .nav-link {
    color:#fff;
    display: inline-block;
    span{
@@ -132,11 +134,11 @@ export default {
    }
  }
 
- header li:first-child{
+ header li:first-child {
    margin-right: 32px;
    border:none;
-   .nav-link{
-     img{
+   .nav-link {
+     img {
        width: 30px;
        height: 30px;
        margin-right: 8px;
@@ -144,9 +146,9 @@ export default {
    }
  }
 
- .author{
+ .author {
    float: right;
-   img{
+   img {
      width: 30px;
      height: 30px;
      border-radius: 50%;
