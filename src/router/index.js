@@ -8,7 +8,7 @@ import Monthly from '../views/Monthly'
 import Author from '../views/Author'
 // import Help from '../views/Help'
 import Login from '../views/Login'
-import Password from '../views/Password'
+// import Password from '../views/Password'
 import Register from '../views/Register'
 import NotFound from '../views/NotFound'
 import LoginUtils from '../utils/LoginUtils'
@@ -46,7 +46,7 @@ const routes = [
   // { path: '/author', component: Author },
   // { path: '/help', component: Help },
   { path: '/login/', name: 'login', component: Login },
-  { path: '/password/', name: 'password', component: Password }, // 修改密码
+  // { path: '/password/', name: 'password', component: Password }, // 修改密码
   { path: '/register/', name: 'register', component: Register },
   { path: '*', name: '404', component: NotFound }
 ]
@@ -66,10 +66,10 @@ router.beforeEach((to, from, next) => {
   console.log("from:",from.name)
   console.log("to:",to.name)
 
-  if( to.name === 'login' || to.name === 'password' ) {
+  if( to.name === 'login' ) {
     return next()
   }
-  let isLogin = LoginUtils.checkLogin()
+  let isLogin = LoginUtils.checkLoginInfo()
   if( !isLogin ) {
     router.replace({name: 'login'})
   }else{

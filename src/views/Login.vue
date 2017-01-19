@@ -9,7 +9,7 @@
             <span class="reme-desc">记住我</span>
             <el-switch v-model="reme" on-color="#13ce66" off-color="#ff4949"></el-switch>
          </el-tooltip>
-         <a href="javascript:void(0);" @click="forgetPassword" class="forget-password">忘记密码？</a>
+         <a href="javascript:void(0);" @click="modifyPassword" class="modify-password">修改密码</a>
        </div>
        <el-button type="primary" @click="login" :loading="loading">{{ loginMsg }}</el-button>
      </div>
@@ -32,7 +32,7 @@ export default {
     content () {
       let content = ''
       if( this.reme ){
-        content = '保存30天的登录状态，在自己电脑上可开启此选项'
+        content = '保存5天的登录状态，在自己电脑上可开启此选项'
       }else{
         content = '不记录登录状态，在他人电脑或公共电脑上，请关闭此选项（默认为关闭）'
       }
@@ -41,36 +41,65 @@ export default {
   },
   methods: {
     login () {
-      const username = this.username
-      const password = this.password
-      let message = ''
-      if( !username ){
-        message = '用户名不能为空'
-      }else if( !password ){
-          message = '密码不能为空'
-      }
-      if( message ){
-        return this.$notify({
-          message: message,
-          type: 'warning'
-        })
-      }
       this.loading = true
-      this.loginMsg = '正在登录中，请稍候'
-      setTimeout(() => {
+      this.loginMsg = '正在登录中，请稍候...'
+      const username = this.username
+      LoginUtils.auth( username, this.password, (message) => {
         this.loading = false
         this.loginMsg = '登录'
-        console.log('记住我.....');
-        console.log(this.reme);
-        LoginUtils.login(username, this.reme)
-        // 存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
-        // 应该结合着本地存储来做
-        this.$store.commit('setUsername', username)
-        this.$router.replace('/')
-      }, 2000)
+        if( message ){
+          this.$notify({ message: message, type: 'warning' })
+        }else{
+          LoginUtils.setLoginInfo(username, this.reme)
+          // 存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
+          // 应该结合着本地存储来做
+          this.$store.commit('setUsername', username)
+          this.$router.replace('/')
+        }
+      })
+      // setTimeout(() => {
+      //   this.loading = false
+      //   this.loginMsg = '登录'
+      //   console.log('记住我.....');
+      //   console.log(this.reme);
+      //   LoginUtils.login(username, this.reme)
+      //   // 存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
+      //   // 应该结合着本地存储来做
+      //   this.$store.commit('setUsername', username)
+      //   this.$router.replace('/')
+      // }, 2000)
     },
-    forgetPassword () {
-      this.$router.replace({ name: 'password ' })
+    modifyPassword () {
+      // 防止多次点击
+      if( !this.loading ){
+        const username = this.username
+        this.loading = true
+        this.loginMsg = '验证成功可改密码，验证中...'
+        LoginUtils.auth( username, this.password, (message) => {
+          this.loading = false
+          this.loginMsg = '登录'
+          if( message ){
+            return this.$notify({
+              message: message,
+              type: 'warning'
+            })
+          }else{
+            this.$prompt('请输入新密码', '请先输入用户名和密码', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                closeOnClickModal: false,
+                inputPattern: /.+/,
+                inputErrorMessage: '新密码不能为空'
+              }).then(({ value }) => {
+                this.$notify({
+                  title: '密码修改成功',
+                  message: `你的密码是: ${value} 请牢记`,
+                  type: 'success'
+                })
+              })
+          }
+        })
+      }
     }
   }
 }
@@ -117,7 +146,7 @@ export default {
   .reme-desc {
     cursor: pointer;
   }
-  .forget-password {
+  .modify-password {
     color: #D3DCE6;
     float: right;
   }

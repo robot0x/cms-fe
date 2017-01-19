@@ -116,7 +116,7 @@ export default {
     logout () {
       setTimeout(() => {
         // 第一、清空本地登录标识
-        LoginUtils.logout()
+        LoginUtils.clearLoginInfo()
         // 第二、清空本地登录标识之后，转到登录页
         this.$router.replace({name: 'login'})
       }, 400)
