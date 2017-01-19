@@ -2,7 +2,7 @@
      <div class="page-monthly">
        <el-row>
           <el-col :span="4">
-             <el-menu :default-openeds="['1']"	class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" theme="dark">
+             <el-menu :default-openeds="['1', '2']"	class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" theme="dark">
              <el-submenu index="1">
                  <template slot="title">2017年（200）</template>
                  <el-menu-item index="1-1">一月</el-menu-item>
@@ -61,7 +61,7 @@
            </el-menu>
           </el-col>
           <el-col :span="20">
-            <data-grid></data-grid>
+            <data-grid class="data-grid"></data-grid>
           </el-col>
        </el-row>
      </div>
@@ -86,9 +86,13 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .pagination-bar{
   text-align: center;
   margin-top: 10px;
+}
+.data-grid {
+  position: relative;
+  top: -60px;
 }
 </style>

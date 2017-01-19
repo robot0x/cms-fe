@@ -1,8 +1,8 @@
 <template>
    <div class="page-archive">
-     <div class="">
-       <el-radio class="radio" label="monthly" v-model="archive" @click.native.stop="route('monthly')">按月</el-radio>
-       <el-radio class="radio" label="author" v-model="archive" @click.native.stop="route('author')">按人</el-radio>
+     <div class="route-box">
+         <el-radio class="radio" label="monthly" v-model="archive" @click.native.stop="route('monthly')">按月</el-radio>
+         <el-radio class="radio" label="author" v-model="archive" @click.native.stop="route('author')">按人</el-radio>
      </div>
      <!-- 加载 Monthly.vue页 和 Author.vue页 -->
      <transition name="slide-fade">
@@ -48,8 +48,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .page-archive{
-    // padding: 10px;
+  .route-box {
+    background-color: #324057;
+    padding: 20px 0;
   }
   .el-radio {
     margin-left: 10px;

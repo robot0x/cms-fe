@@ -191,9 +191,8 @@ export default {
  }
  main {
    flex: 1;
-   overflow: hidden;
+   overflow-x: hidden;
  }
-
  // .el-menu-item {
  //   width: 100%;
  // }

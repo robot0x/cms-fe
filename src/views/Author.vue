@@ -28,7 +28,7 @@
           </el-menu>
          </el-col>
          <el-col :span="20">
-           <data-grid></data-grid>
+           <data-grid class="data-grid"></data-grid>
          </el-col>
       </el-row>
     </div>
@@ -47,11 +47,15 @@ export default {
   },
   methods: {
     handleOpen () {
-
     },
     handleClose () {
-
     }
   }
 }
 </script>
+<style scoped>
+.data-grid {
+  position: relative;
+  top: -60px;
+}
+</style>
