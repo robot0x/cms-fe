@@ -1,12 +1,20 @@
 <template>
   <div class="component-raw-editor">
-    <textarea v-model="text" @input="input"></textarea>
+    <textarea v-model="text" @input="input" :disabled="locked"></textarea>
   </div>
 </template>
 <script>
 import fetch from 'isomorphic-fetch'
 import API from '../API'
 export default {
+  props: {
+    locked: {
+      type: Boolean,
+      default () {
+        return false
+      }
+    }
+  },
   data () {
     return {
       text: ''

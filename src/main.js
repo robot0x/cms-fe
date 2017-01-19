@@ -22,8 +22,8 @@ var vm = new Vue({
   el: '#app',
   template: '<App/>',
   components: { App },
-  router,
   store,
+  router,
   // store,
   beforeCreate () {
     console.log('beforeCreate ....')
@@ -32,7 +32,7 @@ var vm = new Vue({
     console.log('created ....')
   },
   mounted () {
-    console.log('mounted ....');
+    console.log('mounted ....')
     console.log(this.$el); // 只有在mounted之后，this.$el才不是undefined
   },
   updated () {

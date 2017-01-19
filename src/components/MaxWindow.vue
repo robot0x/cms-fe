@@ -40,7 +40,7 @@ export default {
     /*left: 50%; */
     transform: translate(-50%, -50%);
     display: flex;
-    z-index: 9999;
+    z-index: 9;
     height: 50px;
     right: -12px;
     top: 100px;

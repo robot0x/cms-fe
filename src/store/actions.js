@@ -1,5 +1,4 @@
 import * as types from './mutation-types'
-
 // export default {
 //   [types.INCREMENT] (context) {
 //     context.commit(types.INCREMENT)
@@ -9,4 +8,5 @@ import * as types from './mutation-types'
 //     commit(types.INCREMENT)
 //   }
 // }
+
 export const increment = ({ commit }) => commit(types.INCREMENT)

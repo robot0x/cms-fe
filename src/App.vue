@@ -26,6 +26,13 @@
                 <i class="el-icon-menu"></i><span>归档</span>
               </router-link>
             </li>
+
+            <!-- <li>
+              <router-link class="nav-link" to="/login" keep-alive>
+                <i class="el-icon-date"></i><span>登录</span>
+              </router-link>
+            </li> -->
+
             <!-- <li>
               <router-link class="nav-link" to="/monthly" keep-alive>
                 <i class="el-icon-date"></i><span>月份归档</span>
@@ -42,8 +49,21 @@
               </router-link>
             </li> -->
             <li class="author">
+              <!--
               <img :src="headshot" :alt="authorName">
               <span>{{authorName}}</span>
+              -->
+
+              <!--
+              <el-menu mode="horizontal" @select="handleSelect" theme="dark" :default-active="defaultActive">
+                <el-submenu index="1">
+                  <template slot="title">{{authorName}}</template>
+                  <el-menu-item index="1-1">退出</el-menu-item>
+                </el-submenu>
+              </el-menu>
+              -->
+              <span>你好，{{author}}</span>
+              <a href="javascript:void(0);" class="logout" @click="logout">退出</a>
             </li>
           </ul>
         </nav>
@@ -60,22 +80,23 @@
 <script>
 // import Hello from './components/Hello'
 // import Test from './components/Test'
+// import headshot from './assets/default-headshot.jpg'
 import logo from './assets/diaox2-logo-40.png'
-import headshot from './assets/default-headshot.jpg'
 import To from './components/To'
-
+import LoginUtils from './utils/LoginUtils'
 export default {
   // 本组件要用到的组件都要在 components 中声明，否则不起作用且会报错
-  components: {
-    To,
-    // Hello
-    // Test
-  },
+  components: { To },
   data () {
     return {
-      logo,
-      headshot,
-      authorName: '李彦峰'
+      logo
+    }
+  },
+  computed: {
+    author () {
+      // 首先看看 store 中是否有存储的username，没有的话，则去本地缓存中拿
+      // 单独存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
+      return this.$store.state.username || LoginUtils.getUsername()
     }
   },
   mounted () {
@@ -90,6 +111,19 @@ export default {
 
     console.log('title:', state.article.title);
     console.log('title:', state.article.getters);
+  },
+  methods: {
+    logout () {
+      setTimeout(() => {
+        // 第一、清空本地登录标识
+        LoginUtils.logout()
+        // 第二、清空本地登录标识之后，转到登录页
+        this.$router.replace({name: 'login'})
+      }, 400)
+    }
+  },
+  created () {
+    this.authorName = LoginUtils.getUsername()
   }
 }
 </script>
@@ -159,4 +193,22 @@ export default {
    flex: 1;
    overflow: hidden;
  }
+
+ // .el-menu-item {
+ //   width: 100%;
+ // }
+
+ .logout {
+   font-size: 14px;
+   color: #E5E9F2;
+   margin-left: 10px;
+   border-bottom: 1px #E5E9F2 solid;
+   padding-bottom: 4px;
+ }
+
+ .logout:hover {
+   color: #FF4949;
+   border-bottom: 1px #FF4949 solid;
+ }
+
 </style>

@@ -7,6 +7,10 @@ export default {
 
   [types.DECREMENT] (state) {
     state.count--
+  },
+
+  [types.SET_USERNAME] (state, username) {
+    state.username = username
   }
 }
 

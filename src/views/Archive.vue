@@ -1,12 +1,10 @@
 <template>
    <div class="page-archive">
-     <panel title="选择" heading-color="#324057">
-       <span slot="panel-heading-middle">
-         <el-radio class="radio" label="monthly" v-model="archive" @click.native.stop="route('monthly')">按月</el-radio>
-         <el-radio class="radio" label="author" v-model="archive" @click.native.stop="route('author')">按人</el-radio>
-       </span>
-     </panel>
-     <!-- 加载Monthly.vue页 和 Author.vue页 -->
+     <div class="">
+       <el-radio class="radio" label="monthly" v-model="archive" @click.native.stop="route('monthly')">按月</el-radio>
+       <el-radio class="radio" label="author" v-model="archive" @click.native.stop="route('author')">按人</el-radio>
+     </div>
+     <!-- 加载 Monthly.vue页 和 Author.vue页 -->
      <transition name="slide-fade">
        <router-view keep-alive></router-view>
      </transition>

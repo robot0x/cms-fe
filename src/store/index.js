@@ -8,15 +8,13 @@ import article from './modules/article'
 import image from './modules/image'
 import author from './modules/author'
 import markdown from './modules/markdown'
-
 const debug = process.env.NODE_ENV !== 'production'
-
-// console.log(article);
 Vue.use(Vuex)
 
 /**
  * 一个store中，
  * 包含：state、mutations、actions、getters（可以看做是store的计算属性）
+ * store是容器，用来装状态的，可以把store理解为状态的容器
  */
 export default new Vuex.Store({
   modules: {
@@ -26,7 +24,8 @@ export default new Vuex.Store({
     markdown
   },
   state: {
-    count: 1999
+    count: 1999,
+    username: ''
   },
   mutations,
   actions,

@@ -5,5 +5,6 @@
 //   }
 // }
 
-// 第二中导出方法
+// 第二种导出方法
 export const getCountPlusTen = state => state.count + 10
+// export const authorName = state => state.username

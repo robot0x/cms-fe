@@ -8,8 +8,10 @@ import Monthly from '../views/Monthly'
 import Author from '../views/Author'
 // import Help from '../views/Help'
 import Login from '../views/Login'
+import Password from '../views/Password'
 import Register from '../views/Register'
 import NotFound from '../views/NotFound'
+import LoginUtils from '../utils/LoginUtils'
 Vue.use(VueRouter)
 
 // 0. 如果使用模块化机制编程，導入Vue和VueRouter，要调用 Vue.use(VueRouter)
@@ -29,7 +31,10 @@ const routes = [
   { path: '/edit/:id', name: 'edit', component: Edit },
   {
     path: '/archive/',
-    name: 'archive',
+    // [vue-router] Named Route 'archive' has a default child route.
+    // When navigating to this named route (:to="{name: 'archive'"), the default child route will not be rendered.
+    // Remove the name from this route and use the name of the default child route for named links instead.
+    // name: 'archive',
     component: Archive,
     children: [
       { path: '', component: Monthly }, // 进入到 Archive.vue 页面中，默认加载 Monthly.vue
@@ -41,6 +46,7 @@ const routes = [
   // { path: '/author', component: Author },
   // { path: '/help', component: Help },
   { path: '/login/', name: 'login', component: Login },
+  { path: '/password/', name: 'password', component: Password }, // 修改密码
   { path: '/register/', name: 'register', component: Register },
   { path: '*', name: '404', component: NotFound }
 ]
@@ -51,6 +57,24 @@ const router = new VueRouter({
   transitionOnLoad: true,
   linkActiveClass: 'router-link-active',
   routes // （缩写）相当于 routes: routes
+})
+// const vm = new Vue()
+// console.log(vm.store); // undefined
+router.beforeEach((to, from, next) => {
+  // ...
+  // console.log('导航钩子被执行.......')
+  console.log("from:",from.name)
+  console.log("to:",to.name)
+
+  if( to.name === 'login' || to.name === 'password' ) {
+    return next()
+  }
+  let isLogin = LoginUtils.checkLogin()
+  if( !isLogin ) {
+    router.replace({name: 'login'})
+  }else{
+    next()
+  }
 })
 
 // 4. 创建和挂载根实例。

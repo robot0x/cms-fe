@@ -2,7 +2,8 @@
  <div class="page-edit"
     v-loading.fullscreen.lock="loading"
     element-loading-text="正在保存中...">
-    <panel title="操作" closeable close class="panel">
+    <!-- 如果被锁了，也就不必显示操作区了 -->
+    <panel title="操作" closeable close class="panel" v-if="!locked">
       <span slot="panel-heading-middle">
         <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
         <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
@@ -18,8 +19,14 @@
         </el-upload>
       </div>
     </panel>
+    <el-alert
+      :closable="false"
+      :title="lockTitle"
+      v-if="locked"
+      type="error">
+    </el-alert>
     <div class="editor-area">
-      <raw-editor class="raw-editor" :class="{'left-small': leftSmall}"></raw-editor>
+      <raw-editor class="raw-editor" :class="{'left-small': leftSmall}" :locked="locked"></raw-editor>
       <render-editor class="render-editor" :class="{'right-small': rightSmall}"></render-editor>
       <max-window @open="open"></max-window>
     </div>
@@ -41,10 +48,14 @@ export default {
   },
 
   data () {
+    const authorName = '李彦峰'
     return {
       loading: false,
       leftSmall: false,
-      rightSmall: false
+      rightSmall: false,
+      // 文章是否被锁住的flag
+      locked: false,
+      lockTitle: `此文已被${authorName}锁住...`
     }
   },
 

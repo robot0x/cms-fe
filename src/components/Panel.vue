@@ -34,8 +34,6 @@ export default {
     }
   },
   data () {
-    console.log(typeof this.border);
-    console.log(this.border);
     return {
       closed: this.close
     }

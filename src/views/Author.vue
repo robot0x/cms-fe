@@ -2,7 +2,7 @@
     <div class="page-author">
       <el-row>
          <el-col :span="4">
-            <el-menu default-openeds=1	class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" theme="dark">
+            <el-menu @open="handleOpen" @close="handleClose" theme="dark">
               <el-menu-item index="1-1">8023wei (218)</el-menu-item>
               <el-menu-item index="1-2">949815562 (1)</el-menu-item>
               <el-menu-item index="1-3">a574427792 (152)</el-menu-item>
@@ -43,6 +43,14 @@ export default {
     return {
       msg: 'Author',
       visible: false
+    }
+  },
+  methods: {
+    handleOpen () {
+
+    },
+    handleClose () {
+
     }
   }
 }
