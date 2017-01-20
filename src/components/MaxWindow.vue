@@ -42,7 +42,7 @@ export default {
     display: flex;
     z-index: 9;
     height: 50px;
-    right: -12px;
+    right: 0;
     top: 100px;
   }
 
