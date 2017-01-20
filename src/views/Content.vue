@@ -1,7 +1,7 @@
 <template>
    <div class="page-content">
      <div class="search-area">
-       <el-input placeholder="输入文章ID或文章title" class="el-input" v-model="search">
+       <el-input placeholder="输入文章ID或文章title" class="el-input" v-model="search" @input="filter">
          <el-select v-model="select" slot="prepend" placeholder="请选择" clearable>
            <el-option label="类型" value="ctype"></el-option>
            <el-option label="作者" value="author"></el-option>
@@ -10,7 +10,7 @@
        </el-input>
        <el-button type="primary" icon="plus" @click="newArticle" class="new-article">新建文章</el-button>
      </div>
-     <data-grid></data-grid>
+     <data-grid :filter="search"></data-grid>
    </div>
 </template>
 <script>
@@ -33,6 +33,8 @@ export default {
     }
   },
   methods: {
+    filter () {
+    },
     query () {
       alert('query')
     },

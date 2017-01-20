@@ -3,8 +3,8 @@
     <div class="up" title="回到顶部" @click="up">
       <i class="el-icon-arrow-up"></i>
     </div>
-    <div class="down" title="回到底部">
-      <i class="el-icon-arrow-down" @click="down"></i>
+    <div class="down" title="回到底部" @click="down">
+      <i class="el-icon-arrow-down"></i>
     </div>
   </div>
 </template>

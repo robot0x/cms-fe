@@ -8,6 +8,7 @@ import article from './modules/article'
 import image from './modules/image'
 import author from './modules/author'
 import markdown from './modules/markdown'
+import DataGrid from './modules/DataGrid'
 const debug = process.env.NODE_ENV !== 'production'
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ export default new Vuex.Store({
     article,
     image,
     author,
-    markdown
+    markdown,
+    DataGrid
   },
   state: {
     count: 1999,
