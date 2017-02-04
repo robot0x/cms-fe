@@ -1,6 +1,6 @@
 <template>
   <div class="component-data-grid">
-    <span>{{filter}}</span>
+    <!-- <span>{{filter}}</span> -->
     <el-table
       v-loading="loading"
       element-loading-text="玩命加载中..."
