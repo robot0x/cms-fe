@@ -1,38 +1,38 @@
 <template>
    <div class="page-content">
      <div class="search-area">
-       <el-input placeholder="输入文章ID或文章title" class="el-input" v-model="search" @keyup.native.enter.stop.prevent="query">
+       <el-input placeholder="输入文章ID或文章title" class="el-input" v-model="search" @keyup.native.enter.stop.prevent="doQuery">
          <el-select v-model="type" slot="prepend" placeholder="请选择" clearable>
            <el-option label="类型" value="ctype"></el-option>
            <el-option label="作者" value="author"></el-option>
          </el-select>
-         <el-button slot="append" icon="search" size="large" @click="query"></el-button>
+         <el-button slot="append" icon="search" size="large" @click="doQuery"></el-button>
        </el-input>
        <el-button type="primary" icon="plus" @click="newArticle" class="new-article">新建文章</el-button>
      </div>
-     <data-grid></data-grid>
+     <data-grid :input="query"></data-grid>
    </div>
 </template>
 <script>
 import fetch from 'isomorphic-fetch'
 import API from '../API'
-import Search from '../components/Search'
+// import Search from '../components/Search'
 import DataGrid from '../components/DataGrid'
 export default {
   name: 'hello',
   components: {
-    // Hello,
-    Search,
+    // Search,
     DataGrid
   },
   data () {
     return {
       search: '',
-      type: ''
+      type: '',
+      query: {}
     }
   },
   methods: {
-    query () {
+    doQuery () {
       /**
        * id      为按照id进行搜索             精准搜索
        * title   为按照title进行搜索          like搜索
@@ -41,8 +41,12 @@ export default {
        * monthly 为按照月份进行搜索           范围搜索
        */
       let {type, search} = this
-      console.log(type)
-      console.log(search)
+      if(!search.trim()){
+        return this.$message({
+          type: 'warning',
+          message: '请输入要搜索的内容~'
+        })
+      }
       if( !type ){
         if(/^\d+$/.test(search)){
           type = 'id'
@@ -51,8 +55,7 @@ export default {
           type = 'title'
         }
       }
-      const query = { type, search }
-      console.log(query);
+      this.query = { type, search }
     },
     newArticle () {
       // alert('newArticle')

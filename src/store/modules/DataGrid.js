@@ -1,5 +1,5 @@
 const state = {
-  filter: ''
+  query: {}
 }
 
 const getters = {
@@ -9,8 +9,9 @@ const actions = {
 }
 
 const mutations = {
-  filter (state, search) {
-
+  query (state, query) {
+    console.log('query exec ....');
+    state.query = query
   }
 }
 

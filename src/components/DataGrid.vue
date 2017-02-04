@@ -1,6 +1,5 @@
 <template>
   <div class="component-data-grid">
-    <!-- <span>{{filter}}</span> -->
     <el-table
       v-loading="loading"
       element-loading-text="玩命加载中..."
@@ -56,53 +55,46 @@
 </template>
 <script>
 // 端到端组件
-import articles from '../mocks/articles'
+import Article from '../service/Article'
 import _ from 'lodash'
 export default {
   props: {
-    filter: [String, Number],
     input: Object
+  },
+  computed: {
+    total () {
+      return this.articles.length
+    }
+  },
+  watch: {
+    input (val, oldVal) {
+      if(!val || _.isEqual(val, oldVal)) {
+        return
+      }
+      this.loading = true
+      Article.getArticles(val).then( articles => {
+        this.articles = articles
+        this.articles_copy = [...this.articles]
+        this.loading = false
+        this.total = this.articles.length
+      })
+    }
   },
   data () {
     return {
       articles: [],
       articles_copy: [],
-      loading: true
+      loading: false
     }
   },
   created () {
-    setTimeout( () => {
-      this.articles = articles
-      this.articles_copy = [...this.articles]
-      this.loading = false
-      this.total = this.articles.length
-    })
-  },
-  watch: {
-    filter: function (newFilter) {
-      console.log(newFilter + '.........')
-      // console.log(this)
-      if( !newFilter ){
-        this.articles = this.articles_copy
-      } else {
-        this.articles = this.articles.filter(( article ) => {
-           if ( _.isInteger(newFilter) ){
-             return _.toInteger(article.id) === newFilter
-           }
-        })
-      }
-    }
-  },
-
-  computed: {
-    total () {
-      return this.articles.length
-    }
-    // doFilter () {
-    //   return this.articles.filter( article  => {
-    //       return article.id == this.filter
-    //   })
-    // }
+     this.loading = true
+     Article.getArticles().then( articles => {
+       this.articles = articles
+       this.articles_copy = [...this.articles]
+       this.loading = false
+       this.total = this.articles.length
+     })
   },
   methods: {
     handleEdit (index, row) {
@@ -114,11 +106,29 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.articles.splice(index, 1)
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
+        const article = this.articles[index]
+        console.log(article);
+        console.log(article.id);
+        const opt = {
+            type: 'success',
+            message: '删除成功!'
+        }
+        Article.deleteArticle(article.id)
+       .then(message => {
+         if(message !== 'SUCCESS'){
+           opt.type = 'error'
+           opt.message = message
+         } else {
+           this.articles.splice(index, 1)
+         }
+         this.$message(opt)
+       })
+       .catch(message => {
+         opt.type = 'error'
+         opt.message = message
+         this.$message(opt)
+       })
+
       })
       console.log(index, row);
     }
