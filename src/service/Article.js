@@ -41,13 +41,13 @@ export default class Article {
       try{
         let ret = []
         let {type, offset, pageSize} = query
-        let total = articles.length
         // 如果有查询条件，就按照查询条件查询，否则就查询全部
         if( type ){
           ret = Article.randArray(articles, Math.ceil(Math.random() * 40))
         } else {
           ret = articles
         }
+        let total = ret.length
         const start = offset
         const end = start + pageSize
         setTimeout(() => {

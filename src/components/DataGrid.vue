@@ -45,7 +45,7 @@
     </el-table>
     <div class="pagination-bar">
       <el-pagination
-        :page-sizes="[10, 20, 30, 40]"
+        :page-sizes="[50, 100, 150, 200]"
         :page-size="pageSize"
         :current-page="currentPage"
         @size-change="handleSizeChange"
@@ -74,29 +74,10 @@ export default {
   },
   watch: {
     input (val, oldVal) {
-      const { search } = val
-      if(!String(search).trim()){
-        this.articles = this.articles_copy
-        return
-      }
       if(_.isEqual(val, oldVal)) {
         return
       }
-      // val.pageSize = this.pageSize
-      // val.offset = this.offset
       this.doQuery(val)
-      // this.loading = true
-      // Article.getArticles(val)
-      // .then( articles => {
-      //   console.log(this);
-      //   this.articles = articles
-      //   // this.articles_copy = [...this.articles]
-      //   this.loading = false
-      //   this.total = this.articles.length
-      // })
-      // .catch( message => {
-      //   this.loading = false
-      // })
     }
   },
   data () {
@@ -105,37 +86,17 @@ export default {
       articles_copy: [],
       loading: false,
       currentPage: 1,
-      pageSize: 10,
+      pageSize: 50, // 一页50条
       total: 0
     }
   },
   // 如果是keep-alive的话created不会执行
   created () {
-     Article.getTotal().then(total => this.total = total)
-     this.loading = true
-     console.log('loading:', this.loading)
-     this.doQuery()
-    //  Article.getArticles({
-    //    offset: this.offset,
-    //    pageSize: this.pageSize
-    //  })
-    //  .then( res => {
-    //    const {articles, total} = res
-    //    this.loading = false
-    //    this.articles = articles
-    //    this.total = total
-    //    this.articles_copy = [...this.articles]
-    //    this.total = this.articles.length
-    //    console.log('loading:', this.loading)
-    //  })
-    //  .catch( message => {
-    //    this.loading = false
-    //    console.log('loading:', this.loading)
-    //  })
+    //  Article.getTotal().then(total => this.total = total)
+    this.doQuery()
   },
   methods: {
     doQuery (query) {
-      // query = query || { offset: this.offset,pageSize: this.pageSize}
       if( query ){
         query.offset = this.offset
         query.pageSize = this.pageSize
@@ -160,27 +121,13 @@ export default {
 
     handleSizeChange(val) {
       this.pageSize = val
-      console.log(`每页 ${val} 条`)
-      this.doQuery()
+      // console.log(`每页 ${val} 条`)
+      this.doQuery(this.input)
     },
     handleCurrentChange(val) {
       this.currentPage = val
-      console.log(`当前页: ${val}`)
-      this.doQuery()
-      // Article.pagination({
-      //   offset: this.offset,
-      //   pageSize: this.pageSize
-      // })
-      // .then(res => {
-      //   const {articles, total} = res
-      //   this.loading = false
-      //   console.log('pagination done ...')
-      //   this.articles = articles
-      //   this.total = total
-      // })
-      // .catch(message => {
-      //   this.loading = false
-      // })
+      // console.log(`当前页: ${val}`)
+      this.doQuery(this.input)
     },
     handleEdit (index, row) {
       this.$router.push({ name: 'edit', params: { id: this.articles[index].id }})
