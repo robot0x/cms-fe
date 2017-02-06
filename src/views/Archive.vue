@@ -6,7 +6,10 @@
      </div>
      <!-- 加载 Monthly.vue页 和 Author.vue页 -->
      <transition name="slide-fade">
-       <router-view keep-alive></router-view>
+       <keep-alive>
+         <router-view></router-view>
+       </keep-alive>
+       <!-- <router-view></router-view> -->
      </transition>
    </div>
 </template>
@@ -43,6 +46,7 @@ export default {
   // 不能只在created中监听routeChange。不然的话，在地址栏输入地址，页面无刷新的话，就不会走Archive的created的钩子了
   // 即虽然路由变了，但是created并不执行
   created () {
+    // 如果是keep-alive的话created其实只执行一次
     this.routeChange()
   }
 }

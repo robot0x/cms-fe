@@ -26,26 +26,26 @@ var vm = new Vue({
   router,
   // store,
   beforeCreate () {
-    console.log('beforeCreate ....')
+    // console.log('beforeCreate ....')
   },
   created () {
-    console.log('created ....')
+    // console.log('created ....')
   },
   mounted () {
-    console.log('mounted ....')
-    console.log(this.$el); // 只有在mounted之后，this.$el才不是undefined
+    // console.log('mounted ....')
+    // console.log(this.$el); // 只有在mounted之后，this.$el才不是undefined
   },
   updated () {
-    console.log('updated ....');
+    // console.log('updated ....');
   },
   destoryed () {
-    console.log('destoryed ....');
+    // console.log('destoryed ....');
   }
 })
 // 除了在vm实例中用this指向vm，也可以在外面使用 vm 的实例方法或属性
-console.log(vm.$el);
+// console.log(vm.$el);
 vm.$nextTick(() => {
-  console.log('main.js vm.$nextTick ....');
+  // console.log('main.js vm.$nextTick ....');
 })
 // fetch(API.articles.url + '?id=121223', {
 //   method: 'GET'

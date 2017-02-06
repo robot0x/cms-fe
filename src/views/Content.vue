@@ -41,12 +41,6 @@ export default {
        * monthly 为按照月份进行搜索           范围搜索
        */
       let {type, search} = this
-      if(!search.trim()){
-        return this.$message({
-          type: 'warning',
-          message: '请输入要搜索的内容~'
-        })
-      }
       if( !type ){
         if(/^\d+$/.test(search)){
           type = 'id'

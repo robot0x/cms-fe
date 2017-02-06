@@ -45,8 +45,11 @@
     </el-table>
     <div class="pagination-bar">
       <el-pagination
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="10"
+        :current-page="currentPage"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
@@ -68,15 +71,26 @@ export default {
   },
   watch: {
     input (val, oldVal) {
-      if(!val || _.isEqual(val, oldVal)) {
+      const { search } = val
+      if(!String(search).trim()){
+        this.articles = this.articles_copy
+        return
+      }
+      if(_.isEqual(val, oldVal)) {
         return
       }
       this.loading = true
-      Article.getArticles(val).then( articles => {
+      console.log(this);
+      Article.getArticles(val)
+      .then( articles => {
+        console.log(this);
         this.articles = articles
-        this.articles_copy = [...this.articles]
+        // this.articles_copy = [...this.articles]
         this.loading = false
         this.total = this.articles.length
+      })
+      .catch( message => {
+        this.loading = false
       })
     }
   },
@@ -84,19 +98,35 @@ export default {
     return {
       articles: [],
       articles_copy: [],
-      loading: false
+      loading: false,
+      currentPage: 1
     }
   },
+  // 如果是keep-alive的话created不会执行
   created () {
      this.loading = true
-     Article.getArticles().then( articles => {
+     console.log('loading:', this.loading)
+     Article.getArticles()
+     .then( articles => {
+       this.loading = false
        this.articles = articles
        this.articles_copy = [...this.articles]
-       this.loading = false
        this.total = this.articles.length
+       console.log('loading:', this.loading)
+     })
+     .catch( message => {
+       this.loading = false
+       console.log('loading:', this.loading)
      })
   },
   methods: {
+    handleSizeChange(val) {
+       console.log(`每页 ${val} 条`)
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      console.log(`当前页: ${val}`)
+    },
     handleEdit (index, row) {
       this.$router.push({ name: 'edit', params: { id: this.articles[index].id }})
     },
@@ -120,6 +150,7 @@ export default {
            opt.message = message
          } else {
            this.articles.splice(index, 1)
+           this.articles_copy = [...this.articles]
          }
          this.$message(opt)
        })

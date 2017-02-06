@@ -63,8 +63,8 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   // ...
   // console.log('导航钩子被执行.......')
-  console.log("from:",from.name)
-  console.log("to:",to.name)
+  // console.log("from:",from.name)
+  // console.log("to:",to.name)
 
   if( to.name === 'login' ) {
     return next()

@@ -7,44 +7,44 @@
         <nav>
           <ul>
             <li>
-              <router-link class="nav-link" to="/" keep-alive active-class="noop">
+              <router-link class="nav-link" to="/" active-class="noop">
                 <img :src="logo" alt="有调logo">有调CMS
               </router-link>
             </li>
             <li>
-              <router-link class="nav-link" to="/content" keep-alive>
+              <router-link class="nav-link" to="/content">
                 <i class="el-icon-document"></i><span>内容</span>
               </router-link>
             </li>
             <li>
-              <router-link class="nav-link" to="/edit" keep-alive>
+              <router-link class="nav-link" to="/edit">
                 <i class="el-icon-edit"></i><span>编辑</span>
               </router-link>
             </li>
             <li>
-              <router-link class="nav-link" to="/archive" keep-alive>
+              <router-link class="nav-link" to="/archive">
                 <i class="el-icon-menu"></i><span>归档</span>
               </router-link>
             </li>
 
             <!-- <li>
-              <router-link class="nav-link" to="/login" keep-alive>
+              <router-link class="nav-link" to="/login">
                 <i class="el-icon-date"></i><span>登录</span>
               </router-link>
             </li> -->
 
             <!-- <li>
-              <router-link class="nav-link" to="/monthly" keep-alive>
+              <router-link class="nav-link" to="/monthly">
                 <i class="el-icon-date"></i><span>月份归档</span>
               </router-link>
             </li>
             <li>
-              <router-link class="nav-link" to="/author" keep-alive>
+              <router-link class="nav-link" to="/author">
                 <i class="el-icon-menu"></i><span>作者归档</span>
               </router-link>
             </li>
             <li>
-              <router-link class="nav-link" to="/help" keep-alive active-class="router-link-active">
+              <router-link class="nav-link" to="/help" active-class="router-link-active">
                 帮助
               </router-link>
             </li> -->
@@ -70,7 +70,9 @@
       </header>
       <main>
         <transition name="slide-fade">
-          <router-view></router-view>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
         </transition>
         <to></to>
       </main>
@@ -102,15 +104,15 @@ export default {
   mounted () {
     const store = this.$store
     const state = store.state
-    console.log('count:', state.count);
+    // console.log('count:', state.count);
     store.commit('INCREMENT')
-    console.log('count:', state.count);
+    // console.log('count:', state.count);
     store.dispatch('increment')
-    console.log('count:', state.count);
-    console.log('count:', store.getters.getCountPlusTen);
+    // console.log('count:', state.count);
+    // console.log('count:', store.getters.getCountPlusTen);
 
-    console.log('title:', state.article.title);
-    console.log('title:', state.article.getters);
+    // console.log('title:', state.article.title);
+    // console.log('title:', state.article.getters);
   },
   methods: {
     logout () {
