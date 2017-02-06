@@ -4,7 +4,7 @@
        <el-input placeholder="输入文章ID或文章title" class="el-input" v-model="search" @keyup.native.enter.stop.prevent="doQuery">
          <el-select v-model="type" slot="prepend" placeholder="请选择" clearable>
            <el-option label="类型" value="ctype"></el-option>
-           <el-option label="作者" value="author"></el-option>
+           <el-option label="作者" value="aName"></el-option>
          </el-select>
          <el-button slot="append" icon="search" size="large" @click="doQuery"></el-button>
        </el-input>

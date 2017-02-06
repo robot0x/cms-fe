@@ -44,8 +44,9 @@
       </el-table-column>
     </el-table>
     <div class="pagination-bar">
+      <!-- :page-sizes="[50, 100, 150, 200]" -->
       <el-pagination
-        :page-sizes="[50, 100, 150, 200]"
+        :page-sizes="[10, 20, 30, 40]"
         :page-size="pageSize"
         :current-page="currentPage"
         @size-change="handleSizeChange"
@@ -66,14 +67,15 @@ export default {
   },
   computed: {
     offset () {
-      console.log('pageSize:', this.pageSize)
-      console.log('currentPage:', this.currentPage)
-      console.log('offset:', this.pageSize * (this.currentPage - 1))
+      // console.log('pageSize:', this.pageSize)
+      // console.log('currentPage:', this.currentPage)
+      // console.log('offset:', this.pageSize * (this.currentPage - 1))
       return this.pageSize * (this.currentPage - 1)
     }
   },
   watch: {
     input (val, oldVal) {
+      console.log('input 改变...');
       if(_.isEqual(val, oldVal)) {
         return
       }
