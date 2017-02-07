@@ -5,7 +5,7 @@
     <!-- 如果被锁了，也就不必显示操作区了 -->
     <panel title="操作" closeable  class="panel" v-if="!locked">
       <span slot="panel-heading-middle">
-        <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
+        <!-- <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存  </el-button> -->
         <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
       </span>
       <div slot="panel-body" class="panel-body">
@@ -23,7 +23,6 @@
           <el-col :span="9">
             <el-input v-model="keyword" placeholder="请输入文章关键字，多个关键字用空格或逗号隔开" @keyup.native.enter.stop.prevent="addKeywords"></el-input>
             <el-tag v-for="keyword in keywords" :closable="true" :type="keyword.type" @close="removeTag(keyword)"> {{keyword.name}} </el-tag>
-
             <!-- <el-select v-model="value" placeholder="请选择tag">
               <el-option
                 v-for="item in options"
@@ -31,7 +30,6 @@
                 :value="item.value">
               </el-option>
             </el-select> -->
-
           </el-col>
           <el-col :span="9" class="el-col-end">
             <el-select v-model="ctype" placeholder="请选择文章类型">
@@ -78,19 +76,13 @@ export default {
       this.keywords.splice(this._getIndexByKeywords(keyword), 1)
     },
     _getIndexByKeywords (keyword) {
-      let findFn = null
-      if(_.isPlainObject(keyword)){
-        findFn = (key) => key.name === keyword.name
-      } else {
-        findFn = (key) => key.name === keyword
-      }
-      return _.findIndex(this.keywords, findFn)
+      return _.findIndex(
+        this.keywords,
+        _.isPlainObject(keyword)? (key) => key.name === keyword.name : (key) => key.name === keyword
+      )
     },
     _addType (arr) {
-      return arr.map( item => {
-        item.type = 'primary'
-        return item
-      })
+      return arr.map( item => { item.type = 'primary'; return item })
     },
 
     addKeywords () {
@@ -102,49 +94,42 @@ export default {
               .filter(keyword => { // 去重
                 const alreadyHasKeyword = this._getIndexByKeywords(keyword) !== -1
                 if(alreadyHasKeyword){
-                  this.$message(`「${keyword}」已经存在，请不要重复添加`);
+                  this.$message(`「${keyword}」已经存在，请不要重复添加`)
                 }
                 return !alreadyHasKeyword
-              })
-              .map(
-                keyword => {
-                  return {
-                    name: keyword,
-                    type: 'success'
-                  }
-              }
-            )
+              }).map( keyword => { return { name: keyword, type: 'success' } } )
       )
       this.keyword = ''
     },
 
-    open (which) {
-      console.log(which)
-      if (which === 'left'){
+    open (dir) {
+      switch (dir) {
+        case 'left':
           this.rightSmall = true
           this.leftSmall = false
-      }else if (which === 'right') {
+          break;
+        case 'right':
           this.leftSmall = true
           this.rightSmall = false
-      } else {
-        this.leftSmall = false
-        this.rightSmall = false
+          break;
+        default:
+          this.leftSmall = false
+          this.rightSmall = false
       }
     },
-
-    clearCache () {
-      this.$confirm('此操作将删除本篇文章在本地的缓存，是否继续?', '提示',{
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '缓存删除成功'
-        })
-      })
-    },
-
+    // 没必要，全选删除即可
+    // clearCache () {
+    //   this.$confirm('此操作将删除本篇文章在本地的缓存，是否继续?', '提示',{
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     this.$message({
+    //       type: 'success',
+    //       message: '缓存删除成功'
+    //     })
+    //   })
+    // },
     save () {
       this.loading = true
       setTimeout(() => {
@@ -168,10 +153,11 @@ export default {
       loading: false,
       leftSmall: false,
       rightSmall: false,
+      keyword: '',
+      ctype: '',
       // 文章是否被锁住的flag
       locked: false,
       lockTitle: `此文已被${authorName}锁住...`,
-      keyword: '',
       keywords: this._addType([
          { name: '好物'},
          { name: '电脑'},
@@ -179,7 +165,6 @@ export default {
          { name: '天王盖地虎'},
          { name: '宝塔震河妖'}
        ]),
-       ctype: '',
        ctypes: [
          {label: '好物', value: 0},
          {label: '专刊', value: 1},

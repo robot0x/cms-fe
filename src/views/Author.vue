@@ -22,7 +22,7 @@ export default {
   components: {
     DataGrid
   },
-  activated () {
+  created () {
     this.setDefaultActive()
     this.query = { type: 'aId', search: this.getAId(this.defaultActive)}
   },
@@ -81,12 +81,15 @@ export default {
     },
     setDefaultActive () {
       const username = LoginUtils.getUsername()
+      let defaultActive = ''
       for(const item of this.items){
         if(username === item.name){
-          this.defaultActive = '1-' + (this.items.indexOf(item) + 1)
-          return
+          defaultActive = '1-' + (this.items.indexOf(item) + 1)
+          break
         }
       }
+      // 如果登录的作者没有作品，则默认选中第一个作者
+      this.defaultActive = defaultActive || '1-1'
     },
     select (index) {
       this.query = { type: 'aId', search: this.getAId(index)}

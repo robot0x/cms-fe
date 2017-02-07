@@ -19,7 +19,10 @@ import DataGrid from '../components/DataGrid'
 import moment from 'moment'
 export default {
   components: { DataGrid },
-  activated () {
+  // activated () {
+  // 改为created的原因是，每次视图切换回来activated钩子都会执行，这样每次都会从新查询
+  // 而这是没有必要的，所以放在created即可
+  created(){
     this.setDefaultActive()
     this.query = { type: 'monthly', search: moment(this.getYearAndMonth(this.defaultActive)).valueOf() }
   },

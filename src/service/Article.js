@@ -1,7 +1,6 @@
 import articles from '../mocks/articles'
 import fetch from 'isomorphic-fetch'
 export default class Article {
-
   /**
    * 查询 article_meta 表的记录数
    */

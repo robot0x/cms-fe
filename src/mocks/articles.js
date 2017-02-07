@@ -1,4 +1,4 @@
-const articles = [
+export default [
   {
     id: 8909,
     title: '全网断货的重松口罩，限量补货',
@@ -240,5 +240,3 @@ const articles = [
     author: 'zhaoxinyue',
     last_update_time: '01/04/2017 - 19:02'
   }]
-
-  export default articles
