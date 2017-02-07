@@ -74,28 +74,10 @@
 import DataGrid from '../components/DataGrid'
 import moment from 'moment'
 export default {
-  components: {
-    DataGrid
-  },
+  components: { DataGrid },
   activated () {
     this.setDefaultActive()
-  },
-  created () {
-    // console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
-    // console.log(moment().format('dddd'))
-    // console.log(moment().format("MMM Do YY"))
-    // console.log(moment().format('YYYY [escaped] YYYY'))
-    // console.log(moment().format())
-    // console.log(moment().format('YYYY-MM-DD hh:mm:ss'))
-    // console.log(moment('2014-1', 'YYYY-MM').format('YYYY-MM-DD hh:mm:ss'));
-    // console.log(moment('2014-1', 'YYYY-MM').format('YYYY-MM-DD hh:mm:ss'));
-    // console.log(moment('2014-1', 'YYYY-MM').valueOf())
-    // console.log(moment([2014, 1]).valueOf())
-    // console.log(moment([2014, 1]).isSame(moment('2014-1', 'YYYY-MM'), 'month'))
-    this.setDefaultActive()
-    const defaultActive = this.defaultActive
-    console.log(defaultActive)
-    // TODO: 根据初始条件，查询数据
+    this.query = { type: 'monthly', search: moment(this.getYearAndMonth(this.defaultActive)).valueOf() }
   },
   data () {
     return {
@@ -105,7 +87,6 @@ export default {
       items: [{
         year: 2017,
         count: 500,
-        // months: ['一月', '二月', '三月']
         months: [1, 2, 3]
       }, {
         year: 2016,
@@ -124,6 +105,14 @@ export default {
   },
 
   methods: {
+    getYearAndMonth (index) {
+      const [i, j] = index.split('-').map(i => i - 1)
+      const item = this.items[i]
+      return [item.year, item.months[j]]
+    },
+    select (index) {
+      this.query = { type: 'monthly', search: moment(this.getYearAndMonth(index)).valueOf() }
+    },
     setDefaultActive () {
       const now = moment() // month 是从0开始的
       for(let i = 0, l = this.items.length; i < l; i++){
@@ -136,14 +125,6 @@ export default {
             return
           }
         }
-      }
-    },
-    select (index) {
-      const [i, j] = index.split('-').map(i => i - 1)
-      const item = this.items[i]
-      this.query = {
-        type: 'monthly',
-        search: moment([item.year, item.months[j]]).valueOf()
       }
     }
   },

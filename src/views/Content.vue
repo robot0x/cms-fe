@@ -49,6 +49,7 @@ export default {
           type = 'title'
         }
       }
+      // console.log(search);
       this.query = { type, search }
     },
     newArticle () {

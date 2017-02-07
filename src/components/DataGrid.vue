@@ -67,17 +67,13 @@ export default {
   },
   computed: {
     offset () {
-      // console.log('pageSize:', this.pageSize)
-      // console.log('currentPage:', this.currentPage)
-      // console.log('offset:', this.pageSize * (this.currentPage - 1))
       return this.pageSize * (this.currentPage - 1)
     }
   },
   watch: {
     input (val, oldVal) {
-      if(_.isEqual(val, oldVal)) {
-        return
-      }
+      console.log('input 改变了....')
+      if(_.isEqual(val, oldVal)) return
       this.doQuery(val)
     }
   },
@@ -93,22 +89,23 @@ export default {
   },
   // 如果是keep-alive的话created不会执行
   created () {
-    //  Article.getTotal().then(total => this.total = total)
     this.doQuery()
   },
   methods: {
     doQuery (query) {
-      if( query ){
-        query.offset = this.offset
-        query.pageSize = this.pageSize
+      let param = null
+      if(query){
+        param = {...query}
+        param.offset = this.offset
+        param.pageSize = this.pageSize
       }else{
-        query = {
+        param = {
           offset: this.offset,
           pageSize: this.pageSize
         }
       }
       this.loading = true
-      Article.getArticles(query)
+      Article.getArticles(param)
       .then(res => {
         const {articles, total} = res
         this.loading = false
@@ -119,7 +116,6 @@ export default {
         this.loading = false
       })
     },
-
     handleSizeChange(val) {
       this.pageSize = val
       // console.log(`每页 ${val} 条`)

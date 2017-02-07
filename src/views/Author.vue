@@ -44,14 +44,9 @@ export default {
   components: {
     DataGrid
   },
-  created () {
-    this.setDefaultActive()
-    const defaultActive = this.defaultActive
-    console.log(defaultActive)
-    // TODO: 根据初始条件，查询数据
-  },
   activated () {
     this.setDefaultActive()
+    this.query = { type: 'aId', search: this.getAId(this.defaultActive)}
   },
   data () {
     return {
@@ -102,6 +97,10 @@ export default {
     }
   },
   methods: {
+    getAId (index) {
+      const [,i] = index.split('-').map(i => i - 1)
+      return this.items[i].id
+    },
     setDefaultActive () {
       const username = LoginUtils.getUsername()
       for(const item of this.items){
@@ -112,11 +111,7 @@ export default {
       }
     },
     select (index) {
-      const [,i] = index.split('-').map(i => i - 1)
-      this.query = {
-        type: 'aId',
-        search: this.items[i].id
-      }
+      this.query = { type: 'aId', search: this.getAId(index)}
     }
   },
   filters: {
