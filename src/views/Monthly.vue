@@ -2,10 +2,10 @@
      <div class="page-monthly">
        <el-row>
           <el-col :span="4">
-             <el-menu :default-openeds="defaultOpeneds"	class="el-menu-vertical-demo"  theme="dark" @select="select">
+             <el-menu :default-openeds="defaultOpeneds"	:default-active="defaultActive" class="el-menu-vertical-demo" theme="dark" @select="select">
                <el-submenu v-for="(item, index) in items" :index="index | calcIndex">
                  <template slot="title">{{ item.year }}年（{{item.count}}）</template>
-                 <el-menu-item :index="index | calcIndex(i)" v-for="(month, i) in item.months"> {{month}} </el-menu-item>
+                 <el-menu-item :index="index | calcIndex(i)" v-for="(month, i) in item.months"> {{ month | monthFormat }} </el-menu-item>
                </el-submenu>
                <!-- <el-submenu index="1">
                    <template slot="title">2017年（200）</template>
@@ -77,48 +77,73 @@ export default {
   components: {
     DataGrid
   },
+  activated () {
+    this.setDefaultActive()
+  },
   created () {
-    console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
-    console.log(moment().format('dddd'))
-    console.log(moment().format("MMM Do YY"))
-    console.log(moment().format('YYYY [escaped] YYYY'))
-    console.log(moment().format())
-    console.log(moment().format('YYYY-MM-DD hh:mm:ss'))
-    console.log(moment('2014-1', 'YYYY-MM').format('YYYY-MM-DD hh:mm:ss'));
-    console.log(moment('2014-1', 'YYYY-MM').format('YYYY-MM-DD hh:mm:ss'));
-    console.log(moment('2014-1', 'YYYY-MM').valueOf())
+    // console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
+    // console.log(moment().format('dddd'))
+    // console.log(moment().format("MMM Do YY"))
+    // console.log(moment().format('YYYY [escaped] YYYY'))
+    // console.log(moment().format())
+    // console.log(moment().format('YYYY-MM-DD hh:mm:ss'))
+    // console.log(moment('2014-1', 'YYYY-MM').format('YYYY-MM-DD hh:mm:ss'));
+    // console.log(moment('2014-1', 'YYYY-MM').format('YYYY-MM-DD hh:mm:ss'));
+    // console.log(moment('2014-1', 'YYYY-MM').valueOf())
+    // console.log(moment([2014, 1]).valueOf())
+    // console.log(moment([2014, 1]).isSame(moment('2014-1', 'YYYY-MM'), 'month'))
+    this.setDefaultActive()
+    const defaultActive = this.defaultActive
+    console.log(defaultActive)
+    // TODO: 根据初始条件，查询数据
   },
   data () {
     return {
+      defaultActive: '',
       query: {},
       defaultOpeneds: ['1', '2'],
       items: [{
         year: 2017,
         count: 500,
-        months: ['一月', '二月', '三月']
+        // months: ['一月', '二月', '三月']
+        months: [1, 2, 3]
       }, {
         year: 2016,
         count: 3467,
-        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+        months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
       }, {
         year: 2015,
         count: 4467,
-        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+        months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
       }, {
         year: 2014,
         count: 1402,
-        months: ['八月', '九月', '十月', '十一月', '十二月']
+        months: [8, 9, 10, 11, 12]
       }]
     }
   },
 
   methods: {
+    setDefaultActive () {
+      const now = moment() // month 是从0开始的
+      for(let i = 0, l = this.items.length; i < l; i++){
+        const item = this.items[i]
+        const year = item.year
+        for(let j = 0, len = item.months.length; j < len; j++){
+          const month = item.months[j]
+          if(now.isSame(moment([year, month - 1]), 'month')) {
+            this.defaultActive = (i + 1) + '-' + (j + 1)
+            return
+          }
+        }
+      }
+    },
     select (index) {
       const [i, j] = index.split('-').map(i => i - 1)
       const item = this.items[i]
       this.query = {
         type: 'monthly',
-        search: moment(item.year + '-' + item.months[j], 'YYYY-MM').valueOf()
+        search: moment([item.year, item.months[j]]).valueOf()
       }
     }
   },
@@ -132,6 +157,34 @@ export default {
         ret = (index + 1) + '-' + (i + 1)
       }
       return ret
+    },
+    monthFormat(month) {
+      switch (month) {
+        case 1:
+          return '一月'
+        case 2:
+          return '二月'
+        case 3:
+          return '三月'
+        case 4:
+          return '四月'
+        case 5:
+          return '五月'
+        case 6:
+          return '六月'
+        case 7:
+          return '七月'
+        case 8:
+          return '八月'
+        case 9:
+          return '九月'
+        case 10:
+          return '十月'
+        case 11:
+          return '十一月'
+        case 12:
+          return '十二月'
+      }
     }
   }
 }

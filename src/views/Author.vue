@@ -2,7 +2,7 @@
     <div class="page-author">
       <el-row>
          <el-col :span="4">
-            <el-menu @select="select" theme="dark">
+            <el-menu @select="select" theme="dark" :default-active="defaultActive">
               <el-menu-item :index="index | calcIndex" v-for="(item, index) in items">
                 {{item.name}}（{{item.count}}）
               </el-menu-item>
@@ -38,13 +38,24 @@
 </template>
 <script>
 import DataGrid from '../components/DataGrid'
+import LoginUtils from '../utils/LoginUtils'
+
 export default {
   components: {
     DataGrid
   },
+  created () {
+    this.setDefaultActive()
+    const defaultActive = this.defaultActive
+    console.log(defaultActive)
+    // TODO: 根据初始条件，查询数据
+  },
+  activated () {
+    this.setDefaultActive()
+  },
   data () {
     return {
-      msg: 'Author',
+      defaultActive: '',
       visible: false,
       query: {},
       items: [{
@@ -65,12 +76,12 @@ export default {
         count: 123
       }, {
         id: 4,
-        name: '8023wei',
-        count: 218
+        name: 'liyanfeng',
+        count: 312
       }, {
         id: 5,
-        name: '8023wei',
-        count: 218
+        name: '455322185',
+        count: 19
       }, {
         id: 6,
         name: '8023wei',
@@ -91,6 +102,15 @@ export default {
     }
   },
   methods: {
+    setDefaultActive () {
+      const username = LoginUtils.getUsername()
+      for(const item of this.items){
+        if(username === item.name){
+          this.defaultActive = '1-' + (this.items.indexOf(item) + 1)
+          return
+        }
+      }
+    },
     select (index) {
       const [,i] = index.split('-').map(i => i - 1)
       this.query = {

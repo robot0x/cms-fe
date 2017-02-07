@@ -75,7 +75,6 @@ export default {
   },
   watch: {
     input (val, oldVal) {
-      console.log('input 改变...');
       if(_.isEqual(val, oldVal)) {
         return
       }
