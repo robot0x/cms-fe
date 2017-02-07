@@ -1,60 +1,34 @@
 <template>
   <div class="component-raw-editor">
-    <textarea v-model="text" @input="input" :disabled="locked"></textarea>
+    <textarea v-model="text" :disabled="locked"></textarea>
   </div>
 </template>
 <script>
-import fetch from 'isomorphic-fetch'
-import API from '../API'
 export default {
   props: {
     locked: {
       type: Boolean,
-      default () {
-        return false
-      }
-    }
+      default () { return false }
+    },
+    content: String
   },
   data () {
-    return {
-      text: ''
-    }
+    return { text: '' }
   },
   watch: {
-     // 如果路由有变化，会再次执行该方法
-     '$route': 'fetchData'
-  },
-  methods: {
-    input () {
-      this.$store.commit('change', this.text)
-      localStorage.setItem('article', this.text)
+    content (input) {
+      this.text = input
     },
-    fetchData () {
-      const id = this.$route.params.id
-      if( id ){
-        // 编辑已有文章
-        fetch(`${API.articleContent.url}?id=${this.$route.params.id}`)
-        .then(response => {
-          return response.json()
-        })
-        .then(result => {
-          console.log(result)
-          // this.text = result.text
-        })
-        .catch(result => {
-          console.log('error .....');
-          console.log(result);
-        })
-      } else {
-        // 新增，从缓存中取下试试
-        this.text = localStorage.getItem('article') || '# 这是文章标题'
-      }
-      // 手动触发一次
-      this.$store.commit('change', this.text)
+    text () {
+      this.commit()
     }
   },
-  created () {
-    this.fetchData()
+  methods: {
+    commit () {
+      const text = this.text
+      this.$store.commit('change', text)
+      localStorage.setItem('article', text)
+    }
   }
 }
 </script>

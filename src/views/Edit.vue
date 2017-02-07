@@ -20,18 +20,13 @@
               <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
           </el-col>
-          <el-col :span="9">
-            <el-input v-model="keyword" placeholder="请输入文章关键字，多个关键字用空格或逗号隔开" @keyup.native.enter.stop.prevent="addKeywords"></el-input>
-            <el-tag v-for="keyword in keywords" :closable="true" :type="keyword.type" @close="removeTag(keyword)"> {{keyword.name}} </el-tag>
-            <!-- <el-select v-model="value" placeholder="请选择tag">
-              <el-option
-                v-for="item in options"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select> -->
+          <el-col :span="6">
+            <div style="text-align:left;">
+              <el-input v-model="keyword" placeholder="请输入文章关键字，多个关键字用空格或逗号隔开" @keyup.native.enter.stop.prevent="addKeywords"></el-input>
+              <el-tag v-for="keyword in keywords" :closable="true" :type="keyword.type" @close="removeTag(keyword)"> {{keyword.name}} </el-tag>
+            </div>
           </el-col>
-          <el-col :span="9" class="el-col-end">
+          <el-col :span="6" class="el-col-end">
             <el-select v-model="ctype" placeholder="请选择文章类型">
               <el-option
                 v-for="ctype in ctypes"
@@ -40,17 +35,42 @@
               </el-option>
             </el-select>
           </el-col>
+          <el-col :span="6">
+            <!-- <el-tree
+              :data="tags"
+              :props="tagProps"
+              show-checkbox
+              @check-change="handleCheckChange">
+            </el-tree> -->
+            <div class="el-tree-box">
+              <el-tree
+                :data="tags"
+                :props="tagProps"
+                show-checkbox
+                @node-click="handleNodeClick"
+                @check-change="handleCheckChange">
+              </el-tree>
+            </div>
+            <!-- <el-select v-model="tag" placeholder="请选择tag">
+              <el-option
+                v-for="tag in tags"
+                :label="tag.label"
+                :value="tag.value">
+              </el-option>
+            </el-select> -->
+          </el-col>
+
         </el-row>
       </div>
     </panel>
     <el-alert
       :closable="false"
-      :title="lockTitle"
+      :title="lockedBy | lockedByFormat"
       v-if="locked"
       type="error">
     </el-alert>
     <div class="editor-area">
-      <raw-editor class="raw-editor" :class="{'left-small': leftSmall}" :locked="locked"></raw-editor>
+      <raw-editor class="raw-editor" :class="{'left-small': leftSmall}" :locked="locked" :content="text"></raw-editor>
       <render-editor class="render-editor" :class="{'right-small': rightSmall}"></render-editor>
       <max-window @open="open"></max-window>
     </div>
@@ -60,6 +80,7 @@
 import RawEditor from '../components/RawEditor'
 import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
+import Content from '../service/Content'
 import MaxWindow from '../components/MaxWindow'
 import lodash from 'lodash'
 export default {
@@ -70,8 +91,20 @@ export default {
     Panel,
     MaxWindow
   },
-
+  created () {
+    Content.getContent(this.$route.params.id)
+    .then(content => {
+      console.log(content.tags);
+      _.extend(this, content)
+    })
+  },
   methods: {
+    handleNodeClick () {
+
+    },
+    handleCheckChange () {
+
+    },
     removeTag (keyword) {
       this.keywords.splice(this._getIndexByKeywords(keyword), 1)
     },
@@ -81,10 +114,6 @@ export default {
         _.isPlainObject(keyword)? (key) => key.name === keyword.name : (key) => key.name === keyword
       )
     },
-    _addType (arr) {
-      return arr.map( item => { item.type = 'primary'; return item })
-    },
-
     addKeywords () {
       this.keywords =
         this.keywords.concat(
@@ -153,26 +182,23 @@ export default {
       loading: false,
       leftSmall: false,
       rightSmall: false,
+      locked: false,
       keyword: '',
       ctype: '',
-      // 文章是否被锁住的flag
-      locked: false,
-      lockTitle: `此文已被${authorName}锁住...`,
-      keywords: this._addType([
-         { name: '好物'},
-         { name: '电脑'},
-         { name: '支架'},
-         { name: '天王盖地虎'},
-         { name: '宝塔震河妖'}
-       ]),
-       ctypes: [
-         {label: '好物', value: 0},
-         {label: '专刊', value: 1},
-         {label: '专题', value: 2},
-         {label: '首页', value: 3},
-         {label: '测评', value: 4},
-         {label: '长文', value: 5},
-       ]
+      tag: '',
+      text: '',
+      keywords: [],
+      ctypes: [],
+      tags: [],
+      tagProps: {
+        children: 'children',
+        label: 'label'
+      }
+    }
+  },
+  filters: {
+    lockedByFormat (locked){
+      return `此文已被${locked}锁住...`
     }
   }
 }
@@ -220,11 +246,20 @@ export default {
  .panel-body {
    padding: 15px;
  }
+
  .el-tag {
    margin-right: 10px;
    margin-top: 10px;
  }
+
  .el-col-end {
    padding-left: 10px;
  }
+ .el-col {
+   text-align: center;
+ }
+ .el-tree{
+   text-align: left;
+ }
+
 </style>
