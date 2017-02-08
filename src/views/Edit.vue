@@ -5,7 +5,6 @@
     <!-- 如果被锁了，也就不必显示操作区了 -->
     <panel title="操作" closeable close class="panel" v-if="!locked">
       <span slot="panel-heading-middle">
-        <!-- <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存  </el-button> -->
         <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
       </span>
       <div slot="panel-body" class="panel-body">
@@ -37,20 +36,7 @@
             </el-select>
           </el-col>
           <el-col :span="6">
-            <!-- <el-tree
-              :data="tags"
-              :props="tagProps"
-              show-checkbox
-              @check-change="handleCheckChange">
-            </el-tree> -->
             <tag-tree></tag-tree>
-            <!-- <el-select v-model="tag" placeholder="请选择tag">
-              <el-option
-                v-for="tag in tags"
-                :label="tag.label"
-                :value="tag.value">
-              </el-option>
-            </el-select> -->
           </el-col>
         </el-row>
       </div>
@@ -71,6 +57,7 @@
 <script>
 import RawEditor from '../components/RawEditor'
 import TagTree from '../components/TagTree'
+import ContentForm from '../components/ContentForm'
 import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
 import Content from '../service/Content'
@@ -83,7 +70,8 @@ export default {
     RenderEditor,
     Panel,
     MaxWindow,
-    TagTree
+    TagTree,
+    ContentForm
   },
   created () {
     Content.getContent(this.$route.params.id)
