@@ -124,7 +124,6 @@ export default {
   .login-box {
     width: 400px;
     height: 500px;
-    transform: translateY(-160px);
   }
   .el-input {
     margin-top: 30px;
