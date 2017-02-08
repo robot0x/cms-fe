@@ -3,7 +3,7 @@
     v-loading.fullscreen.lock="loading"
     element-loading-text="正在保存中...">
     <!-- 如果被锁了，也就不必显示操作区了 -->
-    <panel title="操作" closeable  class="panel" v-if="!locked">
+    <panel title="操作" closeable close class="panel" v-if="!locked">
       <span slot="panel-heading-middle">
         <!-- <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存  </el-button> -->
         <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
@@ -27,6 +27,7 @@
             </div>
           </el-col>
           <el-col :span="6" class="el-col-end">
+            类型：
             <el-select v-model="ctype" placeholder="请选择文章类型">
               <el-option
                 v-for="ctype in ctypes"
@@ -42,15 +43,7 @@
               show-checkbox
               @check-change="handleCheckChange">
             </el-tree> -->
-            <div class="el-tree-box">
-              <el-tree
-                :data="tags"
-                :props="tagProps"
-                show-checkbox
-                @node-click="handleNodeClick"
-                @check-change="handleCheckChange">
-              </el-tree>
-            </div>
+            <tag-tree></tag-tree>
             <!-- <el-select v-model="tag" placeholder="请选择tag">
               <el-option
                 v-for="tag in tags"
@@ -59,7 +52,6 @@
               </el-option>
             </el-select> -->
           </el-col>
-
         </el-row>
       </div>
     </panel>
@@ -78,6 +70,7 @@
 </template>
 <script>
 import RawEditor from '../components/RawEditor'
+import TagTree from '../components/TagTree'
 import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
 import Content from '../service/Content'
@@ -89,7 +82,8 @@ export default {
     RawEditor,
     RenderEditor,
     Panel,
-    MaxWindow
+    MaxWindow,
+    TagTree
   },
   created () {
     Content.getContent(this.$route.params.id)
@@ -257,9 +251,6 @@ export default {
  }
  .el-col {
    text-align: center;
- }
- .el-tree{
-   text-align: left;
  }
 
 </style>

@@ -28,7 +28,10 @@ export default {
   }
   // 文章渲染样式
   $fontFamily:"Hiragino Sans GB", "Helvetica Neue", Helvetica, "Microsoft Yahei", heiti, Arial, sans-serif;
-
+  iframe {
+    display: block;
+    margin: 24px auto;
+  }
   .article-area {
 
     background:#fff;
@@ -57,7 +60,7 @@ export default {
         color:#e60012;
       }
       img {
-        display: block!important;
+        display: block !important;
         margin: 0 auto;
         width: 596px;
       }
