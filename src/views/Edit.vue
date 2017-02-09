@@ -3,13 +3,39 @@
     v-loading.fullscreen.lock="loading"
     element-loading-text="正在保存中...">
     <!-- 如果被锁了，也就不必显示操作区了 -->
-    <panel title="操作" closeable close class="panel" v-if="!locked">
+    <panel title="操作" closeable class="panel" v-if="!locked">
       <span slot="panel-heading-middle">
+        <!-- <el-button type="warning" size="small" icon="delete" @click="clearCache">清空缓存  </el-button> -->
         <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
       </span>
       <div slot="panel-body" class="panel-body">
-        <el-row>
-          <el-col :span="6">
+
+        <el-form label-width="100px">
+
+          <el-form-item label="作者">
+            <el-input v-model="aName"></el-input>
+          </el-form-item>
+
+          <el-form-item label="关键词">
+            <el-input v-model="keyword" placeholder="请输入文章关键字，多个关键字用空格或逗号隔开" @keyup.native.enter.stop.prevent="addKeywords"></el-input>
+            <el-tag v-for="keyword in keywords" :closable="true" :type="keyword.type" @close="removeTag(keyword)"> {{keyword.naem}} </el-tag>
+          </el-form-item>
+
+          <el-form-item label="类型">
+            <el-select v-model="ctype" placeholder="请选择文章类型">
+              <el-option
+                v-for="ctype in ctypes"
+                :label="ctype.label"
+                :value="ctype.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="选择所属标签">
+            <tag-tree></tag-tree>
+          </el-form-item>
+
+          <el-form-item label="上传图片">
             <el-upload
               action="//jsonplaceholder.typicode.com/posts/"
               type="drag"
@@ -18,25 +44,39 @@
               <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
               <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
+          </el-form-item>
+
+        </el-form>
+
+        <el-row>
+          <el-col :span="6">
+            <!-- <el-upload
+              action="//jsonplaceholder.typicode.com/posts/"
+              type="drag"
+              :multiple="true">
+              <i class="el-icon-upload"></i>
+              <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload> -->
           </el-col>
           <el-col :span="6">
-            <div style="text-align:left;">
+            <!-- <div style="text-align:left;">
               <el-input v-model="keyword" placeholder="请输入文章关键字，多个关键字用空格或逗号隔开" @keyup.native.enter.stop.prevent="addKeywords"></el-input>
               <el-tag v-for="keyword in keywords" :closable="true" :type="keyword.type" @close="removeTag(keyword)"> {{keyword.name}} </el-tag>
-            </div>
+            </div> -->
           </el-col>
           <el-col :span="6" class="el-col-end">
-            类型：
+            <!-- 类型：
             <el-select v-model="ctype" placeholder="请选择文章类型">
               <el-option
                 v-for="ctype in ctypes"
                 :label="ctype.label"
                 :value="ctype.value">
               </el-option>
-            </el-select>
+            </el-select> -->
           </el-col>
           <el-col :span="6">
-            <tag-tree></tag-tree>
+            <!-- <tag-tree></tag-tree> -->
           </el-col>
         </el-row>
       </div>
@@ -57,7 +97,6 @@
 <script>
 import RawEditor from '../components/RawEditor'
 import TagTree from '../components/TagTree'
-import ContentForm from '../components/ContentForm'
 import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
 import Content from '../service/Content'
@@ -70,8 +109,7 @@ export default {
     RenderEditor,
     Panel,
     MaxWindow,
-    TagTree,
-    ContentForm
+    TagTree
   },
   created () {
     Content.getContent(this.$route.params.id)
