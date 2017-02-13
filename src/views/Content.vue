@@ -15,7 +15,7 @@
 </template>
 <script>
 import fetch from 'isomorphic-fetch'
-import API from '../API'
+import api from '../config/api'
 // import Search from '../components/Search'
 import DataGrid from '../components/DataGrid'
 export default {

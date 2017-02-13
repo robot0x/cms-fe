@@ -1,16 +1,18 @@
 <template>
   <div class="component-raw-editor">
-    <textarea v-model="text" :disabled="locked"></textarea>
+    <textarea v-model="text" :disabled="locked" ref="textarea"></textarea>
   </div>
 </template>
 <script>
+import Utils from '../utils/Utils'
 export default {
   props: {
     locked: {
       type: Boolean,
       default () { return false }
     },
-    content: String
+    content: String,
+    insertImage: String
   },
   data () {
     return { text: '' }
@@ -21,11 +23,14 @@ export default {
     },
     text () {
       this.commit()
+    },
+    insertImage (val) {
+      const newVal = Utils.insertContent(this.$refs.textarea, `![](${val})\n`)
+      this.commit(newVal)
     }
   },
   methods: {
-    commit () {
-      const text = this.text
+    commit (text = this.text) {
       this.$store.commit('change', text)
       localStorage.setItem('article', text)
     }
