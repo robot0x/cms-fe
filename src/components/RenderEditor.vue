@@ -8,9 +8,9 @@ import { mapGetters } from 'vuex'
 export default {
   computed: { ...mapGetters(['html']) }
 }
-
 </script>
 <style lang="scss">
+  ul,ol {list-style: none;}
   .component-render-editor {
     height: 100%;
     resize: none;
@@ -32,6 +32,35 @@ export default {
     display: block;
     margin: 24px auto;
   }
+
+  .article-banner {
+    background-color: #f4f4f4;
+    margin-bottom: 20px;
+  }
+
+  .banner-list {
+    display: flex;
+    // justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    li {
+      position: relative;
+      margin-right: 5px;
+      span {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #20A0FF;
+        text-align: center;
+        line-height: 1;
+        color:#fff;
+      }
+    }
+  }
+
   .article-area {
 
     background:#fff;
@@ -82,7 +111,7 @@ export default {
       border-left-width: 4px;
     }
 
-    ul {
+    & > ul {
       padding-right:40px;
       margin-top: 30px;
       & > li {

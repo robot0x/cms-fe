@@ -89,15 +89,31 @@
         </el-form>
         <el-row>
           <el-col :span="24">
+            <div class="images-count">
+              共{{images.length}}张图片
+            </div>
             <ul class="image-list">
-              <li v-for="image in images">
-                <figure> <img :src="image.src" draggable="true" @dragstart.stop="dragstart"> </figure>
+              <li v-for="(image, index) in images">
+                <figure>
+                  <img :src="image.src" draggable="true" @dragstart.stop="dragstart">
+                </figure>
                 <div class="image-desc">
                   <figcaption class="image-title">{{image.title}}</figcaption>
                   <p class="image-attr clearfix">
                     <span class="size">{{image.size}}</span>
                     <span class="size2">{{image.size2}}</span>
                   </p>
+                </div>
+                <div class="images-oper-tool">
+                  <el-button type="primary" size="mini" @click="setCover(index)">设为封面图</el-button>
+                  <el-button type="success" size="mini" @click="setThumb(index)">设为缩略图</el-button>
+                  <el-button type="danger" size="mini" @click="insert(index)">插入</el-button>
+                </div>
+                <div class="image-types" v-if="image.types && image.types.length > 0">
+                  <!-- <span>type: {{image.types? image.types.join(','): ''}}</span> -->
+                  <template v-for="type in image.types">
+                    <span :style="type === 'cover' ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#13ce66'}"></span>
+                  </template>
                 </div>
               </li>
             </ul>
@@ -115,6 +131,7 @@
       <raw-editor
         class="raw-editor"
         @drop.native.stop.prevent="drop"
+        @dragover.native.stop.prevent="dragover"
         :insertImage="insertImage"
         :class="{'left-small': leftSmall}"
         :locked="locked"
@@ -185,14 +202,49 @@ export default {
     })
   },
   methods: {
+    setCover (index){
+      const image = this.images[index]
+      const COVER = 'cover'
+      if(image.types){
+        if(image.types.indexOf(COVER) === -1){
+          image.types.push(COVER)
+        } else {
+          _.remove(image.types, type => type === COVER)
+        }
+      } else {
+        image.types = [COVER]
+      }
+      this.$set(this.images, index, image)
+      // this.images.splice(index, 1, image)
+    },
+    setThumb (index) {
+      const image = this.images[index]
+      const THUMB = 'thumb'
+      if(image.types){
+        if(image.types.indexOf(THUMB) === -1){
+          image.types.push(THUMB)
+        } else {
+          _.remove(image.types, type => type === THUMB)
+        }
+      } else {
+        image.types = [THUMB]
+      }
+      this.$set(this.images, index, image)
+      // this.images.splice(index, 1, image)
+    },
+    insert (index) {
+      this.insertImage = ''
+      setTimeout(() => {
+        this.insertImage = this.images[index].src
+      })
+    },
+    // raw-editor 必须要监听dragover事件，否则safari的drop事件将不会执行（chrome没有这个问题）
+    dragover () { return false },
     drop (event) {
-      const src = event.dataTransfer.getData('src')
-      console.log(src);
-      this.insertImage = src
+      this.insertImage = event.dataTransfer.getData('src')
     },
     dragstart (event) {
-      const src = event.target.src
-      event.dataTransfer.setData('src', src)
+      event.dataTransfer.setData('src', event.target.src)
     },
     handlePreview (file) {
       console.log('handlePreview')
@@ -215,7 +267,7 @@ export default {
       console.log(data)
     },
     handleCheckChange (data, checked, indeterminate) {
-      console.log('handleCheckChange exec ...');
+      console.log('handleCheckChange exec ...')
     },
     removeTag (keyword) {
       this.formData.keywords.splice(this._getIndexByKeywords(keyword), 1)
@@ -321,17 +373,31 @@ export default {
   display: flex;
   flex-wrap: wrap;
 }
+
 .image-list li{
   margin:0 30px 30px 0;
   cursor: pointer;
+  background-color: #f6f5f5;
+  position: relative;
   img {
     height: 120px;
+  }
+  .image-types {
+    position: absolute;
+    top: 0;
+    right: 0;
+    span {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
   }
 }
 
 .image-desc {
   font-size: 12px;
-  background-color: #f6f5f5;
 }
 
 .image-title {
@@ -354,6 +420,12 @@ export default {
 .clearfix:after {
     display: table;
     clear: both;
+}
+
+.images-oper-tool {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 }
 
 // image-list end

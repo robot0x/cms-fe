@@ -13,6 +13,24 @@ function rendeEds(content, eds) {
   return html
 }
 
+function rendeBanner(content) {
+  const reg = /([^\(\)]+)(?=\))/g
+  const banners = content.match(reg)
+  let html = ''
+  if(banners){
+    html = `
+    <div class="article-banner">
+        <ul class="banner-list">
+          ${banners.map((banner, index) => {
+            return `<li><img src="${banner}" alt="" height="120"><span>${index + 1}</span></li>`
+          }).join('')}
+        </ul>
+      </div>
+    `
+  }
+  return html
+}
+
 function rendeSku(content = '') {
   console.log(content)
   const contents = content.split(/\s/)
@@ -52,7 +70,12 @@ const getters = {
       // default: false 与标点符号有关
       smartypants: false
     }
-
+    renderer.link = (href, title = '', text ) => {
+      if(/^\d+$/.test(href)){
+        href = `//www.diaox2.com/article/${href}.html`
+      }
+      return `<a target="_blank" href="${href}">${text || href}</a>`
+    }
     renderer.code = (content, type) => {
       // console.log(content)
       // console.log(type)
@@ -72,6 +95,9 @@ const getters = {
           break;
         case 'sku':
           ret = rendeSku(content)
+          break;
+        case 'banner':
+          ret = rendeBanner(content)
           break;
         case 'article':
           ret = rendeArticle(content)

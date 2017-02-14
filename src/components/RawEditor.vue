@@ -1,5 +1,6 @@
 <template>
   <div class="component-raw-editor">
+    <!-- <textarea v-model="text" :disabled="locked" ref="textarea" rows="1000"></textarea> -->
     <textarea v-model="text" :disabled="locked" ref="textarea"></textarea>
   </div>
 </template>
@@ -25,8 +26,9 @@ export default {
       this.commit()
     },
     insertImage (val) {
-      const newVal = Utils.insertContent(this.$refs.textarea, `![](${val})\n`)
-      this.commit(newVal)
+      if(val){
+        this.commit(Utils.insertContent(this.$refs.textarea, `![](${val})\n`))
+      }
     }
   },
   methods: {
