@@ -16,11 +16,11 @@
                 <i class="el-icon-document"></i><span>内容</span>
               </router-link>
             </li>
-            <li>
+            <!-- <li>
               <router-link class="nav-link" to="/edit">
                 <i class="el-icon-edit"></i><span>编辑</span>
               </router-link>
-            </li>
+            </li> -->
             <li>
               <router-link class="nav-link" to="/archive">
                 <i class="el-icon-menu"></i><span>归档</span>

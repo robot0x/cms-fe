@@ -6,6 +6,7 @@
 </template>
 <script>
 import Utils from '../utils/Utils'
+import Content from '../service/Content'
 export default {
   props: {
     locked: {
@@ -13,7 +14,8 @@ export default {
       default () { return false }
     },
     content: String,
-    insertImage: String
+    insertImage: String,
+    id: String
   },
   data () {
     return { text: '' }
@@ -34,7 +36,7 @@ export default {
   methods: {
     commit (text = this.text) {
       this.$store.commit('change', text)
-      localStorage.setItem('article', text)
+      Content.setContentToLocal(this.id, 'text', text)
     }
   }
 }

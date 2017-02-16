@@ -1,6 +1,24 @@
 import articles from '../mocks/articles'
 import fetch from 'isomorphic-fetch'
 export default class Article {
+
+  static newArticle(){
+    return new Promise((resolve, reject) => {
+      try {
+        setTimeout(() => {
+          resolve({
+            id: Math.ceil(9100 + Math.random() * 2000),
+            title: '新建文章',
+            status: 'new'
+          })
+        }, 1000)
+      } catch (e) {
+        reject(e.message)
+      } finally {
+
+      }
+    })
+  }
   /**
    * 查询 article_meta 表的记录数
    */

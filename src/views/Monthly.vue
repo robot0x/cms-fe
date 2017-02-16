@@ -75,7 +75,6 @@ export default {
       }
     }
   },
-
   filters: {
     calcIndex (index, i) {
       let ret = ''

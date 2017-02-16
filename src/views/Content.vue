@@ -45,20 +45,20 @@ export default {
         if(/^\d+$/.test(search)){
           type = 'id'
           search = Number(search)
-        }else{
+        } else {
           type = 'title'
         }
       }
-      // console.log(search);
       this.query = { type, search }
     },
     newArticle () {
       // alert('newArticle')
-      console.log(this.$route)
+      // console.log(this.$route)
       // this.$route.push('edit')
-      console.log(this.$router)
+      // console.log(this.$router)
       // 默认跳转到无参数 edit 视图
-      this.$router.push({ name: 'edit0' })
+      // this.$router.push({ name: 'edit0' })
+      this.query = { type: 'new', random: Math.random() + Date.now() }
     }
   },
   created () {

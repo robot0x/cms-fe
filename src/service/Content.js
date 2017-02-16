@@ -2,7 +2,6 @@ import content from '../mocks/content'
 import fetch from 'isomorphic-fetch'
 import images from '../mocks/images'
 const CTYPES = ['好物', '专刊', '专题', '首页', '测评', '长文']
-
 // 根据id查询Content
 /*
   {
@@ -33,18 +32,27 @@ export default class Content {
   static getContent(id){
     return new Promise((resolve, reject) => {
       try {
-        if(id){
-          // 组装数据
-          const lockedBy = content.lockedBy
-          if(lockedBy){
-            content.locked = true
-          }
-          content.keywords = Content.handleError(content.keywords)
-          content.ctypes = content.ctypes.map((ctype, i) => { return { label: ctype, value: i } })
+        const content = Content.getContentFormLocal(id)
+        if (content) {
+          // console.log('if');
           resolve(content)
         } else {
-          resolve(Content.getContentFormLocal())
+          // 如果没有缓存，从服务器上拿数据
+          // console.log('else');
+          resolve(content)
         }
+        // if(id){
+        //   // 组装数据
+        //   const lockedBy = content.lockedBy
+        //   if(lockedBy){
+        //     content.locked = true
+        //   }
+        //   content.keywords = Content.handleError(content.keywords)
+        //   content.ctypes = content.ctypes.map((ctype, i) => { return { label: ctype, value: i } })
+        //   resolve(content)
+        // } else {
+        //   resolve(Content.getContentFormLocal())
+        // }
       } catch (e) {
         reject(e.message)
       } finally {
@@ -62,28 +70,36 @@ export default class Content {
       }
     })
   }
+
   static handleKeywords(keywords, type = 'success'){
     return keywords.map(keyword => { return { name: keyword, type: type } })
   }
-  static getContentFormLocal () {
-      const article = localStorage.getItem('')
-      return {
-        text: localStorage.getItem('article')        || '',
-        images: JSON.parse(localStorage.getItem('images')) || images || [],
-        formData: {
-          aName: localStorage.getItem('aName') || '',
-          ctype: parseInt(localStorage.getItem('ctype'))     || 1,
-          keywords: Content.handleKeywords(JSON.parse(localStorage.getItem('keywords')) || []),
-          shareTitle: localStorage.getItem('shareTitle') ||'',
-          wxTitle: localStorage.getItem('wxTitle') ||'',
-          wbTitle: localStorage.getItem('wbTitle') ||'',
-          timetopublish: Date.now()
-        }
-      }
+
+  static setContentToLocal(id, key, val){
+    id = String(id)
+    if( id && id.trim() ){
+      const local = Content.getContentFormLocal(id) || {}
+      local[key] = val
+      localStorage.setItem(id, JSON.stringify(local))
+    }
   }
 
-  static setContentToLocal () {
-
+  static getContentFormLocal (id) {
+      return JSON.parse(localStorage.getItem(String(id)))
+      // const article = localStorage.getItem('')
+      // return {
+      //   text: localStorage.getItem('article')        || '',
+      //   images: JSON.parse(localStorage.getItem('images')) || images || [],
+      //   formData: {
+      //     aName: localStorage.getItem('aName') || '',
+      //     ctype: parseInt(localStorage.getItem('ctype'))     || 1,
+      //     keywords: Content.handleKeywords(JSON.parse(localStorage.getItem('keywords')) || []),
+      //     shareTitle: localStorage.getItem('shareTitle') ||'',
+      //     wxTitle: localStorage.getItem('wxTitle') ||'',
+      //     wbTitle: localStorage.getItem('wbTitle') ||'',
+      //     timetopublish: Date.now()
+      //   }
+      // }
   }
 
 }

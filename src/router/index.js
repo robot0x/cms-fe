@@ -26,7 +26,7 @@ const routes = [
   { path: '/', redirect: '/content' },
   { path: '/content/', name: 'content', component: Content },
   // 不带参数（新增）
-  { path: '/edit/', name: 'edit0', component: Edit },
+  // { path: '/edit/', name: 'edit0', component: Edit },
   // 带参数
   { path: '/edit/:id', name: 'edit', component: Edit },
   {

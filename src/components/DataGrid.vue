@@ -4,8 +4,14 @@
       v-loading="loading"
       element-loading-text="玩命加载中..."
       :data="articles"
+      :row-class-name="tableRowClassName"
       stripe
       style="width: 100%">
+      <el-table-column
+        prop="id"
+        width="100px"
+        label="id">
+      </el-table-column>
       <el-table-column
         prop="title"
         fit
@@ -74,7 +80,11 @@ export default {
     input (val, oldVal) {
       console.log('input 改变了....')
       if(_.isEqual(val, oldVal)) return
-      this.doQuery(val)
+      if(val.type === 'new'){
+        this.doNew()
+      }else{
+        this.doQuery(val)
+      }
     }
   },
   data () {
@@ -92,6 +102,19 @@ export default {
     this.doQuery()
   },
   methods: {
+    tableRowClassName(row, index) {
+        return row.status === 'new' ? 'new-article-row' : ''
+    },
+    doNew () {
+      this.loading = true
+      Article.newArticle().then(newArticle => {
+        this.articles = [newArticle, ...this.articles]
+        this.loading = false
+      })
+      .catch(message => {
+        this.loading = false
+      })
+    },
     doQuery (query) {
       let param = null
       if(query){
@@ -165,9 +188,17 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-.pagination-bar{
+<style lang="scss">
+.pagination-bar {
   text-align: center;
   padding: 20px 0;
+}
+.el-table .new-article-row > td:nth-child(2) > div:after {
+  display: inline-block;
+  content: 'new';
+  color:#20A0FF;
+  position: relative;
+  top: -8px;
+  margin-left: 5px;
 }
 </style>

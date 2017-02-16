@@ -4,43 +4,49 @@
   <panel title="操作" closeable class="panel" v-if="!locked">
 
     <span slot="panel-heading-middle">
-        <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
-      </span>
+      <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
+    </span>
 
     <div slot="panel-body" class="panel-body">
       <el-row>
-        <el-form label-width="130px" ref="formData" :model="formData" :rules="rules">
+        <el-form label-width="130px" ref="formData">
           <el-col :span="10">
             <el-form-item label="作者" prop="aName">
-              <el-input v-model="formData.aName"></el-input>
+              <el-input v-model="aName"></el-input>
             </el-form-item>
 
             <el-form-item label="分享到的标题" prop="shareTitle">
-              <el-input v-model="formData.shareTitle" placeholder="文章分享出去显示出的title" @input.native="shareTitleInput"></el-input>
+              <el-input v-model="shareTitle" placeholder="文章分享出去显示出的title" @input.native="shareTitleInput"></el-input>
             </el-form-item>
 
             <el-form-item label="分享到微信的标题" prop="wxTitle">
-              <el-input v-model="formData.wxTitle" placeholder="文章分享到微信显示出的title"></el-input>
+              <el-input v-model="wxTitle" placeholder="文章分享到微信显示出的title"></el-input>
             </el-form-item>
 
             <el-form-item label="分享到微博的标题" prop="wbTitle">
-              <el-input v-model="formData.wbTitle" placeholder="文章分享到微博显示出的title"></el-input>
+              <el-input v-model="wbTitle" placeholder="文章分享到微博显示出的title"></el-input>
             </el-form-item>
 
             <el-form-item label="关键词">
               <el-input v-model="keyword" placeholder="请输入文章关键字，多个关键字用空格或逗号隔开" @keyup.native.enter.stop.prevent="addKeywords"></el-input>
-              <el-tag v-for="key in formData.keywords" :closable="true" :type="key.type" @close="removeTag(key)"> {{key.name}} </el-tag>
+              <el-tag v-for="key in keywords" :closable="true" :type="key.type" @close="removeTag(key)"> {{key.name}} </el-tag>
             </el-form-item>
-
             <el-form-item label="上传图片">
-              <el-upload action="http://z.diaox2.com/view/app/upfornewcms.php" type="drag" accept="image/*" :on-preview="handlePreview" :on-remove="handleRemove" :on-success="handleSuccess" :on-error="handleError" :multiple="true">
+              <el-upload
+                action="http://z.diaox2.com/view/app/upfornewcms.php"
+                type="drag"
+                accept="image/*"
+                :data="{'id':id}"
+                :on-preview="handlePreview"
+                :on-success="handleSuccess"
+                :on-error="handleError"
+                :multiple="true">
                 <i class="el-icon-upload"></i>
                 <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
               </el-upload>
             </el-form-item>
           </el-col>
-
           <el-col :span="14">
             <el-form-item label="选择所属标签">
               <!-- <tag-tree></tag-tree> -->
@@ -51,16 +57,15 @@
               node-key="id"
               show-checkbox
               :props="{children: 'children',label: 'label'}"
-              @node-click="handleNodeClick"
               @check-change="handleCheckChange">
               </el-tree>
             </el-form-item>
             <el-form-item label="发布时间">
-              <el-date-picker type="date" placeholder="选择发布时间" v-model="formData.timetopublish" style="width: 100%;" :editable="false" format="yyyyMMdd" :clearable="false"></el-date-picker>
+              <el-date-picker type="date" placeholder="选择发布时间" v-model="timetopublish" style="width: 100%;" :editable="false" format="yyyyMMdd" :clearable="false"></el-date-picker>
             </el-form-item>
 
             <el-form-item label="类型">
-              <el-select v-model="formData.ctype" placeholder="请选择文章类型">
+              <el-select v-model="ctype" placeholder="请选择文章类型">
                 <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
               </el-select>
             </el-form-item>
@@ -76,13 +81,12 @@
           <ul class="image-list">
             <li v-for="(image, index) in images">
               <figure>
-                <img :src="image.src" draggable="true" @dragstart.stop="dragstart">
+                <img :src="image.url" draggable="true" @dragstart.stop="dragstart">
               </figure>
               <div class="image-desc">
-                <figcaption class="image-title">{{image.title}}</figcaption>
+                <figcaption class="image-title">{{image.name}}</figcaption>
                 <p class="image-attr clearfix">
-                  <span class="size">{{image.size}}</span>
-                  <span class="size2">{{image.size2}}</span>
+                  <span class="size">{{image.size || imageSizeFormat}}</span>
                 </p>
               </div>
               <div class="images-oper-tool">
@@ -116,6 +120,7 @@
         :insertImage="insertImage"
         :class="{'left-small': leftSmall}"
         :locked="locked"
+        id="id"
         :content="text">
       </raw-editor>
       <render-editor class="render-editor" :class="{'right-small': rightSmall}"></render-editor>
@@ -130,9 +135,33 @@ import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
 import Content from '../service/Content'
 import MaxWindow from '../components/MaxWindow'
-import { tags, ctypes, rules } from '../config/content_page_data' // 这个是写在前端的，不用改
+import { tags, ctypes } from '../config/content_page_data' // 这个是写在前端的，不用改
 import moment from 'moment'
 import _ from 'lodash'
+const defaultData = {
+  loading: false,
+  leftSmall: false,
+  rightSmall: false,
+  locked: false,
+  id: '',
+  text: '',
+  keyword: '',
+  insertImage: '',
+  // formData: {
+    aName: '',
+    keywords: [],
+    ctype: 0,
+    tag: {},
+    timetopublish: Date.now(),
+    wxTitle: '',
+    wbTitle: '',
+    shareTitle: '',
+  // }
+  ctypes, // 不用改
+  tags,
+  // rules,
+  images: []
+}
 export default {
   components: {
     RawEditor,
@@ -142,65 +171,82 @@ export default {
     TagTree
   },
   watch: {
-    'images': function(val) {
-      localStorage.setItem('images', JSON.stringify(val))
+    images (val) {
+      if(val && val.length){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'images', val)
+      }
     },
-    'formData.shareTitle': function(val) {
-      localStorage.setItem('shareTitle', val)
+    shareTitle (val) {
+      if(val && val.trim()){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'shareTitle', val)
+      }
     },
-    'formData.wxTitle': function(val) {
-      localStorage.setItem('wxTitle', val)
+    wxTitle (val) {
+      if(val && val.trim()){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'wxTitle', val)
+      }
     },
-    'formData.wbTitle': function(val) {
-      localStorage.setItem('wbTitle', val)
+    wbTitle (val) {
+      if(val && val.trim()){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'wbTitle', val)
+      }
     },
-    'formData.ctype': function(val) {
-      localStorage.setItem('ctype', val)
+    ctype (val) {
+      Content.setContentToLocal(this.id || this.$route.params.id, 'ctype', val)
     },
-    'formData.aName': function(val) {
-      localStorage.setItem('aName', val)
+    aName (val) {
+      if(val && val.trim()){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'aName', val)
+      }
     },
-    'formData.keywords': function(val) {
-      localStorage.setItem('keywords', JSON.stringify(val.map(key => key.name)))
+    keywords (val) {
+      if(val && val.length){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'keywords', val)
+      }
     },
-    'formData.timetopublish': function(val) {
-      localStorage.setItem('timetopublish', val)
-    }
+    timetopublish (val) {
+      if(val > Date.now()){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'timetopublish', val)
+      }
+    },
+    '$route': 'routeChange'
   },
   data() {
     const authorName = '李彦峰'
-    return {
-      loading: false,
-      leftSmall: false,
-      rightSmall: false,
-      locked: false,
-      text: '',
-      keyword: '',
-      insertImage: '',
-      formData: {
-        aName: '',
-        keywords: [],
-        ctype: 0,
-        tag: {},
-        timetopublish: Date.now(),
-        wxTitle: '',
-        wbTitle: '',
-        shareTitle: ''
-      },
-      ctypes, // 不用改
-      tags,
-      rules,
-      images: []
-    }
+    return defaultData
   },
   created() {
-    Content
-      .getContent(this.$route.params.id)
-      .then(content => _.extend(this, content))
+    this.loadData(this.$route.params.id)
   },
   methods: {
+    routeChange () {
+      this.loadData(this.$route.params.id)
+    },
+    loadData (id) {
+      if(id){
+        this.id = id
+        Content
+          .getContent(id)
+          .then(content => {
+                content = content || {}
+                this.id = content.id || id
+                this.images = content.images || []
+                this.text =  content.text || ''
+                this.keyword =  content.keyword || ''
+                this.insertImage =  content.insertImage || ''
+                this.aName =  content.aName || ''
+                this.keywords =  content.keywords || []
+                this.ctype =  content.ctype || 0
+                this.tag =  content.tag || {}
+                this.timetopublish = content.timetopublish || Date.now()
+                this.wxTitle = content.wxTitle || ''
+                this.wbTitle = content.wbTitle || ''
+                this.shareTitle = content.shareTitle || ''
+          })
+      }
+    },
     shareTitleInput(){
-      this.formData.wxTitle = this.formData.wbTitle = this.formData.shareTitle
+      this.wxTitle = this.wbTitle = this.shareTitle
     },
     setImageType(index, type) {
       const image = this.images[index]
@@ -215,6 +261,7 @@ export default {
       }
       this.$set(this.images, index, image)
     },
+
     insert(index) {
       this.insertImage = ''
       setTimeout(() => {
@@ -239,18 +286,29 @@ export default {
       console.log('handleRemove')
       console.log(file)
     },
-    handleSuccess(file) {
+    handleSuccess(res) {
       console.log('handleSuccess')
-      console.log(file)
+      console.log(res)
+      const message = res.msg
+      if(message){ // error
+
+      }else{
+        let url = res.url
+        if(url.indexOf('//') === -1){
+          url = '//' + url
+        }
+        this.images.push({
+           url: url,
+           name: res.orginfo.file.name,
+           width: res.info.width,
+           height: res.info.height,
+           size: res.orginfo.file.size
+         })
+      }
     },
     handleError(file) {
       console.log('handleError')
       console.log(file)
-    },
-    handleNodeClick(data) {
-      // 点击节点时触发，不包括点击前面的选择框
-      // console.log('handleNodeClick exec ...')
-      // console.log(data)
     },
     handleCheckChange(data, checked, indeterminat) {
       const children = data.children
@@ -260,7 +318,7 @@ export default {
       console.log('cId:', cId)
       console.log('checked:', checked)
       if(checked){
-        
+
       }else{
 
       }
@@ -270,17 +328,17 @@ export default {
       // }
     },
     removeTag(keyword) {
-      this.formData.keywords.splice(this._getIndexByKeywords(keyword), 1)
+      this.keywords.splice(this._getIndexByKeywords(keyword), 1)
     },
     _getIndexByKeywords(keyword) {
       return _.findIndex(
-        this.formData.keywords,
+        this.keywords,
         _.isPlainObject(keyword) ? (key) => key.name === keyword.name : (key) => key.name === keyword
       )
     },
     addKeywords() {
-      this.formData.keywords =
-        this.formData.keywords.concat(
+      this.keywords =
+        this.keywords.concat(
           // 去重，防止一次输入多个相同的keywodrs
           _.union(
             this.keyword
@@ -341,6 +399,7 @@ export default {
         wxTitle,
         wbTitle
       } = this.formData
+      console.log(keywords);
       // 处理数据
       keywords = keywords.map(keyword => keyword.name)
       console.log("作者：", aName)
@@ -368,6 +427,10 @@ export default {
   filters: {
     lockedByFormat(locked) {
       return `此文已被${locked}锁住...`
+    },
+    imageSizeFormat (size) {
+      console.log(size);
+      return Math.ceil(size / 1024) + 'kb'
     }
   }
 }

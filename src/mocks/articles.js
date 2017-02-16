@@ -1,5 +1,5 @@
 export default [
-  {
+{
     id: 8909,
     title: '全网断货的重松口罩，限量补货',
     ctype: '好物',
