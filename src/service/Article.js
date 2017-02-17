@@ -1,17 +1,35 @@
 import articles from '../mocks/articles'
 import fetch from 'isomorphic-fetch'
+import API from '../config/api'
 export default class Article {
 
   static newArticle(){
     return new Promise((resolve, reject) => {
       try {
-        setTimeout(() => {
-          resolve({
-            id: Math.ceil(9100 + Math.random() * 2000),
-            title: '新建文章',
-            status: 'new'
-          })
-        }, 1000)
+
+        fetch(API.articles.url, {method: 'POST'})
+        .then(response => response.json())
+        .then(result => {
+          console.log(result);
+          const message = result.message
+          if(message !== 'SUCCESS'){
+            reject(message)
+          }else{
+            resolve({
+              id: result.res.id,
+              total: result.res.title,
+              articles: 'new'
+            })
+          }
+        })
+
+        // setTimeout(() => {
+        //   resolve({
+        //     id: Math.ceil(9100 + Math.random() * 2000),
+        //     title: '新建文章',
+        //     status: 'new'
+        //   })
+        // }, 1000)
       } catch (e) {
         reject(e.message)
       } finally {
@@ -67,12 +85,29 @@ export default class Article {
         let total = ret.length
         const start = offset
         const end = start + pageSize
-        setTimeout(() => {
-          resolve({
-            total: total,
-            articles: ret.slice(start, end)
-          })
-        }, 1000)
+        fetch(API.articles.url)
+        .then(response => response.json())
+        .then(result => {
+          console.log(result);
+          const message = result.message
+          if(message !== 'SUCCESS'){
+            reject(message)
+          }else{
+            resolve({
+              total: result.res[0].total,
+              articles: result.res
+            })
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        })
+        // setTimeout(() => {
+        //   resolve({
+        //     total: total,
+        //     articles: ret.slice(start, end)
+        //   })
+        // }, 1000)
       }catch(e){
         reject(e.message)
       }

@@ -120,7 +120,7 @@
         :insertImage="insertImage"
         :class="{'left-small': leftSmall}"
         :locked="locked"
-        id="id"
+        :id="id"
         :content="text">
       </raw-editor>
       <render-editor class="render-editor" :class="{'right-small': rightSmall}"></render-editor>
@@ -224,16 +224,15 @@ export default {
     },
     loadData (id) {
       if(id){
-        this.id = id
+        this.id = String(id)
         Content
           .getContent(id)
           .then(content => {
                 content = content || {}
-                this.id = content.id || id
+                this.id = String(content.id || id)
                 this.images = content.images || []
                 this.text =  content.text || ''
                 this.keyword =  content.keyword || ''
-                this.insertImage =  content.insertImage || ''
                 this.aName =  content.aName || ''
                 this.keywords =  content.keywords || []
                 this.ctype =  content.ctype || 0
@@ -265,7 +264,7 @@ export default {
     insert(index) {
       this.insertImage = ''
       setTimeout(() => {
-        this.insertImage = this.images[index].src
+        this.insertImage = this.images[index].url
       })
     },
     // raw-editor 必须要监听dragover事件，否则safari的drop事件将不会执行（chrome没有这个问题）
@@ -341,9 +340,7 @@ export default {
         this.keywords.concat(
           // 去重，防止一次输入多个相同的keywodrs
           _.union(
-            this.keyword
-            .split(/ +|,|，/)
-            .filter(keyword => keyword.trim()) // 过滤非空的字符串
+            this.keyword.split(/ +|,|，/).filter(keyword => keyword.trim()) // 过滤非空的字符串
           ).filter(keyword => { // 去重
             const alreadyHasKeyword = this._getIndexByKeywords(keyword) !== -1
             if (alreadyHasKeyword) {

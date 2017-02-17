@@ -8,7 +8,7 @@
       stripe
       style="width: 100%">
       <el-table-column
-        prop="id"
+        prop="nid"
         width="100px"
         label="id">
       </el-table-column>
@@ -52,7 +52,7 @@
     <div class="pagination-bar">
       <!-- :page-sizes="[50, 100, 150, 200]" -->
       <el-pagination
-        :page-sizes="[10, 20, 30, 40]"
+        :page-sizes="[1, 2, 3, 4]"
         :page-size="pageSize"
         :current-page="currentPage"
         @size-change="handleSizeChange"
@@ -93,7 +93,7 @@ export default {
       articles_copy: [],
       loading: false,
       currentPage: 1,
-      pageSize: 50, // 一页50条
+      pageSize: 2, // 一页50条
       total: 0
     }
   },
@@ -150,7 +150,7 @@ export default {
       this.doQuery(this.input)
     },
     handleEdit (index, row) {
-      this.$router.push({ name: 'edit', params: { id: this.articles[index].id }})
+      this.$router.push({ name: 'edit', params: { id: this.articles[index].nid }})
     },
     handleDelete (index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示',{
