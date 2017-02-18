@@ -11,8 +11,8 @@
       <el-row>
         <el-form label-width="130px" ref="formData">
           <el-col :span="10">
-            <el-form-item label="作者" prop="aName">
-              <el-input v-model="aName"></el-input>
+            <el-form-item label="作者" prop="author">
+              <el-input v-model="author"></el-input>
             </el-form-item>
 
             <el-form-item label="分享到的标题" prop="shareTitle">
@@ -38,12 +38,13 @@
                 accept="image/*"
                 :data="{'id':id}"
                 :on-preview="handlePreview"
+                :before-upload="handleBeforeUpload"
                 :on-success="handleSuccess"
                 :on-error="handleError"
                 :multiple="true">
                 <i class="el-icon-upload"></i>
                 <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过500kb</div>
               </el-upload>
             </el-form-item>
           </el-col>
@@ -83,22 +84,21 @@
               <figure>
                 <img :src="image.url" draggable="true" @dragstart.stop="dragstart">
               </figure>
-              <div class="image-desc">
-                <figcaption class="image-title">{{image.name}}</figcaption>
-                <p class="image-attr clearfix">
-                  <span class="size">{{image.size || imageSizeFormat}}</span>
-                </p>
-              </div>
+              <figcaption class="image-info">
+                {{image.size | imageSizeFormat}}
+                <span class="image-width-and-height">
+                  {{image.width | imageWidthAndHeightFormat(image.height)}}
+                </span>
+              </figcaption>
               <div class="images-oper-tool">
                 <el-button type="primary" size="mini" @click="setImageType(index, 'cover')">设为封面图</el-button>
                 <el-button type="success" size="mini" @click="setImageType(index, 'thumb')">设为缩略图</el-button>
                 <el-button type="danger" size="mini" @click="insert(index)">插入</el-button>
               </div>
               <div class="image-types" v-if="image.types && image.types.length > 0">
-                <!-- <span>type: {{image.types? image.types.join(','): ''}}</span> -->
-                <template v-for="type in image.types">
-                    <span :style="type === 'cover' ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#13ce66'}"></span>
-                </template>
+                <span v-for="t in image.types" :style="t.type === 'cover' ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#13ce66'}">
+                  {{t.index + 1}}
+                </span>
               </div>
              </li>
             </ul>
@@ -148,7 +148,7 @@ const defaultData = {
   keyword: '',
   insertImage: '',
   // formData: {
-    aName: '',
+    author: '', // 作者名
     keywords: [],
     ctype: 0,
     tag: {},
@@ -162,6 +162,8 @@ const defaultData = {
   // rules,
   images: []
 }
+let coverIndex = 0;
+let thumbIndex = 1;
 export default {
   components: {
     RawEditor,
@@ -194,9 +196,9 @@ export default {
     ctype (val) {
       Content.setContentToLocal(this.id || this.$route.params.id, 'ctype', val)
     },
-    aName (val) {
+    author (val) {
       if(val && val.trim()){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'aName', val)
+        Content.setContentToLocal(this.id || this.$route.params.id, 'author', val)
       }
     },
     keywords (val) {
@@ -212,7 +214,7 @@ export default {
     '$route': 'routeChange'
   },
   data() {
-    const authorName = '李彦峰'
+    const username = '李彦峰'
     return defaultData
   },
   created() {
@@ -233,7 +235,7 @@ export default {
                 this.images = content.images || []
                 this.text =  content.text || ''
                 this.keyword =  content.keyword || ''
-                this.aName =  content.aName || ''
+                this.author =  content.author || ''
                 this.keywords =  content.keywords || []
                 this.ctype =  content.ctype || 0
                 this.tag =  content.tag || {}
@@ -244,19 +246,28 @@ export default {
           })
       }
     },
+
     shareTitleInput(){
       this.wxTitle = this.wbTitle = this.shareTitle
     },
+
     setImageType(index, type) {
       const image = this.images[index]
       if (image.types) {
         if (image.types.indexOf(type) === -1) {
-          image.types.push(type)
+          image.types.push({
+            type,
+            index: type === 'cover'? coverIndex++ : thumbIndex++
+          })
         } else {
-          _.remove(image.types, t => t === type)
+          _.remove(image.types, t => t.type === type)
+          type === 'cover'? coverIndex-- : thumbIndex--
         }
       } else {
-        image.types = [type]
+        image.types = [{
+          type,
+          index: type === 'cover'? coverIndex++ : thumbIndex++
+        }]
       }
       this.$set(this.images, index, image)
     },
@@ -277,6 +288,16 @@ export default {
     dragstart(event) {
       event.dataTransfer.setData('src', event.target.src)
     },
+    handleBeforeUpload (file){
+      if(['image/jpg','image/jpeg','image/png', 'image/gif'].indexOf(file.type) === -1){
+        this.$alert('只能上传格式为jpg/jpeg/png/gif的图片文件', `上传文件格式不符合要求`, { confirmButtonText: '确定' })
+        return false
+      }
+      if( (file.size / 1024) > 500 ){
+        this.$alert('上传图片大小不能超过500kb', `上传文件大小不符合要求`, { confirmButtonText: '确定' })
+        return false
+      }
+    },
     handlePreview(file) {
       console.log('handlePreview')
       console.log(file)
@@ -286,28 +307,40 @@ export default {
       console.log(file)
     },
     handleSuccess(res) {
-      console.log('handleSuccess')
-      console.log(res)
       const message = res.msg
-      if(message){ // error
-
+      const state = res.state
+      if(state !== 'success' ){ // error
+        let title = '上传失败'
+        try{
+          let imageName = res.orginfo.file.name
+          this.$alert(message || title, `${res.orginfo.file.name}${title}`, { confirmButtonText: '确定' })
+        }catch(e){
+          this.$alert(message || e.message, `${title}`, { confirmButtonText: '确定' })
+        }
       }else{
         let url = res.url
-        if(url.indexOf('//') === -1){
-          url = '//' + url
+        if(url){
+          if(url.indexOf('//') === -1){
+            url = '//' + url
+          }
+          this.images.push({
+             url: url,
+             name: res.orginfo.file.name,
+             width: res.info[0],
+             height: res.info[1],
+             size: res.orginfo.file.size
+           })
         }
-        this.images.push({
-           url: url,
-           name: res.orginfo.file.name,
-           width: res.info.width,
-           height: res.info.height,
-           size: res.orginfo.file.size
-         })
       }
     },
     handleError(file) {
-      console.log('handleError')
-      console.log(file)
+      let title = '上传失败'
+      try{
+        let imageName = res.orginfo.file.name
+        this.$alert(message || title, `${res.orginfo.file.name}${title}`, { confirmButtonText: '确定' })
+      }catch(e){
+        this.$alert(message || e.message, `${title}`, { confirmButtonText: '确定' })
+      }
     },
     handleCheckChange(data, checked, indeterminat) {
       const children = data.children
@@ -389,7 +422,7 @@ export default {
       let {
         keywords,
         ctype,
-        aName,
+        author,
         tags,
         timetopublish,
         shareTitle,
@@ -399,7 +432,7 @@ export default {
       console.log(keywords);
       // 处理数据
       keywords = keywords.map(keyword => keyword.name)
-      console.log("作者：", aName)
+      console.log("作者：", author)
       console.log("分享到标题：", shareTitle)
       console.log("微信标题：", wxTitle)
       console.log("微博标题：", wbTitle)
@@ -426,14 +459,23 @@ export default {
       return `此文已被${locked}锁住...`
     },
     imageSizeFormat (size) {
-      console.log(size);
       return Math.ceil(size / 1024) + 'kb'
+    },
+    imageWidthAndHeightFormat (width, height) {
+      let ret = ''
+      if(width && height){
+        ret = width + ' X ' + height
+      }
+      return ret
     }
   }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.images-count {
+  margin-bottom: 10px;
+}
 // image-list start
 .image-list {
     display: flex;
@@ -454,24 +496,29 @@ export default {
         right: 0;
         span {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            font-size: 14px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             margin-right: 5px;
+            line-height: 20px;
+            text-align: center;
+            color:#fff;
         }
     }
 }
 
-.image-desc {
-    font-size: 12px;
-}
-
-.image-title {
+.image-info {
     font-size: 14px;
     display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding: 5px 0 5px 5px;
+}
+
+.image-width-and-height {
+  margin-left: 20px;
 }
 
 .image-attr {

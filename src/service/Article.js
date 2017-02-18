@@ -1,12 +1,11 @@
 import articles from '../mocks/articles'
 import fetch from 'isomorphic-fetch'
 import API from '../config/api'
-export default class Article {
 
+export default class Article {
   static newArticle(){
     return new Promise((resolve, reject) => {
       try {
-
         fetch(API.articles.url, {method: 'POST'})
         .then(response => response.json())
         .then(result => {
@@ -16,9 +15,9 @@ export default class Article {
             reject(message)
           }else{
             resolve({
-              id: result.res.id,
-              total: result.res.title,
-              articles: 'new'
+              id: result.res.insertId,
+              title: '新建文章',
+              last_update_time: result.res.server_timestamp
             })
           }
         })
@@ -93,10 +92,17 @@ export default class Article {
           if(message !== 'SUCCESS'){
             reject(message)
           }else{
-            resolve({
-              total: result.res[0].total,
-              articles: result.res
-            })
+            if(result.res.length){
+              resolve({
+                total: result.res[0].total,
+                articles: result.res
+              })
+            }else{
+              resolve({
+                total: 0,
+                articles: []
+              })
+            }
           }
         })
         .catch(e => {

@@ -5,7 +5,7 @@ import Content from '../views/Content'
 import Edit from '../views/Edit'
 import Archive from '../views/Archive'
 import Monthly from '../views/Monthly'
-import Author from '../views/Author'
+import User from '../views/User'
 // import Help from '../views/Help'
 import Login from '../views/Login'
 // import Password from '../views/Password'
@@ -39,7 +39,7 @@ const routes = [
     children: [
       { path: '', component: Monthly }, // 进入到 Archive.vue 页面中，默认加载 Monthly.vue
       { path: 'monthly', name: 'monthly', component: Monthly },
-      { path: 'author', name: 'author', component: Author }
+      { path: 'user', name: 'user', component: User }
     ]
   },
   // { path: '/monthly', component: Monthly },

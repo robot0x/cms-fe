@@ -8,8 +8,9 @@
       stripe
       style="width: 100%">
       <el-table-column
-        prop="nid"
+        prop="id"
         width="100px"
+        sortable
         label="id">
       </el-table-column>
       <el-table-column
@@ -41,11 +42,12 @@
        <template scope="scope">
          <el-button
            @click="handleEdit(scope.$index, scope.row)"
+           type="success"
            size="small">编辑</el-button>
-         <el-button
+         <!-- <el-button
            size="small"
            @click="handleDelete(scope.$index, scope.row)"
-           type="danger">删除</el-button>
+           type="danger">删除</el-button> -->
        </template>
       </el-table-column>
     </el-table>
@@ -101,6 +103,11 @@ export default {
   created () {
     this.doQuery()
   },
+  filters: {
+    ctypefilter(ctype){
+      console.log(ctype);
+    }
+  },
   methods: {
     tableRowClassName(row, index) {
         return row.status === 'new' ? 'new-article-row' : ''
@@ -150,7 +157,7 @@ export default {
       this.doQuery(this.input)
     },
     handleEdit (index, row) {
-      this.$router.push({ name: 'edit', params: { id: this.articles[index].nid }})
+      this.$router.push({ name: 'edit', params: { id: this.articles[index].id }})
     },
     handleDelete (index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示',{

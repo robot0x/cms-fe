@@ -48,6 +48,7 @@ export default {
       margin-right: 5px;
       span {
         position: absolute;
+        font-size: 14px;
         top: 10px;
         right: 10px;
         width: 20px;
@@ -55,7 +56,7 @@ export default {
         border-radius: 50%;
         background-color: #20A0FF;
         text-align: center;
-        line-height: 1;
+        line-height: 20px;
         color:#fff;
       }
     }

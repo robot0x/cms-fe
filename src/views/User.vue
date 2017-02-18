@@ -1,5 +1,5 @@
 <template>
-  <div class="page-author">
+  <div class="page-user">
     <el-row>
        <el-col :span="4">
           <el-menu @select="select" theme="dark" :default-active="defaultActive">

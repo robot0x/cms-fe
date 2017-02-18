@@ -44,7 +44,7 @@ export default {
       this.loading = true
       this.loginMsg = '正在登录中，请稍候...'
       const username = this.username
-      LoginUtils.auth( username, this.password, (message) => {
+      LoginUtils.auth( username, this.password, message => {
         this.loading = false
         this.loginMsg = '登录'
         if( message ){
