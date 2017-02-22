@@ -1,10 +1,10 @@
 <template>
    <div class="page-content">
      <div class="search-area">
-       <el-input placeholder="输入文章ID或文章title" class="el-input" v-model="search" @keyup.native.enter.stop.prevent="doQuery">
+       <el-input :placeholder="placeholder" class="el-input" v-model="search" @keyup.native.enter.stop.prevent="doQuery">
          <el-select v-model="type" slot="prepend" placeholder="请选择" clearable>
            <el-option label="类型" value="ctype"></el-option>
-           <el-option label="作者" value="aName"></el-option>
+           <el-option label="作者" value="author"></el-option>
          </el-select>
          <el-button slot="append" icon="search" size="large" @click="doQuery"></el-button>
        </el-input>
@@ -26,9 +26,22 @@ export default {
   },
   data () {
     return {
+      placeholder: '输入文章ID或文章title',
       search: '',
       type: '',
       query: {}
+    }
+  },
+  watch: {
+    type (val) {
+      console.log(val);
+      if(val === 'ctype') {
+        this.placeholder = '请输入文章类型'
+      }else if(val === 'author'){
+        this.placeholder = '请输入作者名称'
+      }else{
+        this.placeholder = '输入文章ID或文章title'
+      }
     }
   },
   methods: {
@@ -58,7 +71,8 @@ export default {
       // console.log(this.$router)
       // 默认跳转到无参数 edit 视图
       // this.$router.push({ name: 'edit0' })
-      this.query = { type: 'new', random: Math.random() + Date.now() }
+      // this.query = { type: 'new', random: Math.random() + Date.now() }
+      this.query = { type: 'new' }
     }
   },
   created () {

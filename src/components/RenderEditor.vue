@@ -1,6 +1,6 @@
 <template>
   <div class="component-render-editor">
-    <div class="article-area" v-html="html"></div>
+    <div class="article-area" v-html="html.content"></div>
   </div>
 </template>
 <script>

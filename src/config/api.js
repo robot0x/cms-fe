@@ -13,8 +13,8 @@ const API = (function () {
     images: {
       url: `${fetchURL}/images`
     },
-    authors: {
-      url: `${fetchURL}/authors`
+    users: {
+      url: `${fetchURL}/users`
     },
     // 礼物搜索接口
     giftq: {

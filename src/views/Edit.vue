@@ -15,22 +15,29 @@
               <el-input v-model="author"></el-input>
             </el-form-item>
 
-            <el-form-item label="分享到的标题" prop="shareTitle">
-              <el-input v-model="shareTitle" placeholder="文章分享出去显示出的title" @input.native="shareTitleInput"></el-input>
+            <el-form-item label="分享到的标题" prop="share_title">
+              <el-input v-model="share_title" placeholder="文章分享出去显示出的标题，若不填，默认是文章标题" @input.native="share_titleInput"></el-input>
             </el-form-item>
 
-            <el-form-item label="分享到微信的标题" prop="wxTitle">
-              <el-input v-model="wxTitle" placeholder="文章分享到微信显示出的title"></el-input>
+            <el-form-item label="分享到微信的标题" prop="wx_title">
+              <el-input v-model="wx_title" placeholder="文章分享到微信显示出的标题"></el-input>
             </el-form-item>
 
-            <el-form-item label="分享到微博的标题" prop="wbTitle">
-              <el-input v-model="wbTitle" placeholder="文章分享到微博显示出的title"></el-input>
+            <el-form-item label="分享到微博的标题" prop="wb_title">
+              <el-input v-model="wb_title" placeholder="文章分享到微博显示出的标题"></el-input>
             </el-form-item>
 
-            <el-form-item label="关键词">
-              <el-input v-model="keyword" placeholder="请输入文章关键字，多个关键字用空格或逗号隔开" @keyup.native.enter.stop.prevent="addKeywords"></el-input>
-              <el-tag v-for="key in keywords" :closable="true" :type="key.type" @close="removeTag(key)"> {{key.name}} </el-tag>
+            <el-form-item label="发布时间">
+              <el-date-picker type="date" placeholder="选择发布时间" v-model="timetopublish" style="width: 100%;" :editable="false" format="yyyyMMdd" :clearable="false"></el-date-picker>
             </el-form-item>
+
+            <el-form-item label="类型">
+              <el-select v-model="ctype" placeholder="请选择文章类型">
+                <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
+              </el-select>
+            </el-form-item>
+
+
             <el-form-item label="上传图片">
               <el-upload
                 action="http://z.diaox2.com/view/app/upfornewcms.php"
@@ -51,25 +58,78 @@
           <el-col :span="14">
             <el-form-item label="选择所属标签">
               <!-- <tag-tree></tag-tree> -->
-              <!-- :check-strictly="true"  -->
               <el-tree
-              :data="tags"
-              :check-strictly="true"
-              node-key="id"
-              show-checkbox
-              :props="{children: 'children',label: 'label'}"
-              @check-change="handleCheckChange">
+                ref="tree"
+                :data="all_tags"
+                :check-strictly="true"
+                node-key="id"
+                show-checkbox
+                :props="{children: 'children',label: 'label'}"
+                :default-checked-keys="select_tags"
+                @check-change="handleCheckChange">
               </el-tree>
             </el-form-item>
-            <el-form-item label="发布时间">
-              <el-date-picker type="date" placeholder="选择发布时间" v-model="timetopublish" style="width: 100%;" :editable="false" format="yyyyMMdd" :clearable="false"></el-date-picker>
+
+            <el-form-item label="是否可搜">
+              <el-checkbox v-model="used_for_search"></el-checkbox>
             </el-form-item>
 
-            <el-form-item label="类型">
-              <el-select v-model="ctype" placeholder="请选择文章类型">
-                <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
-              </el-select>
+            <div class="keywords-panel" v-if="used_for_search">
+
+              <el-form-item label="具体品类">
+                <el-input v-model="categroy" placeholder="包含同义词（如：指甲剪，指甲钳）" @keyup.native.enter.stop.prevent="addTags('categroy')"></el-input>
+                <el-tag v-for="tag in render_categroys" :closable="true" :type="tag.type" @close="removeTag('categroy',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+
+              <el-form-item label="品牌">
+                <el-input v-model="brand" placeholder="品牌" @keyup.native.enter.stop.prevent="addTags('brand')"></el-input>
+                <el-tag v-for="tag in render_brands" :closable="true" :type="tag.type" @close="removeTag('brand',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+
+              <el-form-item label="使用场景">
+                <el-input v-model="scene" placeholder="使用场景（如：剪指甲）" @keyup.native.enter.stop.prevent="addTags('scene')"></el-input>
+                <el-tag v-for="tag in render_scenes" :closable="true" :type="tag.type" @close="removeTag('scene',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+
+              <el-form-item label="特别之处">
+                <el-input v-model="special" placeholder="特别之处（如：防水，动漫周边，创意）" @keyup.native.enter.stop.prevent="addTags('special')"></el-input>
+                <el-tag v-for="tag in render_specials" :closable="true" :type="tag.type" @close="removeTag('special',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+
+              <el-form-item label="类似产品">
+                <el-input v-model="similar" placeholder="类似产品（如：美甲, 瑞士军刀）" @keyup.native.enter.stop.prevent="addTags('similar')"></el-input>
+                <el-tag v-for="tag in render_similars" :closable="true" :type="tag.type" @close="removeTag('similar',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+            </div>
+
+
+            <el-form-item label="是否适合送礼">
+              <el-checkbox v-model="used_for_gift"></el-checkbox>
             </el-form-item>
+
+            <div class="gift-panel" v-if="used_for_gift">
+              <el-form-item label="场景">
+                <el-checkbox-group v-model="scenes">
+                  <template v-for="(s,i) in gift.scenes">
+                    <el-checkbox :label="i">{{s}}</el-checkbox>
+                  </template>
+                </el-checkbox-group>
+              </el-form-item>
+              <el-form-item label="关系">
+                <el-checkbox-group v-model="relations">
+                  <template v-for="(r,i) in gift.relations">
+                    <el-checkbox :label="i">{{r}}</el-checkbox>
+                  </template>
+                </el-checkbox-group>
+              </el-form-item>
+              <el-form-item label="特点">
+                <el-checkbox-group v-model="characters">
+                  <template v-for="(c,i) in gift.characters">
+                    <el-checkbox :label="i">{{c}}</el-checkbox>
+                  </template>
+                </el-checkbox-group>
+              </el-form-item>
+            </div>
           </el-col>
         </el-form>
       </el-row>
@@ -135,32 +195,57 @@ import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
 import Content from '../service/Content'
 import MaxWindow from '../components/MaxWindow'
-import { tags, ctypes } from '../config/content_page_data' // 这个是写在前端的，不用改
+import Utils from '../utils/Utils'
+import LoginUtils from '../utils/LoginUtils'
+ // 这个是写在前端的，不用改
+import { tags as all_tags, ctypes } from '../config/content_page_data'
+// 这个是写在前端的，不用改
+import gift from '../config/gift'
 import moment from 'moment'
 import _ from 'lodash'
+import { mapGetters } from 'vuex'
+
 const defaultData = {
   loading: false,
   leftSmall: false,
   rightSmall: false,
   locked: false,
-  id: '',
-  text: '',
-  keyword: '',
-  insertImage: '',
+
+  used_for_gift: false, // 是否适合送礼。1-适合，0-不适合
+  scenes: [],
+  relations: [],
+  characters: [],
+
+  used_for_search: false, // 是否可搜
+  categroy: '',
+  render_categroys: [],
+  brand: '',
+  render_brands: [],
+  scene: '',
+  render_scenes: [],
+  special: '',
+  render_specials: [],
+  similar: '',
+  render_similars: [],
+
+  id: '', // 文章id
+  text: '', // 文章图文数据
+  insertImage: '', // 要插入文章图片中的图片url
   // formData: {
     author: '', // 作者名
-    keywords: [],
-    ctype: 0,
-    tag: {},
-    timetopublish: Date.now(),
-    wxTitle: '',
-    wbTitle: '',
-    shareTitle: '',
+    ctype: 0, // 文章类型
+    // tag = ['0', '0-0','0-2', '3', '4-1','4-2'] // 被选中的node-key
+    select_tags: [],  // 选中的key。格式跟tag一致
+    timetopublish: Date.now(), // 文章发布时间
+    wx_title: '', // 分享到微信的标题
+    wb_title: '', // 分享到微博的标题
+    share_title: '', // 分享到的标题
   // }
   ctypes, // 不用改
-  tags,
+  all_tags, // tag配置。供用户选择
+  gift, // 礼物配置。供用户选择
   // rules,
-  images: []
+  images: [] // 用户上传的图片
 }
 let coverIndex = 0;
 let thumbIndex = 1;
@@ -172,25 +257,66 @@ export default {
     MaxWindow,
     TagTree
   },
+  computed: { ...mapGetters(['html']) },
   watch: {
+    used_for_gift (val) {
+      Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift', val)
+    },
+
+    scenes (val) {
+      if(val && val.length){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'scenes', val)
+      }
+    },
+
+    relations (val) {
+      if(val && val.length){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'relations', val)
+      }
+    },
+
+    characters (val) {
+      if(val && val.length){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'characters', val)
+      }
+    },
+
+    used_for_search (val) {
+      Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_search', val)
+    },
+    render_categroys (val) {
+      Content.setContentToLocal(this.id || this.$route.params.id, 'render_categroys', val)
+    },
+    render_brands (val) {
+      Content.setContentToLocal(this.id || this.$route.params.id, 'render_brands', val)
+    },
+    render_scenes (val) {
+      Content.setContentToLocal(this.id || this.$route.params.id, 'render_scenes', val)
+    },
+    render_specials (val) {
+      Content.setContentToLocal(this.id || this.$route.params.id, 'render_specials', val)
+    },
+    render_similars (val) {
+      Content.setContentToLocal(this.id || this.$route.params.id, 'render_similars', val)
+    },
     images (val) {
       if(val && val.length){
         Content.setContentToLocal(this.id || this.$route.params.id, 'images', val)
       }
     },
-    shareTitle (val) {
+    share_title (val) {
       if(val && val.trim()){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'shareTitle', val)
+        Content.setContentToLocal(this.id || this.$route.params.id, 'share_title', val)
       }
     },
-    wxTitle (val) {
+    wx_title (val) {
       if(val && val.trim()){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'wxTitle', val)
+        Content.setContentToLocal(this.id || this.$route.params.id, 'wx_title', val)
       }
     },
-    wbTitle (val) {
+    wb_title (val) {
       if(val && val.trim()){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'wbTitle', val)
+        Content.setContentToLocal(this.id || this.$route.params.id, 'wb_title', val)
       }
     },
     ctype (val) {
@@ -199,11 +325,6 @@ export default {
     author (val) {
       if(val && val.trim()){
         Content.setContentToLocal(this.id || this.$route.params.id, 'author', val)
-      }
-    },
-    keywords (val) {
-      if(val && val.length){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'keywords', val)
       }
     },
     timetopublish (val) {
@@ -221,9 +342,45 @@ export default {
     this.loadData(this.$route.params.id)
   },
   methods: {
+    removeTag(type, tag) {
+      console.log(type, tag);
+      const index = this._getIndexByTags(type,tag)
+      console.log('index:', index);
+      this[`render_${type}s`].splice(index, 1)
+    },
+
+    _getIndexByTags(type, tag) {
+      return _.findIndex( this[`render_${type}s`],(t) => t.name === tag.name )
+    },
+
+    addTags (type) {
+      console.log(type)
+      console.log(this[`render_${type}s`])
+      this[`render_${type}s`] =
+        this[`render_${type}s`].concat(
+          // 去重，防止一次输入多个相同的keywodrs
+          _.union(
+            this[type].split(/ +|,|，/).filter(tag => tag.trim()) // 过滤非空的字符串
+          ).filter(tag => { // 去重
+            const alreadyHasTag = this._getIndexByTags(type, tag) !== -1
+            if (alreadyHasTag) {
+              this.$message(`「${tag}」已经存在，请不要重复添加`)
+            }
+            return !alreadyHasTag
+          }).map(tag => {
+            return {
+              name: tag,
+              type: 'success'
+            }
+          })
+        )
+        this[type] = ''
+    },
+
     routeChange () {
       this.loadData(this.$route.params.id)
     },
+
     loadData (id) {
       if(id){
         this.id = String(id)
@@ -234,21 +391,45 @@ export default {
                 this.id = String(content.id || id)
                 this.images = content.images || []
                 this.text =  content.text || ''
-                this.keyword =  content.keyword || ''
                 this.author =  content.author || ''
-                this.keywords =  content.keywords || []
                 this.ctype =  content.ctype || 0
                 this.tag =  content.tag || {}
                 this.timetopublish = content.timetopublish || Date.now()
-                this.wxTitle = content.wxTitle || ''
-                this.wbTitle = content.wbTitle || ''
-                this.shareTitle = content.shareTitle || ''
+                this.wx_title = content.wx_title || ''
+                this.wb_title = content.wb_title || ''
+                this.share_title = content.share_title || ''
+
+                // gift
+                this.used_for_gift = content.used_for_gift || false
+                this.scenes = content.scenes || []
+                this.relations = content.relations || []
+                this.characters = content.characters || []
+
+                // kehywords
+                this.used_for_search = content.used_for_search || false
+                this.render_categroys = content.render_categroys || []
+                this.render_brands = content.render_brands || []
+                this.render_scenes = content.render_scenes || []
+                this.render_specials = content.render_specials || []
+                this.render_similars = content.render_similars || []
+
+                setTimeout(() => {
+                  this.select_tags = [1]
+                }, 2000)
+                // tag
+                // this.$refs.tree.setCheckedKeys(content.select_tags || [])
+                // this.select_tags = content.select_tags || []
+                // console.log(content.select_tags)
+                // console.log(this.select_tags)
+                // this.$refs.tree.setCheckedKeys(['1'])
+                // console.log(this.$refs.tree);
+                // console.log(this.$refs.tree.setCheckedKeys);
           })
       }
     },
 
-    shareTitleInput(){
-      this.wxTitle = this.wbTitle = this.shareTitle
+    share_titleInput(){
+      this.wx_title = this.wb_title = this.share_title
     },
 
     setImageType(index, type) {
@@ -282,14 +463,17 @@ export default {
     dragover() {
       return false
     },
+
     drop(event) {
       this.insertImage = event.dataTransfer.getData('src')
     },
+
     dragstart(event) {
       event.dataTransfer.setData('src', event.target.src)
     },
+
     handleBeforeUpload (file){
-      if(['image/jpg','image/jpeg','image/png', 'image/gif'].indexOf(file.type) === -1){
+      if(['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) === -1){
         this.$alert('只能上传格式为jpg/jpeg/png/gif的图片文件', `上传文件格式不符合要求`, { confirmButtonText: '确定' })
         return false
       }
@@ -342,52 +526,15 @@ export default {
         this.$alert(message || e.message, `${title}`, { confirmButtonText: '确定' })
       }
     },
-    handleCheckChange(data, checked, indeterminat) {
-      const children = data.children
-      const label = data.label
-      const [pId, cId] = data.id.split('-')
-      console.log('pId:', pId)
-      console.log('cId:', cId)
-      console.log('checked:', checked)
-      if(checked){
-
+    handleCheckChange (data, checked, indeterminat) {
+      const clickId = data.id
+      console.log(clickId);
+      if(checked && this.select_tags.indexOf(clickId) === -1){
+        this.select_tags.push(clickId)
       }else{
-
+        this.select_tags.splice(_.findIndex(this.select_tags, t => t == clickId ), 1)
       }
-      // if(children){
-      //   this.formData.tag[label] = data.children.map(tag => tag.label)
-      // }else{
-      // }
-    },
-    removeTag(keyword) {
-      this.keywords.splice(this._getIndexByKeywords(keyword), 1)
-    },
-    _getIndexByKeywords(keyword) {
-      return _.findIndex(
-        this.keywords,
-        _.isPlainObject(keyword) ? (key) => key.name === keyword.name : (key) => key.name === keyword
-      )
-    },
-    addKeywords() {
-      this.keywords =
-        this.keywords.concat(
-          // 去重，防止一次输入多个相同的keywodrs
-          _.union(
-            this.keyword.split(/ +|,|，/).filter(keyword => keyword.trim()) // 过滤非空的字符串
-          ).filter(keyword => { // 去重
-            const alreadyHasKeyword = this._getIndexByKeywords(keyword) !== -1
-            if (alreadyHasKeyword) {
-              this.$message(`「${keyword}」已经存在，请不要重复添加`)
-            }
-            return !alreadyHasKeyword
-          }).map(keyword => {
-            return {
-              name: keyword,
-              type: 'success'
-            }
-          })
-        )
-      this.keyword = ''
+      Content.setContentToLocal(this.id || this.$route.params.id, 'select_tags', this.select_tags)
     },
     open(dir) {
       switch (dir) {
@@ -420,28 +567,76 @@ export default {
     save() {
       // 从VM中提取数据
       let {
-        keywords,
         ctype,
         author,
-        tags,
+        select_tags,
         timetopublish,
-        shareTitle,
-        wxTitle,
-        wbTitle
-      } = this.formData
-      console.log(keywords);
-      // 处理数据
-      keywords = keywords.map(keyword => keyword.name)
+        share_title,
+        wx_title,
+        wb_title,
+        images,
+        id
+      } = this
+      let title = this.html.title
+      let last_update_by = LoginUtils.getUsername()
+      if(!title){
+        return this.$alert('请在文章编辑区填写标题，格式为: # 文章标题', '标题未填写', { confirmButtonText: '确定' })
+      }
+      // 数据合法性验证
+      if(!author){
+        return this.$alert('必须填写作者', '作者未填写', { confirmButtonText: '确定' })
+      }
+      console.log(images);
+      /**
+        `aid`
+        `url`
+        `used`
+        `type`
+        `origin_filename`
+        `extension_name`
+        `size`
+        `width
+        `height`
+       */
+      let images_handled = images.map(image => {
+        return {
+          aid: id,
+          url: image.url,
+          type: {},
+          userd: image.userd || 1,
+          origin_filename: image.name,
+          extension_name: Utils.getExtensionName(image.name),
+          size: image.size,
+          width: image.width,
+          height: image.height
+        }
+      })
+
+      console.log(images_handled);
+
+      const postData = {
+        id,
+        meta: {
+          title,
+          share_title,
+          wx_title,
+          wb_title,
+          author,
+          ctype,
+          lock_by: '',
+          last_update_by,
+        },
+        images:images_handled
+      }
+      // if(select_tags.length){
+      //   return this.$alert('必须选择所属标签', '未选择所属标签', { confirmButtonText: '确定' })
+      // }
       console.log("作者：", author)
-      console.log("分享到标题：", shareTitle)
-      console.log("微信标题：", wxTitle)
-      console.log("微博标题：", wbTitle)
+      console.log("分享到标题：", share_title)
+      console.log("微信标题：", wx_title)
+      console.log("微博标题：", wb_title)
       console.log("类型：", ctype)
       console.log("发布时间：", timetopublish)
-      console.log("keywords:");
-      console.log(keywords);
-      console.log('tags:');
-      console.dir(tags);
       this.loading = true
       setTimeout(() => {
         this.loading = false
@@ -592,5 +787,11 @@ export default {
 
 .el-col-end {
     padding-left: 10px;
+}
+
+.keywords-panel, .gift-panel {
+  border: 1px #20A0FF solid;
+  padding: 20px 0;
+  margin-bottom: 20px;
 }
 </style>

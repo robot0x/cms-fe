@@ -1,4 +1,14 @@
 class Utils {
+  /*
+   获取文件扩展名
+   'filename'	''
+   'filename.txt'	'txt'
+   '.hiddenfile'	''
+   'filename.with.many.dots.ext'	'ext'
+  */
+  static getExtensionName (filename) {
+     return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
+  }
 
   static insertContent(obj, str) {
     if (document.selection) {

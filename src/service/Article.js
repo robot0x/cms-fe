@@ -1,12 +1,26 @@
 import articles from '../mocks/articles'
 import fetch from 'isomorphic-fetch'
 import API from '../config/api'
-
+import _ from 'lodash'
+import LoginUtils from '../utils/LoginUtils'
 export default class Article {
-  static newArticle(){
+
+  static newArticle () {
     return new Promise((resolve, reject) => {
       try {
-        fetch(API.articles.url, {method: 'POST'})
+        const user = LoginUtils.getUsername()
+        const opts = {
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify({
+            user,
+            last_update_by: user
+          }),
+          headers: new Headers({
+            'Content-Type': 'json'
+          })
+        }
+        fetch(API.articles.url, opts)
         .then(response => response.json())
         .then(result => {
           console.log(result);
@@ -15,20 +29,13 @@ export default class Article {
             reject(message)
           }else{
             resolve({
-              id: result.res.insertId,
+              id: result.res.id,
               title: '新建文章',
+              last_update_by: user,
               last_update_time: result.res.server_timestamp
             })
           }
         })
-
-        // setTimeout(() => {
-        //   resolve({
-        //     id: Math.ceil(9100 + Math.random() * 2000),
-        //     title: '新建文章',
-        //     status: 'new'
-        //   })
-        // }, 1000)
       } catch (e) {
         reject(e.message)
       } finally {
@@ -37,54 +44,31 @@ export default class Article {
     })
   }
   /**
-   * 查询 article_meta 表的记录数
-   */
-  static getTotal() {
-    return new Promise((resolve, reject) => {
-      try {
-        setTimeout(() => {
-          resolve(articles.length)
-        },200)
-      }catch(e){
-        reject(e.message)
-      }
-    })
-  }
-  /**
-   * select * from table limit offset pageSize
-   */
-  static pagination (offset, pageSize) {
-    return new Promise((resolve, reject) => {
-      try {
-        setTimeout(() => {
-            const start = offset
-            const end = start + pageSize
-            resolve(articles.slice(start, end))
-        }, 1000)
-      }catch(e){
-        reject(e.message)
-      }
-    })
-  }
-
-  /**
    * select * from table limit offset pageSize where query
    */
   static getArticles (query) {
+    // debugger;
     return new Promise((resolve, reject) => {
       try{
         let ret = []
-        let {type, offset, pageSize} = query
-        // 如果有查询条件，就按照查询条件查询，否则就查询全部
-        if( type ){
-          ret = Article.randArray(articles, Math.ceil(Math.random() * 40))
-        } else {
-          ret = articles
+        let {type, search, offset, pageSize} = query
+        let queryString = ''
+        if(type && search){
+          queryString = `?${type}=${search}`
         }
-        let total = ret.length
-        const start = offset
-        const end = start + pageSize
-        fetch(API.articles.url)
+
+        if(_.isInteger(pageSize)){
+          if(!_.isInteger(offset)){
+            offset = 0
+          }
+          if(queryString){
+            queryString = queryString + `&offset=${offset}&limit=${pageSize}`
+          }else{
+            queryString = `?offset=${offset}&limit=${pageSize}`
+          }
+        }
+        console.log(`${API.articles.url}/${queryString}`);
+        fetch(`${API.articles.url}/${queryString}`)
         .then(response => response.json())
         .then(result => {
           console.log(result);
@@ -92,34 +76,43 @@ export default class Article {
           if(message !== 'SUCCESS'){
             reject(message)
           }else{
-            if(result.res.length){
-              resolve({
-                total: result.res[0].total,
-                articles: result.res
-              })
+            if(result.res){
+              resolve(result.res)
             }else{
-              resolve({
-                total: 0,
-                articles: []
-              })
+              resolve({total: 0,articles: []})
             }
           }
-        })
-        .catch(e => {
+        }).catch(e => {
           console.log(e);
         })
-        // setTimeout(() => {
-        //   resolve({
-        //     total: total,
-        //     articles: ret.slice(start, end)
-        //   })
-        // }, 1000)
       }catch(e){
+        // 事实上，走了这块儿
+        console.log(e);
         reject(e.message)
       }
     })
   }
+  static saveAll (data) {
+    return new Promise((resolve, reject) => {
+      try {
+        fetch(API.articles.url, {method: 'PUT'})
+        .then(response => response.json())
+        .then(result => {
+          console.log(result);
+          const message = result.message
+          if(message !== 'SUCCESS'){
+            reject(message)
+          }else{
+            resolve({})
+          }
+        })
+      } catch (e) {
+        reject(e.message)
+      } finally {
 
+      }
+    })
+  }
   static deleteArticle (id) {
     return new Promise((resolve, reject) => {
       resolve('SUCCESS')

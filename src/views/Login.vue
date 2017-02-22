@@ -17,6 +17,7 @@
 </template>
 <script>
 import LoginUtils from '../utils/LoginUtils'
+import User from '../service/User'
 
 export default {
   data () {
@@ -44,18 +45,22 @@ export default {
       this.loading = true
       this.loginMsg = '正在登录中，请稍候...'
       const username = this.username
-      LoginUtils.auth( username, this.password, message => {
+      console.log(username, this.password);
+      User
+      .auth(username, this.password)
+      .then((res) => {
         this.loading = false
         this.loginMsg = '登录'
-        if( message ){
-          this.$notify({ message: message, type: 'warning' })
-        }else{
-          LoginUtils.setLoginInfo(username, this.reme)
-          // 存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
-          // 应该结合着本地存储来做
-          this.$store.commit('setUsername', username)
-          this.$router.replace('/')
-        }
+        LoginUtils.setLoginInfo(username, this.reme)
+        // 存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
+        // 应该结合着本地存储来做
+        this.$store.commit('setUsername', username)
+        this.$router.replace('/')
+      })
+      .catch(message => {
+        this.loading = false
+        this.loginMsg = '登录'
+        this.$notify({ message: message, type: 'warning' })
       })
       // setTimeout(() => {
       //   this.loading = false

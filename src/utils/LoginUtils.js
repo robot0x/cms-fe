@@ -5,7 +5,7 @@ class LoginUtils {
   static get FLAG () {
     return +new Date
   }
-  
+
   static get IS_LOGIN () {
     // return 'isLogin'
     // 为了安全性，改为没有含义的字段
@@ -77,23 +77,23 @@ class LoginUtils {
     sessionStorage.removeItem(LoginUtils.USERNAME)
   }
 
-  static auth(username = '', password = '', cb){
-    let message = ''
-    if( !username ){
-      message = '用户名不能为空'
-    }else if( !password ){
-        message = '密码不能为空'
-    }
-    if(cb){
-      if( message ){
-        cb(message)
-      }else{
-        setTimeout(() => {
-          cb()
-        }, 2000)
-      }
-    }
-  }
+  // static auth(username = '', password = '', cb){
+  //   let message = ''
+  //   if( !username ){
+  //     message = '用户名不能为空'
+  //   }else if( !password ){
+  //       message = '密码不能为空'
+  //   }
+  //   if(cb){
+  //     if( message ){
+  //       cb(message)
+  //     }else{
+  //       setTimeout(() => {
+  //         cb()
+  //       }, 2000)
+  //     }
+  //   }
+  // }
 
   static stringToBoolean (str) {
     let ret = false

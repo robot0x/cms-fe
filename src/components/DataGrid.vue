@@ -25,10 +25,10 @@
         width="100px">
       </el-table-column>
       <el-table-column
-        prop="author"
+        prop="last_update_by"
         sortable
         width="180px"
-        label="作者">
+        label="最后更新用户">
       </el-table-column>
       <el-table-column
         prop="last_update_time"
@@ -80,11 +80,11 @@ export default {
   },
   watch: {
     input (val, oldVal) {
-      console.log('input 改变了....')
-      if(_.isEqual(val, oldVal)) return
+      console.log('input 改变了....', val)
+      // if(_.isEqual(val, oldVal)) return
       if(val.type === 'new'){
         this.doNew()
-      }else{
+      } else {
         this.doQuery(val)
       }
     }
@@ -123,6 +123,7 @@ export default {
       })
     },
     doQuery (query) {
+      console.log('query:', query);
       let param = null
       if(query){
         param = {...query}
@@ -134,16 +135,17 @@ export default {
           pageSize: this.pageSize
         }
       }
-      this.loading = true
-      Article.getArticles(param)
-      .then(res => {
+      console.log('doQuery:', param);
+      // debugger;
+      // this.loading = true
+      Article.getArticles(param).then(res => {
         const {articles, total} = res
-        this.loading = false
+        // this.loading = false
         this.articles = articles
         this.total = total
       })
       .catch(message => {
-        this.loading = false
+        // this.loading = false
       })
     },
     handleSizeChange(val) {

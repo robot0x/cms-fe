@@ -1,16 +1,11 @@
 import marked from 'marked'
 import _ from 'lodash'
-const state = {
-  md: ''
-}
 
 function rendeEds(content, eds) {
-  let html = `
+  return `
     <p class="editorhead">${eds}</p>
     <p class="editorcontent">${content}</p>
   `
-  // console.log(content)
-  return html
 }
 
 function rendeBanner(content) {
@@ -49,9 +44,16 @@ function rendeArticle(content) {
   return ''
 }
 
+const state = {
+  md: ''
+}
+
 // https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 // https://help.github.com/categories/writing-on-github/
 const getters = {
+  title: (state, getters, rootState) => {
+
+  },
   html: (state, getters, rootState) => {
     const renderer = new marked.Renderer
     const options = {
@@ -70,24 +72,28 @@ const getters = {
       // default: false 与标点符号有关
       smartypants: false
     }
+    let title = ''
+    renderer.heading = (text, level) => {
+      if(text && text.trim()){
+        title = text
+      }
+      return '<h' + level + '>' + title + '</h' + level + '>'
+    }
+
     renderer.link = (href, title = '', text ) => {
       if(/^\d+$/.test(href)){
         href = `//www.diaox2.com/article/${href}.html`
       }
       return `<a target="_blank" href="${href}">${text || href}</a>`
     }
+
     renderer.code = (content, type) => {
-      // console.log(content)
-      // console.log(type)
       const EDS = 'eds'
       let eds = ''
       if( type.indexOf(EDS) !== -1 ) {
         eds = type.replace(EDS, '') || '小编说'
         type = EDS
       }
-
-      // console.log('eds:', eds);
-
       let ret = ''
       switch (type) {
         case EDS:
@@ -103,28 +109,15 @@ const getters = {
           ret = rendeArticle(content)
           break;
       }
-      // console.log(ret)
       return ret
     }
-
-    // renderer.image = (content) => {
-    //   console.log('image .....');
-    //   console.log(content);
-    //   return content
-    // }
-
     options.renderer = renderer
-
     marked.setOptions(options)
-    // var tokens = marked.lexer(state.md, options)
-    // console.log(marked.parser(tokens))
-    // var lexer = new marked.Lexer(options);
-    // var tokens = lexer.lex(state.md);
-    // console.log(tokens);
-    // console.log(lexer.rules);
     return marked(state.md, (err, content) => {
-      // console.log(content)
-      return content
+      return {
+        content,
+        title
+      }
     })
   }
 }
@@ -134,7 +127,7 @@ const actions = {
 }
 
 const mutations = {
-  change (state, payload){
+  change (state, payload) {
     state.md = payload
   }
 }
