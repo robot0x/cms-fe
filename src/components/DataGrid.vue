@@ -7,6 +7,34 @@
       :row-class-name="tableRowClassName"
       stripe
       style="width: 100%">
+      <el-table-column type="expand">
+        <template scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="分享到标题">
+              <span>{{ props.row.share_title || '未填写' }}</span>
+            </el-form-item>
+            <el-form-item label="分享到微信标题">
+              <span>{{ props.row.wx_title || '未填写' }}</span>
+            </el-form-item>
+            <el-form-item label="分享到微博标题">
+              <span>{{ props.row.wb_title || '未填写' }}</span>
+            </el-form-item>
+            <el-form-item label="作者">
+              <span>{{ props.row.author || '未填写'}}</span>
+            </el-form-item>
+            <el-form-item label="创建人">
+              <span>{{ props.row.user }}</span>
+            </el-form-item>
+            <el-form-item label="创建时间">
+              <span>{{ props.row.create_time }}</span>
+            </el-form-item>
+            <el-form-item label="最后修改人">
+              <span>{{ props.row.last_update_by }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
+
       <el-table-column
         prop="id"
         width="100px"
@@ -219,4 +247,16 @@ export default {
   top: -8px;
   margin-left: 5px;
 }
+ .demo-table-expand {
+   font-size: 0;
+ }
+ .demo-table-expand label {
+   width: 120px;
+   color: #99a9bf;
+ }
+ .demo-table-expand .el-form-item {
+   margin-right: 0;
+   margin-bottom: 0;
+   width: 50%;
+ }
 </style>
