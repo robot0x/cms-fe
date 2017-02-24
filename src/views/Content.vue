@@ -4,7 +4,7 @@
        <el-input :placeholder="placeholder" class="el-input" v-model="search" @keyup.native.enter.stop.prevent="doQuery">
          <el-select v-model="type" slot="prepend" placeholder="请选择" clearable>
            <el-option label="类型" value="ctype"></el-option>
-           <el-option label="作者" value="author"></el-option>
+           <el-option label="用户" value="user"></el-option>
          </el-select>
          <el-button slot="append" icon="search" size="large" @click="doQuery"></el-button>
        </el-input>
@@ -37,8 +37,8 @@ export default {
       console.log(val);
       if(val === 'ctype') {
         this.placeholder = '请输入文章类型'
-      }else if(val === 'author'){
-        this.placeholder = '请输入作者名称'
+      }else if(val === 'user'){
+        this.placeholder = '请输入用户名称'
       }else{
         this.placeholder = '输入文章ID或文章title'
       }
@@ -54,15 +54,21 @@ export default {
        * monthly 为按照月份进行搜索           范围搜索
        */
       let {type, search} = this
+      let like = false
       if( !type ){
         if(/^\d+$/.test(search)){
           type = 'id'
           search = Number(search)
         } else {
           type = 'title'
+          like = true
         }
       }
-      this.query = { type, search }
+      if(like){
+        this.query = { type, search, like }
+      } else {
+        this.query = { type, search }
+      }
     },
     newArticle () {
       // alert('newArticle')

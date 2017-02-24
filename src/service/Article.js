@@ -8,9 +8,11 @@ export default class Article {
  static getStatistics () {
    return new Promise((resolve, reject) => {
      try {
-       fetch(`${API.articles.url}/?type=monthly`)
+       const url = `${API.articles.url}/?type=monthly`
+       fetch(url)
        .then(response => response.json())
        .then(result => {
+         console.log(url, result);
          const message = result.message
          if(message !== 'SUCCESS') {
            reject(message)
@@ -40,10 +42,11 @@ export default class Article {
             'Content-Type': 'json'
           })
         }
-        fetch(API.articles.url, opts)
+        const url = API.articles.url
+        fetch(url, opts)
         .then(response => response.json())
         .then(result => {
-          console.log(result);
+          console.log(url, result)
           const message = result.message
           if(message !== 'SUCCESS'){
             reject(message)
@@ -69,10 +72,9 @@ export default class Article {
     return new Promise((resolve, reject) => {
       try{
         let ret = []
-        console.log(query);
-        let {type, search, offset, pageSize} = query
-        console.log(type, search, offset, pageSize);
+        let {type, search, offset, pageSize, like} = query
         let queryString = ''
+
         if(type && search){
           queryString = `?${type}=${search}`
         }
@@ -87,10 +89,19 @@ export default class Article {
             queryString = `?offset=${offset}&limit=${pageSize}`
           }
         }
-        console.log(`${API.articles.url}/${queryString}`);
-        fetch(`${API.articles.url}/${queryString}`)
+        if(like){
+          if(queryString) {
+            queryString += '&like'
+          }else{
+            queryString = '?like'
+          }
+        }
+
+        const url = `${API.articles.url}/${queryString}`
+        fetch(url)
         .then(response => response.json())
         .then(result => {
+          console.log(url, result)
           const message = result.message
           if(message !== 'SUCCESS'){
             reject(message)
@@ -114,10 +125,11 @@ export default class Article {
   static saveAll (data) {
     return new Promise((resolve, reject) => {
       try {
-        fetch(API.articles.url, {method: 'PUT'})
+        const url = API.articles.url
+        fetch(url, {method: 'PUT'})
         .then(response => response.json())
         .then(result => {
-          console.log(result);
+          console.log(url. result)
           const message = result.message
           if(message !== 'SUCCESS'){
             reject(message)
@@ -127,8 +139,6 @@ export default class Article {
         })
       } catch (e) {
         reject(e.message)
-      } finally {
-
       }
     })
   }

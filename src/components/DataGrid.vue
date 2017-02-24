@@ -122,30 +122,39 @@ export default {
         this.loading = false
       })
     },
-    doQuery (query) {
-      console.log('query:', query);
+    doQuery (query, resetPage = true) {
+      this.loading = true
       let param = null
+      const offset = resetPage ? 0 : this.offset
       if(query){
         param = {...query}
-        param.offset = this.offset
+        param.offset = offset
         param.pageSize = this.pageSize
       }else{
         param = {
-          offset: this.offset,
+          offset,
           pageSize: this.pageSize
         }
       }
-      console.log('doQuery:', param);
       // debugger;
-      // this.loading = true
       Article.getArticles(param).then(res => {
         const {articles, total} = res
-        // this.loading = false
-        this.articles = articles
-        this.total = total
+        if(articles.length){
+          this.articles = articles
+          this.total = total
+          if(resetPage){
+            this.currentPage = 1
+          }
+        }else{
+          this.$notify({
+            message: '没有搜索到符合条件的数据',
+            type: 'success'
+          })
+        }
+        this.loading = false
       })
       .catch(message => {
-        // this.loading = false
+        this.loading = false
       })
     },
     handleSizeChange(val) {
@@ -156,7 +165,7 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       // console.log(`当前页: ${val}`)
-      this.doQuery(this.input)
+      this.doQuery(this.input, false)
     },
     handleEdit (index, row) {
       this.$router.push({ name: 'edit', params: { id: this.articles[index].id }})
