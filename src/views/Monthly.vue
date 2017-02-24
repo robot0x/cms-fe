@@ -5,7 +5,7 @@
          <el-menu :default-openeds="defaultOpeneds" class="el-menu-vertical-demo" theme="dark" @select="select">
            <el-submenu v-for="(item, index) in items" :index="index | calcIndex">
              <template slot="title">{{ item.year }}年（{{item.count}}）</template>
-             <el-menu-item :index="index | calcIndex(i)" v-for="(month, i) in item.months"> {{ month | monthFormat }}</el-menu-item>
+             <el-menu-item :index="index | calcIndex(i)" v-for="(month, i) in item.months"> {{ month.month | monthFormat }}（{{month.count}}）</el-menu-item>
            </el-submenu>
        </el-menu>
       </el-col>
@@ -13,43 +13,27 @@
    </el-row>
  </div>
 </template>
-
 <script>
 import DataGrid from '../components/DataGrid'
 import moment from 'moment'
+import Article from '../service/Article'
 export default {
   components: { DataGrid },
   // activated () {
   // 改为created的原因是，每次视图切换回来activated钩子都会执行，这样每次都会从新查询
   // 而这是没有必要的，所以放在created即可
   activated(){
-    // this.setDefaultActive()
-    // this.query = { type: 'monthly', search: moment(this.getYearAndMonth(this.defaultActive)).valueOf() }
+    Article.getStatistics().then(res => {
+      this.items = res
+    })
   },
   // select user, count(a.id) as count from article_meta as a, user as u where a.user = u.name group by u.name;
   // select DATAFORMAT('YYYY', last_update_time) as year, DATAFORMAT('m')
   data () {
     return {
-      // defaultActive: '',
       query: {},
       defaultOpeneds: ['1', '2'],
-      items: [{
-        year: 2017,
-        count: 500,
-        months: [1, 2, 3]
-      }, {
-        year: 2016,
-        count: 3467,
-        months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-      }, {
-        year: 2015,
-        count: 4467,
-        months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-      }, {
-        year: 2014,
-        count: 1402,
-        months: [8, 9, 10, 11, 12]
-      }]
+      items: []
     }
   },
 
@@ -60,22 +44,12 @@ export default {
       return [item.year, item.months[j]]
     },
     select (index) {
-      this.query = { type: 'monthly', search: moment(this.getYearAndMonth(index)).valueOf() }
-    },
-    // setDefaultActive () {
-    //   const now = moment() // month 是从0开始的
-    //   for(let i = 0, l = this.items.length; i < l; i++){
-    //     const item = this.items[i]
-    //     const year = item.year
-    //     for(let j = 0, len = item.months.length; j < len; j++){
-    //       const month = item.months[j]
-    //       if(now.isSame(moment([year, month - 1]), 'month')) {
-    //         this.defaultActive = (i + 1) + '-' + (j + 1)
-    //         return
-    //       }
-    //     }
-    //   }
-    // }
+      console.log(index);
+      const [yIndex , mIndex] = index.split('-')
+      const year = this.items[yIndex - 1]
+      const month = year.months[mIndex - 1]
+      this.query = { type: 'month', search: year.year + '-' + month.month }
+    }
   },
   filters: {
     calcIndex (index, i) {

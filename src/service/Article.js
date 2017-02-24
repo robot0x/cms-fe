@@ -5,6 +5,26 @@ import _ from 'lodash'
 import LoginUtils from '../utils/LoginUtils'
 export default class Article {
 
+ static getStatistics () {
+   return new Promise((resolve, reject) => {
+     try {
+       fetch(`${API.articles.url}/?type=monthly`)
+       .then(response => response.json())
+       .then(result => {
+         const message = result.message
+         if(message !== 'SUCCESS') {
+           reject(message)
+         }else{
+           resolve(result.res)
+         }
+       })
+     } catch (e) {
+        console.log(e)
+        reject(e.message)
+     }
+   })
+ }
+
   static newArticle () {
     return new Promise((resolve, reject) => {
       try {
@@ -38,8 +58,6 @@ export default class Article {
         })
       } catch (e) {
         reject(e.message)
-      } finally {
-
       }
     })
   }
@@ -51,7 +69,9 @@ export default class Article {
     return new Promise((resolve, reject) => {
       try{
         let ret = []
+        console.log(query);
         let {type, search, offset, pageSize} = query
+        console.log(type, search, offset, pageSize);
         let queryString = ''
         if(type && search){
           queryString = `?${type}=${search}`

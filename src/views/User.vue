@@ -16,14 +16,13 @@
 </template>
 <script>
 import DataGrid from '../components/DataGrid'
-import LoginUtils from '../utils/LoginUtils'
 import User from '../service/User'
 export default {
   components: {
     DataGrid
   },
   activated () {
-    User.getUserAndCount().then(items => { 
+    User.getUserAndCount().then(items => {
       this.items = items
     })
   },
