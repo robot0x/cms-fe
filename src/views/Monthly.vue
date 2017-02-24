@@ -2,7 +2,7 @@
  <div class="page-monthly">
    <el-row>
       <el-col :span="4">
-         <el-menu :default-openeds="defaultOpeneds"	:default-active="defaultActive" class="el-menu-vertical-demo" theme="dark" @select="select">
+         <el-menu :default-openeds="defaultOpeneds" class="el-menu-vertical-demo" theme="dark" @select="select">
            <el-submenu v-for="(item, index) in items" :index="index | calcIndex">
              <template slot="title">{{ item.year }}年（{{item.count}}）</template>
              <el-menu-item :index="index | calcIndex(i)" v-for="(month, i) in item.months"> {{ month | monthFormat }}</el-menu-item>
@@ -22,13 +22,15 @@ export default {
   // activated () {
   // 改为created的原因是，每次视图切换回来activated钩子都会执行，这样每次都会从新查询
   // 而这是没有必要的，所以放在created即可
-  created(){
-    this.setDefaultActive()
-    this.query = { type: 'monthly', search: moment(this.getYearAndMonth(this.defaultActive)).valueOf() }
+  activated(){
+    // this.setDefaultActive()
+    // this.query = { type: 'monthly', search: moment(this.getYearAndMonth(this.defaultActive)).valueOf() }
   },
+  // select user, count(a.id) as count from article_meta as a, user as u where a.user = u.name group by u.name;
+  // select DATAFORMAT('YYYY', last_update_time) as year, DATAFORMAT('m')
   data () {
     return {
-      defaultActive: '',
+      // defaultActive: '',
       query: {},
       defaultOpeneds: ['1', '2'],
       items: [{
@@ -60,20 +62,20 @@ export default {
     select (index) {
       this.query = { type: 'monthly', search: moment(this.getYearAndMonth(index)).valueOf() }
     },
-    setDefaultActive () {
-      const now = moment() // month 是从0开始的
-      for(let i = 0, l = this.items.length; i < l; i++){
-        const item = this.items[i]
-        const year = item.year
-        for(let j = 0, len = item.months.length; j < len; j++){
-          const month = item.months[j]
-          if(now.isSame(moment([year, month - 1]), 'month')) {
-            this.defaultActive = (i + 1) + '-' + (j + 1)
-            return
-          }
-        }
-      }
-    }
+    // setDefaultActive () {
+    //   const now = moment() // month 是从0开始的
+    //   for(let i = 0, l = this.items.length; i < l; i++){
+    //     const item = this.items[i]
+    //     const year = item.year
+    //     for(let j = 0, len = item.months.length; j < len; j++){
+    //       const month = item.months[j]
+    //       if(now.isSame(moment([year, month - 1]), 'month')) {
+    //         this.defaultActive = (i + 1) + '-' + (j + 1)
+    //         return
+    //       }
+    //     }
+    //   }
+    // }
   },
   filters: {
     calcIndex (index, i) {

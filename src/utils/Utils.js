@@ -1,4 +1,17 @@
 class Utils {
+
+  /**
+   * 判断一个url是否在md中出现过
+   */
+  static isUsed (md, url){
+    let used = false
+    md = md || ''
+    url = url || ''
+    if(md.trim() && url.trim()){
+      used = md.indexOf(url) > 0
+    }
+    return used
+  }
   /*
    获取文件扩展名
    'filename'	''
@@ -12,7 +25,7 @@ class Utils {
 
   static insertContent(obj, str) {
     if (document.selection) {
-        var sel = document.selection.createRange();
+        var sel = document.selection.createRange()
         sel.text = str;
     } else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') {
         var startPos = obj.selectionStart,
@@ -21,7 +34,7 @@ class Utils {
             tmpStr = obj.value;
         obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
         cursorPos += str.length;
-        obj.selectionStart = obj.selectionEnd = cursorPos;
+        obj.selectionStart = obj.selectionEnd = cursorPos
     } else {
         obj.value += str;
     }

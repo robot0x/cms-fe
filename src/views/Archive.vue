@@ -30,7 +30,7 @@ export default {
       this.$router.replace({name: name})
     },
     routeChange () {
-      const archive = this.$route.path.indexOf('author') !== -1 ? 'user' : 'monthly'
+      const archive = this.$route.path.indexOf('user') !== -1 ? 'user' : 'monthly'
       this.archive = archive
     }
   },

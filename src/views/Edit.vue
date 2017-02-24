@@ -36,15 +36,12 @@
                 <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
               </el-select>
             </el-form-item>
-
-
             <el-form-item label="上传图片">
               <el-upload
                 action="http://z.diaox2.com/view/app/upfornewcms.php"
                 type="drag"
                 accept="image/*"
                 :data="{'id':id}"
-                :on-preview="handlePreview"
                 :before-upload="handleBeforeUpload"
                 :on-success="handleSuccess"
                 :on-error="handleError"
@@ -64,7 +61,7 @@
                 :check-strictly="true"
                 node-key="id"
                 show-checkbox
-                :props="{children: 'children',label: 'label'}"
+                :props="{children: 'children',label: 'name'}"
                 :default-checked-keys="select_tags"
                 @check-change="handleCheckChange">
               </el-tree>
@@ -140,28 +137,33 @@
             共{{images.length}}张图片
           </div>
           <ul class="image-list">
-            <li v-for="(image, index) in images">
+            <li v-for="(image, index) in images" class="image-item">
               <figure>
                 <img :src="image.url" draggable="true" @dragstart.stop="dragstart">
               </figure>
               <figcaption class="image-info">
-                {{image.size | imageSizeFormat}}
-                <span class="image-width-and-height">
-                  {{image.width | imageWidthAndHeightFormat(image.height)}}
-                </span>
+                <!-- {{image.size | imageSizeFormat}} -->
+                <!-- {{image.width | imageWidthAndHeightFormat(image.height)}} -->
+                <div class="images-attr">{{image.width | imageWidthAndHeightFormat(image.height)}} &nbsp; {{image.size | imageSizeFormat}}</div>
+                <div class="images-oper-tool">
+                  <i class="el-icon-view" @click="viewImage(image.url)" title="查看大图"></i>
+                  <i class="el-icon-check" @click="insert(index)" title="插入到文章内"></i>
+                  <a :href="image.url" target="_blank" title="跳转到图片所在链接"><i class="el-icon-picture"></i></a>
+                </div>
+                <div class="set-image-type">
+                  <el-button type="primary" size="mini" @click="setImageType(index, 'cover')">设为封面</el-button>
+                  <el-button type="danger" size="mini" @click="setImageType(index, 'thumb')">设为缩略</el-button>
+                </div>
               </figcaption>
-              <div class="images-oper-tool">
-                <el-button type="primary" size="mini" @click="setImageType(index, 'cover')">设为封面图</el-button>
-                <el-button type="success" size="mini" @click="setImageType(index, 'thumb')">设为缩略图</el-button>
-                <el-button type="danger" size="mini" @click="insert(index)">插入</el-button>
-              </div>
+              <span class="used-label" v-if="image.used"><i class="el-icon-check"></i></span>
               <div class="image-types" v-if="image.types && image.types.length > 0">
-                <span v-for="t in image.types" :style="t.type === 'cover' ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#13ce66'}">
-                  {{t.index + 1}}
-                </span>
+                <span v-for="t in image.types" :style="t === 'cover' ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t === 'cover' ? '此图为封面图': '此图为缩略图'"></span>
               </div>
              </li>
             </ul>
+            <el-dialog v-model="dialogVisible" size="tiny">
+              <img width="100%" :src="dialogImageUrl">
+            </el-dialog>
           </el-col>
         </el-row>
       </div>
@@ -197,6 +199,7 @@ import Content from '../service/Content'
 import MaxWindow from '../components/MaxWindow'
 import Utils from '../utils/Utils'
 import LoginUtils from '../utils/LoginUtils'
+import Tags from '../service/Tags'
  // 这个是写在前端的，不用改
 import { tags as all_tags, ctypes } from '../config/content_page_data'
 // 这个是写在前端的，不用改
@@ -210,6 +213,8 @@ const defaultData = {
   leftSmall: false,
   rightSmall: false,
   locked: false,
+  dialogVisible: false, // 查看大图的dialog默认是隐藏的
+  dialogImageUrl: '',
 
   used_for_gift: false, // 是否适合送礼。1-适合，0-不适合
   scenes: [],
@@ -241,14 +246,13 @@ const defaultData = {
     wb_title: '', // 分享到微博的标题
     share_title: '', // 分享到的标题
   // }
+  all_tags: [],
+  // all_tags,
   ctypes, // 不用改
-  all_tags, // tag配置。供用户选择
   gift, // 礼物配置。供用户选择
   // rules,
   images: [] // 用户上传的图片
 }
-let coverIndex = 0;
-let thumbIndex = 1;
 export default {
   components: {
     RawEditor,
@@ -259,6 +263,13 @@ export default {
   },
   computed: { ...mapGetters(['html']) },
   watch: {
+    html ( { md } ) {
+        this.images = this.images.map(image => {
+          image.used = Utils.isUsed(md, image.url) || image.types.length > 0
+          return image
+        })
+    },
+
     used_for_gift (val) {
       Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift', val)
     },
@@ -340,8 +351,34 @@ export default {
   },
   created() {
     this.loadData(this.$route.params.id)
+    Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
   },
   methods: {
+
+    setImageType(index, type) {
+      const image = this.images[index]
+      if (image.types) {
+        if (image.types.indexOf(type) === -1) {
+          image.types.push(type)
+        } else {
+          _.remove(image.types, t => t === type)
+        }
+      } else {
+        image.types = [type]
+      }
+      if (image.types.length > 0 || Utils.isUsed(this.html.md, image.url)) {
+        image.used = true
+      } else {
+        image.used = false
+      }
+      this.$set(this.images, index, image)
+    },
+
+    viewImage (url) {
+      this.dialogImageUrl = url;
+      this.dialogVisible = true;
+    },
+
     removeTag(type, tag) {
       console.log(type, tag);
       const index = this._getIndexByTags(type,tag)
@@ -430,27 +467,6 @@ export default {
 
     share_titleInput(){
       this.wx_title = this.wb_title = this.share_title
-    },
-
-    setImageType(index, type) {
-      const image = this.images[index]
-      if (image.types) {
-        if (image.types.indexOf(type) === -1) {
-          image.types.push({
-            type,
-            index: type === 'cover'? coverIndex++ : thumbIndex++
-          })
-        } else {
-          _.remove(image.types, t => t.type === type)
-          type === 'cover'? coverIndex-- : thumbIndex--
-        }
-      } else {
-        image.types = [{
-          type,
-          index: type === 'cover'? coverIndex++ : thumbIndex++
-        }]
-      }
-      this.$set(this.images, index, image)
     },
 
     insert(index) {
@@ -645,8 +661,8 @@ export default {
           message: '文章保存成功'
         })
       }, 1000)
-    },
-    addTitle() {
+      // 保存成功的话，清空本地缓存数据
+
     }
   },
   filters: {
@@ -675,67 +691,99 @@ export default {
 .image-list {
     display: flex;
     flex-wrap: wrap;
-}
-
-.image-list li {
-    margin: 0 30px 30px 0;
-    cursor: pointer;
-    background-color: #f6f5f5;
-    position: relative;
-    img {
-        height: 120px;
-    }
-    .image-types {
+    .image-item {
+      margin: 0 30px 30px 0;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      border-radius: 6px;
+      // background-color: #f6f5f5;
+      position: relative;
+      img {
+          height: 160px;
+      }
+      .image-info {
         position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
         top: 0;
-        right: 0;
-        span {
-            display: inline-block;
-            font-size: 14px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 5px;
-            line-height: 20px;
-            text-align: center;
-            color:#fff;
+        // cursor: default;
+        text-align: center;
+        color: #fff;
+        opacity: 0;
+        font-size: 14px;
+        background-color: rgba(0,0,0,.7);
+        transition: opacity .3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      .images-attr {
+        position: absolute;
+        top: 30px;
+      }
+      .images-oper-tool {
+        font-size: 17px;
+        .el-icon-check {
+          margin-left: 20px;
         }
+        a {
+          text-decoration: none;
+          color: #fff;
+          margin-left: 20px;
+        }
+      }
+      .set-image-type {
+        position: absolute;
+        bottom: 20px;
+      }
+      .image-types {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        span {
+          display: block;
+          width: 10px;
+          height: 10px;
+          float: left;
+        }
+        & span:first-child{
+          margin-right: 10px;
+        }
+      }
+
+      &:hover {
+        .image-info {
+          opacity: 1;
+        }
+      }
+      .used-label {
+        position: absolute;
+        right: -15px;
+        top: -6px;
+        width: 40px;
+        height: 24px;
+        background: #13ce66;
+        text-align: center;
+        transform: rotate(45deg);
+        box-shadow: 0 0 1pc 1px rgba(0,0,0,.2);
+        i {
+          font-size: 12px;
+          margin-top: 11px;
+          transform: rotate(-45deg) scale(.8);
+          color: #fff;
+        }
+      }
     }
 }
 
-.image-info {
-    font-size: 14px;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 5px 0 5px 5px;
-}
 
-.image-width-and-height {
-  margin-left: 20px;
-}
-
-.image-attr {
-    display: flex;
-}
-
-.size2 {
-    flex: 1;
-    text-align: right;
-}
 .clearfix:after {
     display: table;
     clear: both;
 }
-
-.images-oper-tool {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-}
-
-// image-list end
 
 .page-edit {
     padding: 10px;

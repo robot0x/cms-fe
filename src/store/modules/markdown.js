@@ -115,8 +115,9 @@ const getters = {
     marked.setOptions(options)
     return marked(state.md, (err, content) => {
       return {
+        md: state.md,
         content,
-        title
+        title,
       }
     })
   }

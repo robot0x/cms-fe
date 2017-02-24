@@ -71,7 +71,6 @@ export default class Article {
         fetch(`${API.articles.url}/${queryString}`)
         .then(response => response.json())
         .then(result => {
-          console.log(result);
           const message = result.message
           if(message !== 'SUCCESS'){
             reject(message)
