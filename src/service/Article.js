@@ -122,14 +122,30 @@ export default class Article {
       }
     })
   }
+
   static saveAll (data) {
+    console.log(data);
+
     return new Promise((resolve, reject) => {
       try {
+        if(data){
+          data.type = 'all'
+        } else {
+          return reject('您还未填写信息')
+        }
+        const opts = {
+          method: 'PUT',
+          mode: 'cors',
+          body: JSON.stringify(data),
+          headers: new Headers({
+            'Content-Type': 'json'
+          })
+        }
         const url = API.articles.url
-        fetch(url, {method: 'PUT'})
+        fetch(url, opts)
         .then(response => response.json())
         .then(result => {
-          console.log(url. result)
+          console.log(url, result)
           const message = result.message
           if(message !== 'SUCCESS'){
             reject(message)
@@ -142,6 +158,7 @@ export default class Article {
       }
     })
   }
+
   static deleteArticle (id) {
     return new Promise((resolve, reject) => {
       resolve('SUCCESS')

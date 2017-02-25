@@ -151,13 +151,15 @@
                   <a :href="image.url" target="_blank" title="跳转到图片所在链接"><i class="el-icon-picture"></i></a>
                 </div>
                 <div class="set-image-type">
-                  <el-button type="primary" size="mini" @click="setImageType(index, 'cover')">设为封面</el-button>
-                  <el-button type="danger" size="mini" @click="setImageType(index, 'thumb')">设为缩略</el-button>
+                  <!-- 1为封面图（cover） -->
+                  <!-- 2为缩略图（thumb） -->
+                  <el-button type="primary" size="mini" @click="setImageType(index, 1)">设为封面</el-button>
+                  <el-button type="danger" size="mini" @click="setImageType(index, 2)">设为缩略</el-button>
                 </div>
               </figcaption>
               <span class="used-label" v-if="image.used"><i class="el-icon-check"></i></span>
               <div class="image-types" v-if="image.types && image.types.length > 0">
-                <span v-for="t in image.types" :style="t === 'cover' ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t === 'cover' ? '此图为封面图': '此图为缩略图'"></span>
+                <span v-for="t in image.types" :style="t === 1 ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t === 1 ? '此图为封面图': '此图为缩略图'"></span>
               </div>
              </li>
             </ul>
@@ -199,6 +201,7 @@ import Content from '../service/Content'
 import MaxWindow from '../components/MaxWindow'
 import Utils from '../utils/Utils'
 import LoginUtils from '../utils/LoginUtils'
+import Article from '../service/Article'
 import Tags from '../service/Tags'
  // 这个是写在前端的，不用改
 import { tags as all_tags, ctypes } from '../config/content_page_data'
@@ -265,7 +268,16 @@ export default {
   watch: {
     html ( { md } ) {
         this.images = this.images.map(image => {
-          image.used = Utils.isUsed(md, image.url) || image.types.length > 0
+          const { url } = image
+          const has = Utils.isUsed(md, url)
+          image.used =  has || image.types.length > 0
+          // 进一步确定是否是banner图
+          const hasBanner = md.match(/```banner\n(.)+?\s*```/g)
+          if(hasBanner){
+            if(Utils.isUsed(hasBanner[0], url)){
+              image.banner = '3'
+            }
+          }
           return image
         })
     },
@@ -295,21 +307,27 @@ export default {
     used_for_search (val) {
       Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_search', val)
     },
+
     render_categroys (val) {
       Content.setContentToLocal(this.id || this.$route.params.id, 'render_categroys', val)
     },
+
     render_brands (val) {
       Content.setContentToLocal(this.id || this.$route.params.id, 'render_brands', val)
     },
+
     render_scenes (val) {
       Content.setContentToLocal(this.id || this.$route.params.id, 'render_scenes', val)
     },
+
     render_specials (val) {
       Content.setContentToLocal(this.id || this.$route.params.id, 'render_specials', val)
     },
+
     render_similars (val) {
       Content.setContentToLocal(this.id || this.$route.params.id, 'render_similars', val)
     },
+
     images (val) {
       if(val && val.length){
         Content.setContentToLocal(this.id || this.$route.params.id, 'images', val)
@@ -581,6 +599,7 @@ export default {
     //   })
     // },
     save() {
+      this.loading = true
       // 从VM中提取数据
       let {
         ctype,
@@ -591,15 +610,30 @@ export default {
         wx_title,
         wb_title,
         images,
-        id
+        id,
+
+        gift,
+        used_for_gift,
+        scenes,
+        relations,
+        characters,
+
+        used_for_search,
+        render_categroys,
+        render_brands,
+        render_scenes,
+        render_specials,
+        render_similars,
       } = this
       let title = this.html.title
       let last_update_by = LoginUtils.getUsername()
       if(!title){
+        this.loading = false
         return this.$alert('请在文章编辑区填写标题，格式为: # 文章标题', '标题未填写', { confirmButtonText: '确定' })
       }
       // 数据合法性验证
       if(!author){
+        this.loading = false
         return this.$alert('必须填写作者', '作者未填写', { confirmButtonText: '确定' })
       }
       console.log(images);
@@ -615,11 +649,24 @@ export default {
         `height`
        */
       let images_handled = images.map(image => {
+        const types = [...(image.types || [])]
+        if(image.banner){
+          if(types && types.length){
+            types.push('3')
+          } else {
+            image.types = ['3']
+          }
+        }
+
+        if(image.isUsed && !image.banner && types.length === 0 ){
+          image.types = ['4']
+        }
+
         return {
           aid: id,
           url: image.url,
-          type: {},
-          userd: image.userd || 1,
+          type: types.join(',') || '4',
+          used: image.used ? 1: 0,
           origin_filename: image.name,
           extension_name: Utils.getExtensionName(image.name),
           size: image.size,
@@ -627,9 +674,7 @@ export default {
           height: image.height
         }
       })
-
-      console.log(images_handled);
-
+      console.log(gift);
       const postData = {
         id,
         meta: {
@@ -642,8 +687,27 @@ export default {
           lock_by: '',
           last_update_by,
         },
-        images:images_handled
+        images: images_handled,
+        content: this.html.md,
+        gift: {
+          used_for_gift,
+          scenes: scenes.map(index => gift.scenes[index]),
+          relations: relations.map(index => gift.relations[index]),
+          characters: characters.map(index => gift.characters[index]),
+        },
+        keywords: {
+          used_for_search,
+          categroys: render_categroys.map(categroy => categroy.name),
+          brands: render_brands.map(brand => brand.name),
+          scenes: render_scenes.map(brand => brand.name),
+          specials: render_specials.map(brand => brand.name),
+          similars: render_similars.map(brand => brand.name),
+        },
+        tags: {
+
+        }
       }
+      console.log(postData)
       // if(select_tags.length){
       //   return this.$alert('必须选择所属标签', '未选择所属标签', { confirmButtonText: '确定' })
       // }
@@ -653,14 +717,26 @@ export default {
       console.log("微博标题：", wb_title)
       console.log("类型：", ctype)
       console.log("发布时间：", timetopublish)
-      this.loading = true
-      setTimeout(() => {
+
+      Article.saveAll(postData).then(res => {
+        console.log(res);
         this.loading = false
         this.$message({
           type: 'success',
           message: '文章保存成功'
         })
-      }, 1000)
+      }).catch( message => {
+        this.loading = false
+        console.log(message)
+        this.$notify({ message: message, type: 'error' })
+      })
+      // setTimeout(() => {
+      //   this.loading = false
+        // this.$message({
+        //   type: 'success',
+        //   message: '文章保存成功'
+        // })
+      // }, 1000)
       // 保存成功的话，清空本地缓存数据
 
     }
