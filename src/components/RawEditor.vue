@@ -29,7 +29,7 @@ export default {
     },
     insertImage (val) {
       if(val){
-        this.commit(Utils.insertContent(this.$refs.textarea, `![](${val})\n`))
+        this.commit(Utils.insertContent(this.$refs.textarea, `\n![](${val})\n`))
       }
     }
   },

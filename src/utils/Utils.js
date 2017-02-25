@@ -1,5 +1,8 @@
 class Utils {
 
+  static clearCache (key = '') {
+    localStorage.removeItem(String(key))
+  }
   /**
    * 判断一个url是否在md中出现过
    */
@@ -20,7 +23,11 @@ class Utils {
    'filename.with.many.dots.ext'	'ext'
   */
   static getExtensionName (filename) {
-     return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
+     if(filename){
+       return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
+     }else{
+       return ''
+     }
   }
 
   static insertContent(obj, str) {

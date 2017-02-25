@@ -197,14 +197,13 @@ import RawEditor from '../components/RawEditor'
 import TagTree from '../components/TagTree'
 import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
-import Content from '../service/Content'
 import MaxWindow from '../components/MaxWindow'
 import Utils from '../utils/Utils'
 import LoginUtils from '../utils/LoginUtils'
-import Article from '../service/Article'
+import Content from '../service/Content'
 import Tags from '../service/Tags'
  // 这个是写在前端的，不用改
-import { tags as all_tags, ctypes } from '../config/content_page_data'
+import { ctypes } from '../config/content_page_data'
 // 这个是写在前端的，不用改
 import gift from '../config/gift'
 import moment from 'moment'
@@ -266,20 +265,22 @@ export default {
   },
   computed: { ...mapGetters(['html']) },
   watch: {
-    html ( { md } ) {
+    html ( {md} ) {
+      try{
         this.images = this.images.map(image => {
           const { url } = image
           const has = Utils.isUsed(md, url)
-          image.used =  has || image.types.length > 0
+          image.used =  has || (image.types && image.types.length > 0)
           // 进一步确定是否是banner图
           const hasBanner = md.match(/```banner\n(.)+?\s*```/g)
-          if(hasBanner){
-            if(Utils.isUsed(hasBanner[0], url)){
-              image.banner = '3'
-            }
+          if(hasBanner && Utils.isUsed(hasBanner[0], url)){
+            image.banner = '3'
           }
           return image
         })
+      }catch(e){
+        console.log(e)
+      }
     },
 
     used_for_gift (val) {
@@ -455,13 +456,13 @@ export default {
                 this.share_title = content.share_title || ''
 
                 // gift
-                this.used_for_gift = content.used_for_gift || false
+                this.used_for_gift = content.used_for_gift === 1 ? true: false
                 this.scenes = content.scenes || []
                 this.relations = content.relations || []
                 this.characters = content.characters || []
 
                 // kehywords
-                this.used_for_search = content.used_for_search || false
+                this.used_for_search = content.used_for_search === 1 ? true: false
                 this.render_categroys = content.render_categroys || []
                 this.render_brands = content.render_brands || []
                 this.render_scenes = content.render_scenes || []
@@ -586,19 +587,21 @@ export default {
       }
     },
     // 没必要，全选删除即可
-    // clearCache () {
-    //   this.$confirm('此操作将删除本篇文章在本地的缓存，是否继续?', '提示',{
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     this.$message({
-    //       type: 'success',
-    //       message: '缓存删除成功'
-    //     })
-    //   })
-    // },
+    clearCache () {
+      console.log('保存成功，清空缓存 ...');
+      // this.$confirm('此操作将删除本篇文章在本地的缓存，是否继续?', '提示',{
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      //   this.$message({
+      //     type: 'success',
+      //     message: '缓存删除成功'
+      //   })
+      // })
+    },
     save() {
+      // return console.log(this.images)
       this.loading = true
       // 从VM中提取数据
       let {
@@ -668,13 +671,15 @@ export default {
           type: types.join(',') || '4',
           used: image.used ? 1: 0,
           origin_filename: image.name,
+          // origin_filename: 'image',
           extension_name: Utils.getExtensionName(image.name),
           size: image.size,
           width: image.width,
           height: image.height
         }
       })
-      console.log(gift);
+      // return console.log(images_handled)
+      // console.log(gift);
       const postData = {
         id,
         meta: {
@@ -690,24 +695,65 @@ export default {
         images: images_handled,
         content: this.html.md,
         gift: {
-          used_for_gift,
-          scenes: scenes.map(index => gift.scenes[index]),
-          relations: relations.map(index => gift.relations[index]),
-          characters: characters.map(index => gift.characters[index]),
+          used_for_gift: used_for_gift === true? 1 : 0,
+          hints: (() => {
+            const temp = {
+              scenes: scenes.join(' '),
+              relations: relations.join(' '),
+              characters: characters.join(' ')
+            }
+            if (!temp.scenes){
+              delete temp.scenes
+            }
+            if (!temp.relations){
+              delete temp.relations
+            }
+            if (!temp.characters){
+              delete temp.characters
+            }
+            if( _.isEmpty(temp)){
+              return ''
+            }else{
+              return JSON.stringify(temp)
+            }
+          })()
         },
         keywords: {
-          used_for_search,
-          categroys: render_categroys.map(categroy => categroy.name),
-          brands: render_brands.map(brand => brand.name),
-          scenes: render_scenes.map(brand => brand.name),
-          specials: render_specials.map(brand => brand.name),
-          similars: render_similars.map(brand => brand.name),
+          used_for_search: used_for_search === true? 1 : 0,
+          keywords: (() => {
+            const temp = {
+              categroys: render_categroys.map(categroy => categroy.name).join(' '),
+              brands: render_brands.map(brand => brand.name).join(' '),
+              scenes: render_scenes.map(brand => brand.name).join(' '),
+              specials: render_specials.map(brand => brand.name).join(' '),
+              similars: render_similars.map(brand => brand.name).join(' '),
+            }
+            if (!temp.categroys){
+              delete temp.categroys
+            }
+            if (!temp.brands){
+              delete temp.brands
+            }
+            if (!temp.scenes){
+              delete temp.scenes
+            }
+            if (!temp.specials){
+              delete temp.specials
+            }
+            if (!temp.similars){
+              delete temp.similars
+            }
+            if( _.isEmpty(temp)){
+              return ''
+            }else{
+              return JSON.stringify(temp)
+            }
+          })()
         },
         tags: {
 
         }
       }
-      console.log(postData)
       // if(select_tags.length){
       //   return this.$alert('必须选择所属标签', '未选择所属标签', { confirmButtonText: '确定' })
       // }
@@ -718,13 +764,13 @@ export default {
       console.log("类型：", ctype)
       console.log("发布时间：", timetopublish)
 
-      Article.saveAll(postData).then(res => {
-        console.log(res);
+      Content.save(postData).then(res => {
         this.loading = false
         this.$message({
           type: 'success',
           message: '文章保存成功'
         })
+        this.clearCache()
       }).catch( message => {
         this.loading = false
         console.log(message)

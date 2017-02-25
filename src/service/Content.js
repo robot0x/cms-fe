@@ -1,6 +1,8 @@
 import content from '../mocks/content'
 import fetch from 'isomorphic-fetch'
 import images from '../mocks/images'
+import API from '../config/api'
+import _ from 'lodash'
 const CTYPES = ['好物', '专刊', '专题', '首页', '测评', '长文']
 // 根据id查询Content
 /*
@@ -30,16 +32,124 @@ const CTYPES = ['好物', '专刊', '专题', '首页', '测评', '长文']
  */
 export default class Content {
   static getContent(id){
+    console.log(`拿id为${id}的文章`)
     return new Promise((resolve, reject) => {
       try {
-        const content = Content.getContentFormLocal(id)
+        // 首先从缓存中拿数据
+        // const content = Content.getContentFormLocal(id)
+        const content = null
         if (content) {
-          // console.log('if');
           resolve(content)
-        } else {
-          // 如果没有缓存，从服务器上拿数据
-          // console.log('else');
-          resolve(content)
+        }
+         else  // 如果没有缓存，从服务器上拿数据
+        {
+          try {
+            const url = `${API.articles.url}/?type=all&id=${id}`
+            fetch(url)
+            .then(response => response.json())
+            .then(result => {
+              console.log(url, result)
+              const message = result.message
+              if(message !== 'SUCCESS'){
+                reject(message)
+              }else{
+
+                // used_for_search: false, // 是否可搜
+                // categroy: '',
+                // render_categroys: [],
+                // brand: '',
+                // render_brands: [],
+                // scene: '',
+                // render_scenes: [],
+                // special: '',
+                // render_specials: [],
+                // similar: '',
+                // render_similars: [],
+                console.log(result.res)
+                const ret = result.res
+                let {gift, keywords, tags} = ret
+                if(keywords){
+                  keywords = JSON.parse(keywords)
+                  const {categroys, brands, scenes, specials, similars} = keywords
+                  // 品类
+                  if(categroys){
+                    ret.render_categroys = categroys.split(' ').map(item => {
+                      return {
+                        type: 'primary',
+                        name: item
+                      }
+                    })
+                  }
+                  // 品牌
+                  if(brands){
+                    ret.render_brands = brands.split(' ').map(item => {
+                      return {
+                        type: 'primary',
+                        name: item
+                      }
+                    })
+                  }
+
+                  // 使用场景
+                  if(scenes){
+                    ret.render_scenes = scenes.split(' ').map(item => {
+                      return {
+                        type: 'primary',
+                        name: item
+                      }
+                    })
+                  }
+
+                  // 特别之处
+                  if(specials){
+                    ret.render_specials = specials.split(' ').map(item => {
+                      return {
+                        type: 'primary',
+                        name: item
+                      }
+                    })
+                  }
+
+                  // 类似产品
+                  if(similars){
+                    ret.render_similars = similars.split(' ').map(item => {
+                      return {
+                        type: 'primary',
+                        name: item
+                      }
+                    })
+                  }
+                }
+
+                // used_for_gift: false, // 是否适合送礼。1-适合，0-不适合
+                // scenes: [],
+                // relations: [],
+                // characters: [],
+                if(gift){
+                  gift = JSON.parse(gift)
+                  console.log(gift)
+                  const {scenes, relations, characters} = gift
+                  if(scenes){
+                    ret.scenes = scenes.split(' ').filter(s => s.trim()).map(s => Number(s))
+                  }
+                  if(relations){
+                    ret.relations = relations.split(' ').filter(s => s.trim()).map(s => Number(s))
+                  }
+                  if(characters){
+                    ret.characters = characters.split(' ').filter(s => s.trim()).map(s => Number(s))
+                  }
+                }
+                if(tags){
+                  tags = JSON.parse(tags)
+                }
+                console.log(ret);
+                // console.log(gift, keywords, tags);
+                resolve(ret)
+              }
+            })
+          } catch (e) {
+            reject(e.message)
+          }
         }
         // if(id){
         //   // 组装数据
@@ -60,16 +170,41 @@ export default class Content {
     })
   }
 
-  static save(){
+  static save (data) {
+    console.log(data);
     return new Promise((resolve, reject) => {
       try {
-        resolve()
+        if(data){
+          data.type = 'all'
+        } else {
+          return reject('您还未填写信息')
+        }
+        const opts = {
+          method: 'PUT',
+          mode: 'cors',
+          body: JSON.stringify(data),
+          headers: new Headers({
+            'Content-Type': 'json'
+          })
+        }
+        const url = API.articles.url
+        fetch(url, opts)
+        .then(response => response.json())
+        .then(result => {
+          console.log(url, result)
+          const message = result.message
+          if(message !== 'SUCCESS'){
+            reject(message)
+          }else{
+            resolve({})
+          }
+        })
       } catch (e) {
         reject(e.message)
-      } finally {
       }
     })
   }
+
 
   static handleKeywords(keywords, type = 'success'){
     return keywords.map(keyword => { return { name: keyword, type: type } })
