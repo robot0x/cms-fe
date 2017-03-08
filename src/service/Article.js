@@ -5,6 +5,28 @@ import _ from 'lodash'
 import LoginUtils from '../utils/LoginUtils'
 export default class Article {
 
+ // static checkIdAndSetLockBy (id, user) {
+ //   return new Promise((resolve, reject) => {
+ //     try {
+ //       const url = `${API.articles.url}/?type=check&id=${id}&user=${user}`
+ //       fetch(url)
+ //       .then(response => response.json())
+ //       .then(result => {
+ //         console.log(url, result)
+ //         const message = result.message
+ //         if(message !== 'SUCCESS') {
+ //           reject(message)
+ //         }else{
+ //           resolve(result.res)
+ //         }
+ //       })
+ //     } catch (e) {
+ //       console.log(e)
+ //       reject(e.message)
+ //     }
+ //   })
+ // }
+
  static getStatistics () {
    return new Promise((resolve, reject) => {
      try {
@@ -123,7 +145,7 @@ export default class Article {
     })
   }
 
-  
+
 
   static deleteArticle (id) {
     return new Promise((resolve, reject) => {

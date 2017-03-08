@@ -3,6 +3,7 @@ import fetch from 'isomorphic-fetch'
 import images from '../mocks/images'
 import API from '../config/api'
 import _ from 'lodash'
+import LoginUtils from '../utils/LoginUtils'
 const CTYPES = ['好物', '专刊', '专题', '首页', '测评', '长文']
 // 根据id查询Content
 /*
@@ -36,15 +37,15 @@ export default class Content {
     return new Promise((resolve, reject) => {
       try {
         // 首先从缓存中拿数据
-        const content = Content.getContentFormLocal(id)
-        // const content = null
+        // const content = Content.getContentFormLocal(id)
+        const content = null
         if (content) {
           resolve(content)
         }
          else  // 如果没有缓存，从服务器上拿数据
         {
           try {
-            const url = `${API.articles.url}/?type=all&id=${id}`
+            const url = `${API.articles.url}/?type=all&id=${id}&user=${LoginUtils.getUsername()}`
             fetch(url)
             .then(response => response.json())
             .then(result => {

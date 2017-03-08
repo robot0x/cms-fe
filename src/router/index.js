@@ -12,6 +12,7 @@ import Login from '../views/Login'
 import Register from '../views/Register'
 import NotFound from '../views/NotFound'
 import LoginUtils from '../utils/LoginUtils'
+import Article from '../service/Article'
 Vue.use(VueRouter)
 
 // 0. 如果使用模块化机制编程，導入Vue和VueRouter，要调用 Vue.use(VueRouter)
@@ -65,15 +66,33 @@ router.beforeEach((to, from, next) => {
   // console.log('导航钩子被执行.......')
   // console.log("from:",from.name)
   // console.log("to:",to.name)
-
-  if( to.name === 'login' ) {
+  const {name} = to
+  if( name === 'login' ) {
     return next()
   }
+
   let isLogin = LoginUtils.checkLoginInfo()
   if( !isLogin ) {
     router.replace({name: 'login'})
-  }else{
-    next()
+  } else {
+    // if( name === 'edit'){
+    //   /**
+    //    *  TODO
+    //    *  1. check这个id是否存在
+    //    *  2. 若存在则设置lockby字段
+    //    */
+    //   Article
+    //   .checkIdAndSetLockBy(2, LoginUtils.getUsername())
+    //   .then(res => {
+    //     if(!res.valid){
+    //       router.replace({name: 'NotFound'})
+    //     }else{
+    //       next()
+    //     }
+    //   })
+    // }else{
+      next()
+    // }
   }
 })
 

@@ -5,6 +5,7 @@
 
     <span slot="panel-heading-middle">
       <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
+      <el-button type="info" size="small" @click="releaseLock">解除锁定</el-button>
     </span>
 
     <div slot="panel-body" class="panel-body">
@@ -185,7 +186,7 @@
     </panel>
     <el-alert
       :closable="false"
-      :title="lockedBy | lockedByFormat"
+      :title="lock_by | lockedByFormat"
       v-if="locked"
       type="error">
     </el-alert>
@@ -228,6 +229,7 @@ const defaultData = {
   leftSmall: false,
   rightSmall: false,
   locked: false,
+  lock_by: '',
   dialogVisible: false, // 查看大图的dialog默认是隐藏的
   dialogImageUrl: '',
 
@@ -457,46 +459,55 @@ export default {
           .getContent(id)
           .then(content => {
                 content = content || {}
-                this.id = String(content.id || id)
-                this.images = (content.images || []).map(image => {
-                  const {type} = image
-                  if(type){ image.types = type.split(',') }
-                  return image
-                })
-                this.text =  content.text || ''
-                this.author =  content.author || ''
-                this.ctype =  content.ctype || 0
-                this.tag =  content.tag || {}
-                this.timetopublish = content.timetopublish || Date.now()
-                this.wx_title = content.wx_title || ''
-                this.wb_title = content.wb_title || ''
-                this.share_title = content.share_title || ''
+                if(!_.isEmpty(content)){
+                  this.id = String(content.id || id)
+                  this.images = (content.images || []).map(image => {
+                    const {type} = image
+                    if(type){ image.types = type.split(',') }
+                    return image
+                  })
+                  this.text =  content.text || ''
+                  this.author =  content.author || ''
+                  this.ctype =  content.ctype || 0
+                  this.tag =  content.tag || {}
+                  this.timetopublish = content.timetopublish || Date.now()
+                  this.wx_title = content.wx_title || ''
+                  this.wb_title = content.wb_title || ''
+                  this.share_title = content.share_title || ''
 
-                // gift
-                this.used_for_gift = content.used_for_gift === 1 ? true: false
-                this.scenes = content.scenes || []
-                this.relations = content.relations || []
-                this.characters = content.characters || []
+                  const { lock_by } = content
+                  this.locked = Utils.isLocked(currentUser, lock_by)
+                  this.lock_by = lock_by
+                  // gift
+                  this.used_for_gift = content.used_for_gift === 1 ? true: false
+                  this.scenes = content.scenes || []
+                  this.relations = content.relations || []
+                  this.characters = content.characters || []
 
-                // kehywords
-                this.used_for_search = content.used_for_search === 1 ? true: false
-                this.render_categroys = content.render_categroys || []
-                this.render_brands = content.render_brands || []
-                this.render_scenes = content.render_scenes || []
-                this.render_specials = content.render_specials || []
-                this.render_similars = content.render_similars || []
-                this.$nextTick(() => {
-                  // this.select_tags = [1,2]
-                })
-                // this.$refs.tree.setCheckedKeys([1,2,3])
-                // tag
-                // this.$refs.tree.setCheckedKeys(content.select_tags || [])
-                // this.select_tags = content.select_tags || []
-                // console.log(content.select_tags)
-                // console.log(this.select_tags)
-                // this.$refs.tree.setCheckedKeys(['1'])
-                // console.log(this.$refs.tree);
-                // console.log(this.$refs.tree.setCheckedKeys);
+                  // kehywords
+                  this.used_for_search = content.used_for_search === 1 ? true: false
+                  this.render_categroys = content.render_categroys || []
+                  this.render_brands = content.render_brands || []
+                  this.render_scenes = content.render_scenes || []
+                  this.render_specials = content.render_specials || []
+                  this.render_similars = content.render_similars || []
+                  this.$nextTick(() => {
+                    // this.select_tags = [1,2]
+                  })
+                  // this.$refs.tree.setCheckedKeys([1,2,3])
+                  // tag
+                  // this.$refs.tree.setCheckedKeys(content.select_tags || [])
+                  // this.select_tags = content.select_tags || []
+                  // console.log(content.select_tags)
+                  // console.log(this.select_tags)
+                  // this.$refs.tree.setCheckedKeys(['1'])
+                  // console.log(this.$refs.tree);
+                  // console.log(this.$refs.tree.setCheckedKeys);
+                } else {
+                  // 若根据ID查询不到任何数据，则直接跳转到首页
+                  this.$alert(`id为${id}的文章不存在，自动跳转到首页`, '文章不存在', { confirmButtonText: '确定' })
+                  this.$router.replace({ name:'content' })
+                }
           })
       }
     },
@@ -617,6 +628,9 @@ export default {
       //     message: '缓存删除成功'
       //   })
       // })
+    },
+    releaseLock (){
+
     },
     save() {
       // return console.log(this.images)
@@ -819,7 +833,7 @@ export default {
   },
   filters: {
     lockedByFormat(locked) {
-      return `此文已被${locked}锁住...`
+      return `此文已被 ${locked} 锁住...`
     },
     imageSizeFormat (size) {
       return Math.ceil(size / 1024) + 'kb'

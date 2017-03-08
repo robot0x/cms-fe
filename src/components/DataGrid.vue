@@ -10,6 +10,9 @@
       <el-table-column type="expand">
         <template scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="被谁锁定">
+              <span>{{ props.row.lock_by || '未锁定' }}</span>
+            </el-form-item>
             <el-form-item label="分享到标题">
               <span>{{ props.row.share_title || '未填写' }}</span>
             </el-form-item>
@@ -97,6 +100,8 @@
 // 端到端组件
 import Article from '../service/Article'
 import _ from 'lodash'
+import LoginUtils from '../utils/LoginUtils'
+import Utils from '../utils/Utils'
 export default {
   props: {
     input: Object
@@ -168,7 +173,12 @@ export default {
       Article.getArticles(param).then(res => {
         const {articles, total} = res
         if(articles.length){
-          this.articles = articles
+          this.articles = articles.map(article => {
+            if(Utils.isLocked(article.lock_by)){
+              article.title = article.title + ' 🔒'
+            }
+            return article
+          })
           this.total = total
           if(resetPage){
             this.currentPage = 1
@@ -196,7 +206,12 @@ export default {
       this.doQuery(this.input, false)
     },
     handleEdit (index, row) {
-      this.$router.push({ name: 'edit', params: { id: this.articles[index].id }})
+      const {id, lock_by} = this.articles[index]
+      if(Utils.isLocked(lock_by)){
+        this.$alert(`此文章已经被 ${lock_by} 锁定，暂无法编辑，请联系 ${lock_by} 解锁`, '文章被锁定', { confirmButtonText: '确定' })
+      } else {
+        this.$router.push({ name: 'edit', params: { id }})
+      }
     },
     handleDelete (index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示',{

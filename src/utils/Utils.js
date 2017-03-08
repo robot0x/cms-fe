@@ -1,5 +1,10 @@
 import _ from 'lodash'
+import LoginUtils from './LoginUtils'
 class Utils {
+
+  static isLocked(lock_by){
+      return lock_by && LoginUtils.getUsername() !== lock_by
+  }
 
   static clearCache(id) {
     try {
