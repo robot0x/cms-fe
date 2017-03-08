@@ -38,6 +38,20 @@
             </el-form-item>
             <el-form-item label="上传图片">
               <el-upload
+                action="//z.diaox2.com/view/app/upfornewcms.php"
+                drag
+                accept="image/*"
+                :data="{'id':id}"
+                :before-upload="handleBeforeUpload"
+                :on-success="handleSuccess"
+                :on-error="handleError"
+                multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过500kb<</div>
+              </el-upload>
+
+              <!-- <el-upload
                 action="http://z.diaox2.com/view/app/upfornewcms.php"
                 type="drag"
                 accept="image/*"
@@ -49,7 +63,7 @@
                 <i class="el-icon-upload"></i>
                 <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过500kb</div>
-              </el-upload>
+              </el-upload> -->
             </el-form-item>
           </el-col>
           <el-col :span="14">
