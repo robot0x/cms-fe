@@ -1,6 +1,14 @@
 import _ from 'lodash'
 class Utils {
 
+  static clearCache(id) {
+    try {
+      localStorage.removeItem(id)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   static splitTags(tagIndex, all_tags){
     const tag = {}
     console.log(tagIndex);

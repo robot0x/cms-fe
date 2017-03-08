@@ -1,5 +1,5 @@
 <template>
-   <div class="page-login">
+   <div class="page-login" :style="{backgroundImage: 'url(' + bg + ')'}" >
      <div class="login-box">
        <h2>有调内容管理系统</h2>
        <el-input v-model="username" placeholder="请输入用户名" size="large" @keyup.native.enter.stop.prevent="login"></el-input>
@@ -26,7 +26,8 @@ export default {
       password: '',
       loginMsg: '登录',
       loading: false,
-      reme: false
+      reme: false,
+      bg:require('../assets/p1089.jpg')
     }
   },
   computed: {
@@ -117,7 +118,7 @@ export default {
     top: 0;
     bottom: 0;
     /*background-color: #324057;*/
-    background: url(../assets/p1089.jpg) center center repeat;
+    /*background: url(../assets/p1089.jpg) center center repeat;*/
     background-size: cover;
     color: #fff;
     display: flex;

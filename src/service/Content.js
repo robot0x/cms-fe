@@ -36,8 +36,8 @@ export default class Content {
     return new Promise((resolve, reject) => {
       try {
         // 首先从缓存中拿数据
-        // const content = Content.getContentFormLocal(id)
-        const content = null
+        const content = Content.getContentFormLocal(id)
+        // const content = null
         if (content) {
           resolve(content)
         }

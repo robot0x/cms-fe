@@ -36,6 +36,7 @@
                 <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
               </el-select>
             </el-form-item>
+
             <el-form-item label="上传图片">
               <el-upload
                 action="//z.diaox2.com/view/app/upfornewcms.php"
@@ -50,7 +51,6 @@
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过500kb<</div>
               </el-upload>
-
               <!-- <el-upload
                 action="http://z.diaox2.com/view/app/upfornewcms.php"
                 type="drag"
@@ -68,7 +68,6 @@
           </el-col>
           <el-col :span="14">
             <el-form-item label="选择所属标签">
-              <!-- <tag-tree></tag-tree> -->
               <el-tree
                 ref="tree"
                 :data="all_tags"
@@ -86,7 +85,6 @@
             </el-form-item>
 
             <div class="keywords-panel" v-if="used_for_search">
-
               <el-form-item label="具体品类">
                 <el-input v-model="categroy" placeholder="包含同义词（如：指甲剪，指甲钳）" @keyup.native.enter.stop.prevent="addTags('categroy')"></el-input>
                 <el-tag v-for="tag in render_categroys" :closable="true" :type="tag.type" @close="removeTag('categroy',tag)"> {{tag.name}} </el-tag>
@@ -182,6 +180,7 @@
             </el-dialog>
           </el-col>
         </el-row>
+
       </div>
     </panel>
     <el-alert
@@ -801,7 +800,7 @@ export default {
           type: 'success',
           message: '文章保存成功'
         })
-        this.clearCache()
+        Utils.clearCache(id)
       }).catch( message => {
         this.loading = false
         console.log(message)

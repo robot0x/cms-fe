@@ -128,7 +128,7 @@ export default {
     }
   },
   // 如果是keep-alive的话created不会执行
-  created () {
+  activated () {
     this.doQuery()
   },
   filters: {

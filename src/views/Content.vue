@@ -64,10 +64,9 @@ export default {
           like = true
         }
       }
+      this.query = {type, search}
       if(like){
-        this.query = { type, search, like }
-      } else {
-        this.query = { type, search }
+        this.query.like = like
       }
     },
     newArticle () {
