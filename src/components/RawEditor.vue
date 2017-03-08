@@ -49,11 +49,15 @@ export default {
    transition: all ease .3s;
    width: 100%;
    position: relative;
+   display: flex;
+   flex-direction: column;
  }
 
  .component-raw-editor textarea {
     outline: none;
     box-sizing: border-box;
+    display: block;
+    width: 100%;
     height: 100%;
     vertical-align: top;
     /*padding: 15px;*/
@@ -64,8 +68,8 @@ export default {
     font-family: inherit;
     font-size: 18px;
     color: #616161;
-    width: 100%;
     resize: none;
+    flex: 1;
   }
 
   .operate-area {

@@ -1,17 +1,46 @@
+import _ from 'lodash'
 class Utils {
+
+  static splitTags(tagIndex, all_tags){
+    const tag = {}
+    console.log(tagIndex);
+    console.log(all_tags);
+    const [tag1, tag2] = tagIndex
+    console.log(tag1);
+    console.log(tag2);
+    return tag
+  }
+  /**
+   * 根据老的images数组来判断某张image是否被更改了
+   */
+  static isModify (image, images){
+    let ret = true
+    if(Utils.isValidArray(images)){
+      return !images.some(img => _.isEqualWith(img, image, (img1, img2) =>{
+          return img1.id == img2.id && img1.type == img2.type && img1.used == img2.used
+      }))
+    }
+    return ret
+  }
+
+  static isValidArray(arr){
+    return arr && Array.isArray(arr) && arr.length > 0
+  }
 
   static clearCache (key = '') {
     localStorage.removeItem(String(key))
   }
   /**
    * 判断一个url是否在md中出现过
+   * 被使用过返回1
+   * 否则返回   0
    */
   static isUsed (md, url){
-    let used = false
+    let used = 0
     md = md || ''
     url = url || ''
     if(md.trim() && url.trim()){
-      used = md.indexOf(url) > 0
+      used = md.indexOf(url) > 0 ? 1 : 0
     }
     return used
   }

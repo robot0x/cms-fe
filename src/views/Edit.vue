@@ -159,7 +159,7 @@
               </figcaption>
               <span class="used-label" v-if="image.used"><i class="el-icon-check"></i></span>
               <div class="image-types" v-if="image.types && image.types.length > 0">
-                <span v-for="t in image.types" :style="t === 1 ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t === 1 ? '此图为封面图': '此图为缩略图'"></span>
+                <span v-for="t in image.types" :style="t == 1 ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t == 1 ? '此图为封面图': '此图为缩略图'"></span>
               </div>
              </li>
             </ul>
@@ -270,7 +270,7 @@ export default {
         this.images = this.images.map(image => {
           const { url } = image
           const has = Utils.isUsed(md, url)
-          image.used =  has || (image.types && image.types.length > 0)
+          image.used =  (has || (image.types && image.types.length > 0)) ? 1 : 0
           // 进一步确定是否是banner图
           const hasBanner = md.match(/```banner\n(.)+?\s*```/g)
           if(hasBanner && Utils.isUsed(hasBanner[0], url)){
@@ -386,9 +386,9 @@ export default {
         image.types = [type]
       }
       if (image.types.length > 0 || Utils.isUsed(this.html.md, image.url)) {
-        image.used = true
+        image.used = 1
       } else {
-        image.used = false
+        image.used = 0
       }
       this.$set(this.images, index, image)
     },
@@ -445,7 +445,11 @@ export default {
           .then(content => {
                 content = content || {}
                 this.id = String(content.id || id)
-                this.images = content.images || []
+                this.images = (content.images || []).map(image => {
+                  const {type} = image
+                  if(type){ image.types = type.split(',') }
+                  return image
+                })
                 this.text =  content.text || ''
                 this.author =  content.author || ''
                 this.ctype =  content.ctype || 0
@@ -468,10 +472,10 @@ export default {
                 this.render_scenes = content.render_scenes || []
                 this.render_specials = content.render_specials || []
                 this.render_similars = content.render_similars || []
-
-                setTimeout(() => {
-                  this.select_tags = [1]
-                }, 2000)
+                this.$nextTick(() => {
+                  // this.select_tags = [1,2]
+                })
+                // this.$refs.tree.setCheckedKeys([1,2,3])
                 // tag
                 // this.$refs.tree.setCheckedKeys(content.select_tags || [])
                 // this.select_tags = content.select_tags || []
@@ -526,6 +530,7 @@ export default {
       console.log(file)
     },
     handleSuccess(res) {
+      console.log(res);
       const message = res.msg
       const state = res.state
       if(state !== 'success' ){ // error
@@ -627,8 +632,10 @@ export default {
         render_scenes,
         render_specials,
         render_similars,
+
+        html
       } = this
-      let title = this.html.title
+      let { title } = html
       let last_update_by = LoginUtils.getUsername()
       if(!title){
         this.loading = false
@@ -639,7 +646,13 @@ export default {
         this.loading = false
         return this.$alert('必须填写作者', '作者未填写', { confirmButtonText: '确定' })
       }
-      console.log(images);
+
+      console.log(select_tags);
+
+      if(!Utils.isValidArray(select_tags)){
+        // this.loading = false
+        // return this.$alert('必须选择所属标签', '未选择所属标签', { confirmButtonText: '确定' })
+      }
       /**
         `aid`
         `url`
@@ -652,6 +665,7 @@ export default {
         `height`
        */
       let images_handled = images.map(image => {
+        // 1-cover图-封面图/2-thumb图-缩略图/3-banner图/4-文章内容图。存储以逗号隔开的字符串，例如：1,2,4 即这张图片的类型为cover图 & thumb图 & 内容图
         const types = [...(image.types || [])]
         if(image.banner){
           if(types && types.length){
@@ -661,22 +675,29 @@ export default {
           }
         }
 
+        // 如果图片被使用过，并且不是banner类型也不是cover和thumb类型的，那么它就是文章的内容图片
         if(image.isUsed && !image.banner && types.length === 0 ){
           image.types = ['4']
         }
-
-        return {
-          aid: id,
+        const ret =  {
+          id: Number(image.id || 0), // 图片的id
+          aid: Number(id || 0),
           url: image.url,
-          type: types.join(',') || '4',
-          used: image.used ? 1: 0,
-          origin_filename: image.name,
+          type: types.join(','),
+          used: image.used,
+          origin_filename: image.name || '',
           // origin_filename: 'image',
-          extension_name: Utils.getExtensionName(image.name),
+          extension_name: Utils.getExtensionName(image.name) || '',
           size: image.size,
           width: image.width,
           height: image.height
         }
+        const isModify = Utils.isModify(image, images) ? 1 : 0
+        console.log('isModify:', Utils.isModify(ret, images));
+        ret.isModify = isModify
+        console.log(ret);
+        console.log(images);
+        return ret
       })
       // return console.log(images_handled)
       // console.log(gift);
@@ -750,13 +771,9 @@ export default {
             }
           })()
         },
-        tags: {
-
-        }
+        tags: Utils.splitTags(select_tags, this.all_tags)
       }
-      // if(select_tags.length){
-      //   return this.$alert('必须选择所属标签', '未选择所属标签', { confirmButtonText: '确定' })
-      // }
+
       console.log("作者：", author)
       console.log("分享到标题：", share_title)
       console.log("微信标题：", wx_title)
@@ -837,6 +854,7 @@ export default {
         font-size: 14px;
         background-color: rgba(0,0,0,.7);
         transition: opacity .3s;
+        display: -webkit-flex;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -845,6 +863,8 @@ export default {
       .images-attr {
         position: absolute;
         top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
       }
       .images-oper-tool {
         font-size: 17px;
