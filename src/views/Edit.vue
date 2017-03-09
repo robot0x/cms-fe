@@ -38,7 +38,36 @@
                 <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
               </el-select>
             </el-form-item>
+            <el-form-item label="是否可搜">
+              <el-checkbox v-model="used_for_search"></el-checkbox>
+            </el-form-item>
 
+            <div class="keywords-panel" v-if="used_for_search">
+              <el-form-item label="具体品类">
+                <el-input v-model="categroy" placeholder="包含同义词（如：指甲剪，指甲钳）" @keyup.native.enter.stop.prevent="addTags('categroy')"></el-input>
+                <el-tag v-for="tag in render_categroys" :closable="true" :type="tag.type" @close="removeTag('categroy',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+
+              <el-form-item label="品牌">
+                <el-input v-model="brand" placeholder="品牌" @keyup.native.enter.stop.prevent="addTags('brand')"></el-input>
+                <el-tag v-for="tag in render_brands" :closable="true" :type="tag.type" @close="removeTag('brand',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+
+              <el-form-item label="使用场景">
+                <el-input v-model="scene" placeholder="使用场景（如：剪指甲）" @keyup.native.enter.stop.prevent="addTags('scene')"></el-input>
+                <el-tag v-for="tag in render_scenes" :closable="true" :type="tag.type" @close="removeTag('scene',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+
+              <el-form-item label="特别之处">
+                <el-input v-model="special" placeholder="特别之处（如：防水，动漫周边，创意）" @keyup.native.enter.stop.prevent="addTags('special')"></el-input>
+                <el-tag v-for="tag in render_specials" :closable="true" :type="tag.type" @close="removeTag('special',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+
+              <el-form-item label="类似产品">
+                <el-input v-model="similar" placeholder="类似产品（如：美甲, 瑞士军刀）" @keyup.native.enter.stop.prevent="addTags('similar')"></el-input>
+                <el-tag v-for="tag in render_similars" :closable="true" :type="tag.type" @close="removeTag('similar',tag)"> {{tag.name}} </el-tag>
+              </el-form-item>
+            </div>
             <el-form-item label="上传图片">
               <el-upload
                 action="//z.diaox2.com/view/app/upfornewcms.php"
@@ -82,36 +111,7 @@
               </el-tree>
             </el-form-item>
 
-            <el-form-item label="是否可搜">
-              <el-checkbox v-model="used_for_search"></el-checkbox>
-            </el-form-item>
 
-            <div class="keywords-panel" v-if="used_for_search">
-              <el-form-item label="具体品类">
-                <el-input v-model="categroy" placeholder="包含同义词（如：指甲剪，指甲钳）" @keyup.native.enter.stop.prevent="addTags('categroy')"></el-input>
-                <el-tag v-for="tag in render_categroys" :closable="true" :type="tag.type" @close="removeTag('categroy',tag)"> {{tag.name}} </el-tag>
-              </el-form-item>
-
-              <el-form-item label="品牌">
-                <el-input v-model="brand" placeholder="品牌" @keyup.native.enter.stop.prevent="addTags('brand')"></el-input>
-                <el-tag v-for="tag in render_brands" :closable="true" :type="tag.type" @close="removeTag('brand',tag)"> {{tag.name}} </el-tag>
-              </el-form-item>
-
-              <el-form-item label="使用场景">
-                <el-input v-model="scene" placeholder="使用场景（如：剪指甲）" @keyup.native.enter.stop.prevent="addTags('scene')"></el-input>
-                <el-tag v-for="tag in render_scenes" :closable="true" :type="tag.type" @close="removeTag('scene',tag)"> {{tag.name}} </el-tag>
-              </el-form-item>
-
-              <el-form-item label="特别之处">
-                <el-input v-model="special" placeholder="特别之处（如：防水，动漫周边，创意）" @keyup.native.enter.stop.prevent="addTags('special')"></el-input>
-                <el-tag v-for="tag in render_specials" :closable="true" :type="tag.type" @close="removeTag('special',tag)"> {{tag.name}} </el-tag>
-              </el-form-item>
-
-              <el-form-item label="类似产品">
-                <el-input v-model="similar" placeholder="类似产品（如：美甲, 瑞士军刀）" @keyup.native.enter.stop.prevent="addTags('similar')"></el-input>
-                <el-tag v-for="tag in render_similars" :closable="true" :type="tag.type" @close="removeTag('similar',tag)"> {{tag.name}} </el-tag>
-              </el-form-item>
-            </div>
 
 
             <el-form-item label="是否适合送礼">
