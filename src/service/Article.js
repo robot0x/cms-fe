@@ -5,27 +5,31 @@ import _ from 'lodash'
 import LoginUtils from '../utils/LoginUtils'
 export default class Article {
 
- // static checkIdAndSetLockBy (id, user) {
- //   return new Promise((resolve, reject) => {
- //     try {
- //       const url = `${API.articles.url}/?type=check&id=${id}&user=${user}`
- //       fetch(url)
- //       .then(response => response.json())
- //       .then(result => {
- //         console.log(url, result)
- //         const message = result.message
- //         if(message !== 'SUCCESS') {
- //           reject(message)
- //         }else{
- //           resolve(result.res)
- //         }
- //       })
- //     } catch (e) {
- //       console.log(e)
- //       reject(e.message)
- //     }
- //   })
- // }
+/**
+ * 释放编辑锁
+ */
+static releaseLock (id) {
+  const currentUser = LoginUtils.getUsername()
+  return new Promise((resolve, reject) => {
+    try {
+      const url = `${API.articles.url}/?type=release&id=${id}&user=${currentUser}`
+      fetch(url)
+      .then(response => response.json())
+      .then(result => {
+        console.log(url, result)
+        const message = result.message
+        if(message !== 'SUCCESS') {
+          reject(message)
+        }else{
+          resolve(result.res)
+        }
+      })
+    } catch (e) {
+       console.log(e)
+       reject(e.message)
+    }
+  })
+}
 
  static getStatistics () {
    return new Promise((resolve, reject) => {

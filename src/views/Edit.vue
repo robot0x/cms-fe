@@ -6,6 +6,7 @@
     <span slot="panel-heading-middle">
       <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
       <el-button type="info" size="small" @click="releaseLock">解除锁定</el-button>
+      <el-button type="danger" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
     </span>
 
     <div slot="panel-body" class="panel-body">
@@ -215,6 +216,7 @@ import MaxWindow from '../components/MaxWindow'
 import Utils from '../utils/Utils'
 import LoginUtils from '../utils/LoginUtils'
 import Content from '../service/Content'
+import Article from '../service/Article'
 import Tags from '../service/Tags'
  // 这个是写在前端的，不用改
 import { ctypes } from '../config/content_page_data'
@@ -452,7 +454,7 @@ export default {
       this.loadData(this.$route.params.id)
     },
 
-    loadData (id) {
+    loadData (id, cb) {
       if(id){
         this.id = String(id)
         Content
@@ -476,7 +478,7 @@ export default {
                   this.share_title = content.share_title || ''
 
                   const { lock_by } = content
-                  this.locked = Utils.isLocked(currentUser, lock_by)
+                  this.locked = Utils.isLocked(lock_by)
                   this.lock_by = lock_by
                   // gift
                   this.used_for_gift = content.used_for_gift === 1 ? true: false
@@ -507,6 +509,9 @@ export default {
                   // 若根据ID查询不到任何数据，则直接跳转到首页
                   this.$alert(`id为${id}的文章不存在，自动跳转到首页`, '文章不存在', { confirmButtonText: '确定' })
                   this.$router.replace({ name:'content' })
+                }
+                if(cb && typeof cb === 'function'){
+                  cb()
                 }
           })
       }
@@ -618,19 +623,33 @@ export default {
     // 没必要，全选删除即可
     clearCache () {
       console.log('保存成功，清空缓存 ...');
-      // this.$confirm('此操作将删除本篇文章在本地的缓存，是否继续?', '提示',{
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   this.$message({
-      //     type: 'success',
-      //     message: '缓存删除成功'
-      //   })
-      // })
+      this.$confirm('此操作将删除本篇文章在本地的缓存，并拉取最新数据，是否继续?', '提示',{
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const {id} = this
+        Utils.clearCache(id)
+        this.loadData(id, () => {
+          this.$message({
+            type: 'success',
+            message: '缓存删除成功'
+          })
+        })
+      })
     },
-    releaseLock (){
-
+    releaseLock () {
+      this.$confirm('此操作将退出编辑界面且回到首页, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        Article
+        .releaseLock(this.id)
+        .then(res => {
+          this.$router.replace({name: 'content'})
+        })
+      })
     },
     save() {
       // return console.log(this.images)

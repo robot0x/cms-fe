@@ -1,6 +1,7 @@
 import Utils from './Utils'
 
 class LoginUtils {
+  
   // 不设置为true，防止猜出语义
   static get FLAG () {
     return +new Date

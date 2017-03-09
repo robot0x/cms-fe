@@ -31,14 +31,15 @@ const CTYPES = ['好物', '专刊', '专题', '首页', '测评', '长文']
     ]
   }
  */
+
 export default class Content {
   static getContent(id){
     console.log(`拿id为${id}的文章`)
     return new Promise((resolve, reject) => {
       try {
         // 首先从缓存中拿数据
-        // const content = Content.getContentFormLocal(id)
-        const content = null
+        const content = Content.getContentFormLocal(id)
+        // const content = null
         if (content) {
           resolve(content)
         }
