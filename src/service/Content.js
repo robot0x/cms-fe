@@ -34,7 +34,6 @@ const CTYPES = ['好物', '专刊', '专题', '首页', '测评', '长文']
 
 export default class Content {
   static getContent(id){
-    console.log(`拿id为${id}的文章`)
     return new Promise((resolve, reject) => {
       try {
         // 首先从缓存中拿数据
@@ -67,7 +66,7 @@ export default class Content {
                 // render_specials: [],
                 // similar: '',
                 // render_similars: [],
-                console.log(result.res)
+
                 const ret = result.res
                 let {gift, keywords, tags} = ret
                 if(keywords){
@@ -129,7 +128,6 @@ export default class Content {
                 // characters: [],
                 if(gift){
                   gift = JSON.parse(gift)
-                  console.log(gift)
                   const {scenes, relations, characters} = gift
                   if(scenes){
                     ret.scenes = scenes.split(' ').filter(s => s.trim()).map(s => Number(s))
@@ -144,7 +142,7 @@ export default class Content {
                 if(tags){
                   tags = JSON.parse(tags)
                 }
-                console.log(ret);
+                // console.log(ret);
                 // console.log(gift, keywords, tags);
                 resolve(ret)
               }

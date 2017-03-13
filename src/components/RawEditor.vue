@@ -22,6 +22,7 @@ export default {
   },
   watch: {
     content (input) {
+      console.log('markdown 发生变化 ...');
       this.text = input
     },
     text () {

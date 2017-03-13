@@ -2,6 +2,20 @@ import _ from 'lodash'
 import LoginUtils from './LoginUtils'
 class Utils {
 
+  static getNewType (types, code, remove = false){
+    if(_.isString(types)){
+        types = types.split(',').filter(t => t.trim()).map(t => String(t))
+        code = String(code)
+    }
+    const index = types.indexOf(code)
+    if( index === -1){
+      types.push(code)
+    } else if(remove) {
+      types.splice(index, 1)
+    }
+    return types.sort().join(',')
+  }
+
   static isLocked(lock_by){
       return lock_by && LoginUtils.getUsername() !== lock_by
   }
@@ -53,7 +67,8 @@ class Utils {
     md = md || ''
     url = url || ''
     if(md.trim() && url.trim()){
-      used = md.indexOf(url) > 0 ? 1 : 0
+      // used = md.indexOf(url) > 0 ? 1 : 0
+      used = md.indexOf(url) > 0
     }
     return used
   }

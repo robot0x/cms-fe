@@ -14,32 +14,33 @@
         <el-form label-width="130px" ref="formData">
           <el-col :span="10">
             <el-form-item label="作者" prop="author">
-              <el-input v-model="author"></el-input>
+              <el-input v-model="author" :readonly="locked"></el-input>
             </el-form-item>
 
             <el-form-item label="分享到的标题" prop="share_title">
-              <el-input v-model="share_title" placeholder="文章分享出去显示出的标题，若不填，默认是文章标题" @input.native="share_titleInput"></el-input>
+              <el-input v-model="share_title" placeholder="文章分享出去显示出的标题，若不填，默认是文章标题" @input.native="share_titleInput" :readonly="locked"></el-input>
             </el-form-item>
 
             <el-form-item label="分享到微信的标题" prop="wx_title">
-              <el-input v-model="wx_title" placeholder="文章分享到微信显示出的标题"></el-input>
+              <el-input v-model="wx_title" placeholder="文章分享到微信显示出的标题" :readonly="locked"></el-input>
             </el-form-item>
 
             <el-form-item label="分享到微博的标题" prop="wb_title">
-              <el-input v-model="wb_title" placeholder="文章分享到微博显示出的标题"></el-input>
+              <el-input v-model="wb_title" placeholder="文章分享到微博显示出的标题" :readonly="locked"></el-input>
             </el-form-item>
 
             <el-form-item label="发布时间">
-              <el-date-picker type="date" placeholder="选择发布时间" v-model="timetopublish" style="width: 100%;" :editable="false" format="yyyyMMdd" :clearable="false"></el-date-picker>
+              <el-date-picker type="date" placeholder="选择发布时间" v-model="timetopublish" style="width: 100%;" :editable="false" format="yyyyMMdd" :clearable="false" :readonly="locked"></el-date-picker>
             </el-form-item>
 
             <el-form-item label="类型">
-              <el-select v-model="ctype" placeholder="请选择文章类型">
+              <el-select v-model="ctype" placeholder="请选择文章类型" :readonly="locked">
                 <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
               </el-select>
             </el-form-item>
+
             <el-form-item label="是否可搜">
-              <el-checkbox v-model="used_for_search"></el-checkbox>
+              <el-checkbox v-model="used_for_search" :readonly="locked"></el-checkbox>
             </el-form-item>
 
             <div class="keywords-panel" v-if="used_for_search">
@@ -68,7 +69,8 @@
                 <el-tag v-for="tag in render_similars" :closable="true" :type="tag.type" @close="removeTag('similar',tag)"> {{tag.name}} </el-tag>
               </el-form-item>
             </div>
-            <el-form-item label="上传图片">
+
+            <el-form-item label="上传图片" v-if="!locked">
               <el-upload
                 action="//z.diaox2.com/view/app/upfornewcms.php"
                 drag
@@ -77,10 +79,11 @@
                 :before-upload="handleBeforeUpload"
                 :on-success="handleSuccess"
                 :on-error="handleError"
-                multiple>
+                multiple
+                >
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过500kb<</div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过500kb</div>
               </el-upload>
               <!-- <el-upload
                 action="http://z.diaox2.com/view/app/upfornewcms.php"
@@ -111,11 +114,8 @@
               </el-tree>
             </el-form-item>
 
-
-
-
             <el-form-item label="是否适合送礼">
-              <el-checkbox v-model="used_for_gift"></el-checkbox>
+              <el-checkbox v-model="used_for_gift" :readonly="locked"></el-checkbox>
             </el-form-item>
 
             <div class="gift-panel" v-if="used_for_gift">
@@ -141,6 +141,7 @@
                 </el-checkbox-group>
               </el-form-item>
             </div>
+
           </el-col>
         </el-form>
       </el-row>
@@ -172,8 +173,8 @@
                 </div>
               </figcaption>
               <span class="used-label" v-if="image.used"><i class="el-icon-check"></i></span>
-              <div class="image-types" v-if="image.types && image.types.length > 0">
-                <span v-for="t in image.types" :style="t == 1 ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t == 1 ? '此图为封面图': '此图为缩略图'"></span>
+              <div class="image-types" v-if="image.type && image.type.split(',').filter(t => t == 1 || t == 2).length > 0">
+                <span v-for="t in image.type.split(',').filter(t => t == 1 || t == 2)" :style="t == 1 ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t == 1 ? '此图为封面图': '此图为缩略图'"></span>
               </div>
              </li>
             </ul>
@@ -282,17 +283,36 @@ export default {
   },
   computed: { ...mapGetters(['html']) },
   watch: {
+    /**
+     * 判断一张图片的类型
+     * 如果
+     *  图片在md中存在 （has）
+     *  有三种可能：
+     *  1. 图片是内容图  isContent
+     *  2. 图片是banner图 isBanner
+     *  3. 图片即是内容图，又是banner图 isBanner && isContent
+     */
     html ( {md} ) {
       try{
+
         this.images = this.images.map(image => {
-          const { url } = image
-          const has = Utils.isUsed(md, url)
-          image.used =  (has || (image.types && image.types.length > 0)) ? 1 : 0
+          let { url, type } = image
           // 进一步确定是否是banner图
-          const hasBanner = md.match(/```banner\n(.)+?\s*```/g)
-          if(hasBanner && Utils.isUsed(hasBanner[0], url)){
-            image.banner = '3'
+          const bannerReg = /```banner\s*(.|\n)+\s*```/g
+          const hasBanner = md.match(bannerReg)
+          // 是否是内容图
+          const isContent = Utils.isUsed(new String(md).toString().replace(bannerReg, ''), url)
+          // 是否是banner图
+          const isBanner = hasBanner && Utils.isUsed(hasBanner[0], url)
+
+          if(isContent) {
+            type = Utils.getNewType(type, '4')
           }
+          if(isBanner){
+            type = Utils.getNewType(type, '3')
+          }
+          image.type = type
+          image.used = (isContent || isBanner || type.length > 0) ? 1 : 0
           return image
         })
       }catch(e){
@@ -382,31 +402,20 @@ export default {
     '$route': 'routeChange'
   },
   data() {
-    const username = '李彦峰'
     return defaultData
   },
-  created() {
+  activated () {
     this.loadData(this.$route.params.id)
     Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
   },
   methods: {
-
-    setImageType(index, type) {
+    setImageType(index, code) {
       const image = this.images[index]
-      if (image.types) {
-        if (image.types.indexOf(type) === -1) {
-          image.types.push(type)
-        } else {
-          _.remove(image.types, t => t === type)
-        }
-      } else {
-        image.types = [type]
-      }
-      if (image.types.length > 0 || Utils.isUsed(this.html.md, image.url)) {
-        image.used = 1
-      } else {
-        image.used = 0
-      }
+      // image.type = types.length > 0 ? types.join(',') : ''
+      image.type = Utils.getNewType(image.type, code, true)
+      // 当image.type的长度为0时，不能简单地认为这张图片没有被使用
+      // 而应该看看是否在markdown中存在
+      image.used = (image.type.length || Utils.isUsed(this.html.md, image.url)) ? 1 : 0
       this.$set(this.images, index, image)
     },
 
@@ -463,15 +472,16 @@ export default {
                 content = content || {}
                 if(!_.isEmpty(content)){
                   this.id = String(content.id || id)
-                  this.images = (content.images || []).map(image => {
-                    const {type} = image
-                    if(type){ image.types = type.split(',') }
-                    return image
-                  })
-                  this.text =  content.text || ''
-                  this.author =  content.author || ''
-                  this.ctype =  content.ctype || 0
-                  this.tag =  content.tag || {}
+                  this.images = (content.images || [])
+                  // .map(image => {
+                  //   const {type} = image
+                  //   if(type){ image.types = type.split(',') }
+                  //   return image
+                  // })
+                  this.text = content.text || ''
+                  this.author = content.author || ''
+                  this.ctype = content.ctype || 0
+                  this.tag = content.tag || {}
                   this.timetopublish = content.timetopublish || Date.now()
                   this.wx_title = content.wx_title || ''
                   this.wb_title = content.wb_title || ''
@@ -479,6 +489,8 @@ export default {
 
                   const { lock_by } = content
                   this.locked = Utils.isLocked(lock_by)
+                  console.log('locked', Utils.isLocked(lock_by))
+                  console.log('lock_by', lock_by)
                   this.lock_by = lock_by
                   // gift
                   this.used_for_gift = content.used_for_gift === 1 ? true: false
@@ -622,20 +634,26 @@ export default {
     },
     // 没必要，全选删除即可
     clearCache () {
-      console.log('保存成功，清空缓存 ...');
+      console.log('清空缓存 ...')
+      // 清空缓存并加载数据有bug
+      // 1. 第一次进来时，没有缓存，从服务端加载数据，没有问题
+      // 2. 点击 “清空缓存”，缓存被清理，从新拿数据，从服务端拿到的数据中是有text的，但是却没有缓存到本地
+      //
       this.$confirm('此操作将删除本篇文章在本地的缓存，并拉取最新数据，是否继续?', '提示',{
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const {id} = this
+        const { id } = this
         Utils.clearCache(id)
-        this.loadData(id, () => {
-          this.$message({
-            type: 'success',
-            message: '缓存删除成功'
-          })
-        })
+        window.location.reload()
+        //
+        // this.loadData(id, () => {
+        //   this.$message({
+        //     type: 'success',
+        //     message: '缓存删除成功'
+        //   })
+        // })
       })
     },
     releaseLock () {
@@ -694,10 +712,16 @@ export default {
       }
 
       console.log(select_tags);
-
+      return this.loading = false;
+      /**
+       * [{
+       *
+       * }]
+       */
       if(!Utils.isValidArray(select_tags)){
         // this.loading = false
         // return this.$alert('必须选择所属标签', '未选择所属标签', { confirmButtonText: '确定' })
+
       }
       /**
         `aid`
@@ -712,24 +736,11 @@ export default {
        */
       let images_handled = images.map(image => {
         // 1-cover图-封面图/2-thumb图-缩略图/3-banner图/4-文章内容图。存储以逗号隔开的字符串，例如：1,2,4 即这张图片的类型为cover图 & thumb图 & 内容图
-        const types = [...(image.types || [])]
-        if(image.banner){
-          if(types && types.length){
-            types.push('3')
-          } else {
-            image.types = ['3']
-          }
-        }
-
-        // 如果图片被使用过，并且不是banner类型也不是cover和thumb类型的，那么它就是文章的内容图片
-        if(image.isUsed && !image.banner && types.length === 0 ){
-          image.types = ['4']
-        }
         const ret =  {
           id: Number(image.id || 0), // 图片的id
           aid: Number(id || 0),
           url: image.url,
-          type: types.join(','),
+          type: image.type,
           used: image.used,
           origin_filename: image.name || '',
           // origin_filename: 'image',
@@ -820,12 +831,12 @@ export default {
         tags: Utils.splitTags(select_tags, this.all_tags)
       }
 
-      console.log("作者：", author)
-      console.log("分享到标题：", share_title)
-      console.log("微信标题：", wx_title)
-      console.log("微博标题：", wb_title)
-      console.log("类型：", ctype)
-      console.log("发布时间：", timetopublish)
+      // console.log("作者：", author)
+      // console.log("分享到标题：", share_title)
+      // console.log("微信标题：", wx_title)
+      // console.log("微博标题：", wb_title)
+      // console.log("类型：", ctype)
+      // console.log("发布时间：", timetopublish)
 
       Content.save(postData).then(res => {
         this.loading = false
@@ -851,8 +862,8 @@ export default {
     }
   },
   filters: {
-    lockedByFormat(locked) {
-      return `此文已被 ${locked} 锁住...`
+    lockedByFormat(lock_by) {
+      return `此文已被 ${lock_by} 锁住...`
     },
     imageSizeFormat (size) {
       return Math.ceil(size / 1024) + 'kb'
@@ -936,6 +947,10 @@ export default {
           width: 10px;
           height: 10px;
           float: left;
+
+          // color:#fff;
+          // text-align: center;
+          // line-height: 20px;
         }
         & span:first-child{
           margin-right: 10px;
