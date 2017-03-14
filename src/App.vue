@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-      <!-- <img src="./assets/logo.png"> -->
-      <!-- <test :tototo="toto" hi="hi 你好！" :my-number="9999" size="1"></test> -->
-      <!-- <hello></hello> -->
       <header>
         <nav>
           <ul>
@@ -16,52 +13,12 @@
                 <i class="el-icon-document"></i><span>内容</span>
               </router-link>
             </li>
-            <!-- <li>
-              <router-link class="nav-link" to="/edit">
-                <i class="el-icon-edit"></i><span>编辑</span>
-              </router-link>
-            </li> -->
             <li>
               <router-link class="nav-link" to="/archive">
                 <i class="el-icon-menu"></i><span>归档</span>
               </router-link>
             </li>
-
-            <!-- <li>
-              <router-link class="nav-link" to="/login">
-                <i class="el-icon-date"></i><span>登录</span>
-              </router-link>
-            </li> -->
-
-            <!-- <li>
-              <router-link class="nav-link" to="/monthly">
-                <i class="el-icon-date"></i><span>月份归档</span>
-              </router-link>
-            </li>
-            <li>
-              <router-link class="nav-link" to="/author">
-                <i class="el-icon-menu"></i><span>作者归档</span>
-              </router-link>
-            </li>
-            <li>
-              <router-link class="nav-link" to="/help" active-class="router-link-active">
-                帮助
-              </router-link>
-            </li> -->
             <li class="author">
-              <!--
-              <img :src="headshot" :alt="authorName">
-              <span>{{authorName}}</span>
-              -->
-
-              <!--
-              <el-menu mode="horizontal" @select="handleSelect" theme="dark" :default-active="defaultActive">
-                <el-submenu index="1">
-                  <template slot="title">{{authorName}}</template>
-                  <el-menu-item index="1-1">退出</el-menu-item>
-                </el-submenu>
-              </el-menu>
-              -->
               <span>你好，{{author}}</span>
               <a href="javascript:void(0);" class="logout" @click="logout">退出</a>
             </li>
@@ -74,21 +31,13 @@
             <router-view></router-view>
           </keep-alive>
         </transition>
-        <to></to>
       </main>
-      <!-- 到顶部、到底部组件 -->
   </div>
 </template>
 <script>
-// import Hello from './components/Hello'
-// import Test from './components/Test'
-// import headshot from './assets/default-headshot.jpg'
 import logo from './assets/diaox2-logo-40.png'
-import To from './components/To'
 import LoginUtils from './utils/LoginUtils'
 export default {
-  // 本组件要用到的组件都要在 components 中声明，否则不起作用且会报错
-  components: { To },
   data () {
     return {
       logo
@@ -101,19 +50,6 @@ export default {
       return this.$store.state.username || LoginUtils.getUsername()
     }
   },
-  mounted () {
-    const store = this.$store
-    const state = store.state
-    // console.log('count:', state.count);
-    store.commit('INCREMENT')
-    // console.log('count:', state.count);
-    store.dispatch('increment')
-    // console.log('count:', state.count);
-    // console.log('count:', store.getters.getCountPlusTen);
-
-    // console.log('title:', state.article.title);
-    // console.log('title:', state.article.getters);
-  },
   methods: {
     logout () {
       setTimeout(() => {
@@ -123,9 +59,6 @@ export default {
         this.$router.replace({name: 'login'})
       }, 400)
     }
-  },
-  created () {
-    this.authorName = LoginUtils.getUsername()
   }
 }
 </script>

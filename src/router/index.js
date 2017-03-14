@@ -6,13 +6,12 @@ import Edit from '../views/Edit'
 import Archive from '../views/Archive'
 import Monthly from '../views/Monthly'
 import User from '../views/User'
-// import Help from '../views/Help'
 import Login from '../views/Login'
+// import Help from '../views/Help'
 // import Password from '../views/Password'
-import Register from '../views/Register'
+// import Register from '../views/Register'
 import NotFound from '../views/NotFound'
 import LoginUtils from '../utils/LoginUtils'
-import Article from '../service/Article'
 Vue.use(VueRouter)
 
 // 0. 如果使用模块化机制编程，導入Vue和VueRouter，要调用 Vue.use(VueRouter)
@@ -48,7 +47,7 @@ const routes = [
   // { path: '/help', component: Help },
   { path: '/login/', name: 'login', component: Login },
   // { path: '/password/', name: 'password', component: Password }, // 修改密码
-  { path: '/register/', name: 'register', component: Register },
+  // { path: '/register/', name: 'register', component: Register },
   { path: '*', name: '404', component: NotFound }
 ]
 // 3. 创建 router 实例，然后传 `routes` 配置

@@ -1,7 +1,7 @@
 import Utils from './Utils'
 
 class LoginUtils {
-  
+
   // 不设置为true，防止猜出语义
   static get FLAG () {
     return +new Date
@@ -52,19 +52,6 @@ class LoginUtils {
       Utils.deleteCookie(LoginUtils.USERNAME)
     }
 
-    // if( reme ){
-    //   localStorage.setItem(LoginUtils.IS_LOGIN, true)
-    //   localStorage.setItem(LoginUtils.USERNAME, username)
-    //
-    //   sessionStorage.setItem(LoginUtils.IS_LOGIN, false)
-    //   sessionStorage.setItem(LoginUtils.USERNAME, '')
-    // }else{
-    //   sessionStorage.setItem(LoginUtils.IS_LOGIN, true)
-    //   sessionStorage.setItem(LoginUtils.USERNAME, username)
-    //
-    //   localStorage.setItem(LoginUtils.IS_LOGIN, false)
-    //   localStorage.setItem(LoginUtils.USERNAME, '')
-    // }
   }
 
   // 清空所有本地的与登录有关的缓存
@@ -77,24 +64,6 @@ class LoginUtils {
     sessionStorage.removeItem(LoginUtils.IS_LOGIN)
     sessionStorage.removeItem(LoginUtils.USERNAME)
   }
-
-  // static auth(username = '', password = '', cb){
-  //   let message = ''
-  //   if( !username ){
-  //     message = '用户名不能为空'
-  //   }else if( !password ){
-  //       message = '密码不能为空'
-  //   }
-  //   if(cb){
-  //     if( message ){
-  //       cb(message)
-  //     }else{
-  //       setTimeout(() => {
-  //         cb()
-  //       }, 2000)
-  //     }
-  //   }
-  // }
 
   static stringToBoolean (str) {
     let ret = false

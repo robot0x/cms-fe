@@ -9,16 +9,19 @@
            </el-submenu>
        </el-menu>
       </el-col>
-      <el-col :span="20"> <data-grid class="data-grid" :input="query"></data-grid> </el-col>
+      <el-col :span="20">
+        <data-grid class="data-grid" :input="query"></data-grid>
+      </el-col>
    </el-row>
  </div>
 </template>
 <script>
-import DataGrid from '../components/DataGrid'
-import moment from 'moment'
 import Article from '../service/Article'
+import DataGrid from '../components/DataGrid'
 export default {
-  components: { DataGrid },
+  components: {
+    DataGrid
+  },
   // activated () {
   // 改为created的原因是，每次视图切换回来activated钩子都会执行，这样每次都会从新查询
   // 而这是没有必要的，所以放在created即可

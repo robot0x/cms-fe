@@ -14,9 +14,7 @@
 </template>
 
 <script>
-import Panel from '../components/Panel'
 export default {
-  components: { Panel },
   data () {
     return { archive: 'monthly'}
   },

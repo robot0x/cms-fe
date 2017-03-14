@@ -14,14 +14,10 @@
    </div>
 </template>
 <script>
-import fetch from 'isomorphic-fetch'
-import api from '../config/api'
-// import Search from '../components/Search'
 import DataGrid from '../components/DataGrid'
 export default {
   name: 'hello',
   components: {
-    // Search,
     DataGrid
   },
   data () {
@@ -81,10 +77,7 @@ export default {
     }
   },
   created () {
-    // 在created中获取后端数据
-    // fetch(API.articles.url + '?id=121223').then(result => {
-    //   console.log(result)
-    // })
+
   }
 }
 </script>

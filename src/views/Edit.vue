@@ -217,7 +217,6 @@ import Tags from '../service/Tags'
 import { ctypes } from '../config/content_page_data'
 // 这个是写在前端的，不用改
 import gift from '../config/gift'
-import moment from 'moment'
 import _ from 'lodash'
 import { mapGetters } from 'vuex'
 

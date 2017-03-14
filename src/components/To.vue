@@ -12,9 +12,11 @@
 export default {
   methods: {
     up () {
+      console.log('up exec ....');
       document.body.scrollTop = document.documentElement.scrollTop = 0
     },
     down () {
+      console.log('down exec ....');
       document.body.scrollTop = document.documentElement.scrollTop = 2000000
     }
   }
