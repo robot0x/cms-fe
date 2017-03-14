@@ -4,16 +4,10 @@
   <!-- <panel title="操作" closeable class="panel" v-if="!locked"> -->
   <panel :title="lock_by | lockedByFormat" closeable class="panel">
 
-    <span slot="panel-heading-middle" v-if="!locked">
-      <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
-      <el-button type="info" size="small" @click="releaseLock">解除锁定</el-button>
+    <span slot="panel-heading-middle">
+      <el-button type="success" size="small" icon="upload" @click="save" v-if="!locked">保存</el-button>
+      <el-button type="info" size="small" @click="releaseLock" v-if="!locked">解除锁定</el-button>
       <el-button type="danger" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
-      <!-- <el-alert
-        :closable="false"
-        :title="lock_by | lockedByFormat"
-        v-if="locked"
-        type="error">
-      </el-alert> -->
     </span>
 
     <div slot="panel-body" class="panel-body">
