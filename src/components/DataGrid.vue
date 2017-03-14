@@ -207,11 +207,13 @@ export default {
     },
     handleEdit (index, row) {
       const {id, lock_by} = this.articles[index]
-      if(Utils.isLocked(lock_by)){
-        this.$alert(`此文章已经被 ${lock_by} 锁定，暂无法编辑，请联系 ${lock_by} 解锁`, '文章被锁定', { confirmButtonText: '确定' })
-      } else {
-        this.$router.push({ name: 'edit', params: { id }})
-      }
+      this.$router.push({ name: 'edit', params: { id }})
+      // const {id, lock_by} = this.articles[index]
+      // if(Utils.isLocked(lock_by)){
+      //   this.$alert(`此文章已经被 ${lock_by} 锁定，暂无法编辑，请联系 ${lock_by} 解锁`, '文章被锁定', { confirmButtonText: '确定' })
+      // } else {
+      //   this.$router.push({ name: 'edit', params: { id }})
+      // }
     },
     handleDelete (index, row) {
       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示',{

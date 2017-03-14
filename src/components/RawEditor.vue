@@ -37,7 +37,7 @@ export default {
   methods: {
     commit (text = this.text) {
       this.$store.commit('change', text)
-      Content.setContentToLocal(this.id, 'text', text)
+      Content.setContentToLocal(this.id, 'text', text, true)
     }
   }
 }

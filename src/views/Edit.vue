@@ -1,12 +1,19 @@
 <template>
 <div class="page-edit" v-loading.fullscreen.lock="loading" element-loading-text="正在保存中...">
   <!-- 如果被锁了，也就不必显示操作区了 -->
-  <panel title="操作" closeable class="panel" v-if="!locked">
+  <!-- <panel title="操作" closeable class="panel" v-if="!locked"> -->
+  <panel :title="lock_by | lockedByFormat" closeable class="panel">
 
-    <span slot="panel-heading-middle">
+    <span slot="panel-heading-middle" v-if="!locked">
       <el-button type="success" size="small" icon="upload" @click="save">保存</el-button>
       <el-button type="info" size="small" @click="releaseLock">解除锁定</el-button>
       <el-button type="danger" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
+      <!-- <el-alert
+        :closable="false"
+        :title="lock_by | lockedByFormat"
+        v-if="locked"
+        type="error">
+      </el-alert> -->
     </span>
 
     <div slot="panel-body" class="panel-body">
@@ -34,39 +41,39 @@
             </el-form-item>
 
             <el-form-item label="类型">
-              <el-select v-model="ctype" placeholder="请选择文章类型" :readonly="locked">
-                <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
-              </el-select>
+                <el-select v-model="ctype" placeholder="请选择文章类型" :disabled="locked">
+                  <el-option v-for="ctype in ctypes" :label="ctype.label" :value="ctype.value"></el-option>
+                </el-select>
             </el-form-item>
 
             <el-form-item label="是否可搜">
-              <el-checkbox v-model="used_for_search" :readonly="locked"></el-checkbox>
+              <el-checkbox v-model="used_for_search"></el-checkbox>
             </el-form-item>
 
             <div class="keywords-panel" v-if="used_for_search">
               <el-form-item label="具体品类">
-                <el-input v-model="categroy" placeholder="包含同义词（如：指甲剪，指甲钳）" @keyup.native.enter.stop.prevent="addTags('categroy')"></el-input>
-                <el-tag v-for="tag in render_categroys" :closable="true" :type="tag.type" @close="removeTag('categroy',tag)"> {{tag.name}} </el-tag>
+                <el-input v-model="categroy" placeholder="包含同义词（如：指甲剪，指甲钳）" @keyup.native.enter.stop.prevent="addTags('categroy')" :readonly="locked"></el-input>
+                <el-tag v-for="tag in render_categroys" :closable="!locked" :type="tag.type" @close="removeTag('categroy',tag)"> {{tag.name}} </el-tag>
               </el-form-item>
 
               <el-form-item label="品牌">
-                <el-input v-model="brand" placeholder="品牌" @keyup.native.enter.stop.prevent="addTags('brand')"></el-input>
-                <el-tag v-for="tag in render_brands" :closable="true" :type="tag.type" @close="removeTag('brand',tag)"> {{tag.name}} </el-tag>
+                <el-input v-model="brand" placeholder="品牌" @keyup.native.enter.stop.prevent="addTags('brand')" :readonly="locked"></el-input>
+                <el-tag v-for="tag in render_brands" :closable="!locked" :type="tag.type" @close="removeTag('brand',tag)"> {{tag.name}} </el-tag>
               </el-form-item>
 
               <el-form-item label="使用场景">
-                <el-input v-model="scene" placeholder="使用场景（如：剪指甲）" @keyup.native.enter.stop.prevent="addTags('scene')"></el-input>
-                <el-tag v-for="tag in render_scenes" :closable="true" :type="tag.type" @close="removeTag('scene',tag)"> {{tag.name}} </el-tag>
+                <el-input v-model="scene" placeholder="使用场景（如：剪指甲）" @keyup.native.enter.stop.prevent="addTags('scene')"  :readonly="locked"></el-input>
+                <el-tag v-for="tag in render_scenes" :closable="!locked" :type="tag.type" @close="removeTag('scene',tag)"> {{tag.name}} </el-tag>
               </el-form-item>
 
               <el-form-item label="特别之处">
-                <el-input v-model="special" placeholder="特别之处（如：防水，动漫周边，创意）" @keyup.native.enter.stop.prevent="addTags('special')"></el-input>
-                <el-tag v-for="tag in render_specials" :closable="true" :type="tag.type" @close="removeTag('special',tag)"> {{tag.name}} </el-tag>
+                <el-input v-model="special" placeholder="特别之处（如：防水，动漫周边，创意）" @keyup.native.enter.stop.prevent="addTags('special')" :readonly="locked"></el-input>
+                <el-tag v-for="tag in render_specials" :closable="!locked" :type="tag.type" @close="removeTag('special',tag)"> {{tag.name}} </el-tag>
               </el-form-item>
 
               <el-form-item label="类似产品">
-                <el-input v-model="similar" placeholder="类似产品（如：美甲, 瑞士军刀）" @keyup.native.enter.stop.prevent="addTags('similar')"></el-input>
-                <el-tag v-for="tag in render_similars" :closable="true" :type="tag.type" @close="removeTag('similar',tag)"> {{tag.name}} </el-tag>
+                <el-input v-model="similar" placeholder="类似产品（如：美甲, 瑞士军刀）" @keyup.native.enter.stop.prevent="addTags('similar')" :readonly="locked"></el-input>
+                <el-tag v-for="tag in render_similars" :closable="!locked" :type="tag.type" @close="removeTag('similar',tag)"> {{tag.name}} </el-tag>
               </el-form-item>
             </div>
 
@@ -115,7 +122,7 @@
             </el-form-item>
 
             <el-form-item label="是否适合送礼">
-              <el-checkbox v-model="used_for_gift" :readonly="locked"></el-checkbox>
+              <el-checkbox v-model="used_for_gift"></el-checkbox>
             </el-form-item>
 
             <div class="gift-panel" v-if="used_for_gift">
@@ -186,12 +193,6 @@
 
       </div>
     </panel>
-    <el-alert
-      :closable="false"
-      :title="lock_by | lockedByFormat"
-      v-if="locked"
-      type="error">
-    </el-alert>
     <div class="editor-area">
       <raw-editor
         class="raw-editor"
@@ -210,7 +211,6 @@
 </template>
 <script>
 import RawEditor from '../components/RawEditor'
-import TagTree from '../components/TagTree'
 import RenderEditor from '../components/RenderEditor'
 import Panel from '../components/Panel'
 import MaxWindow from '../components/MaxWindow'
@@ -278,8 +278,7 @@ export default {
     RawEditor,
     RenderEditor,
     Panel,
-    MaxWindow,
-    TagTree
+    MaxWindow
   },
   computed: { ...mapGetters(['html']) },
   watch: {
@@ -321,81 +320,97 @@ export default {
     },
 
     used_for_gift (val) {
-      Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift', val)
+      if(!this.locked){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift', val)
+      }
     },
 
     scenes (val) {
-      if(val && val.length){
+      if(val && val.length && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'scenes', val)
       }
     },
 
     relations (val) {
-      if(val && val.length){
+      if(val && val.length && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'relations', val)
       }
     },
 
     characters (val) {
-      if(val && val.length){
+      if(val && val.length && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'characters', val)
       }
     },
 
     used_for_search (val) {
-      Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_search', val)
+      if(!this.locked){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_search', val)
+      }
     },
 
     render_categroys (val) {
-      Content.setContentToLocal(this.id || this.$route.params.id, 'render_categroys', val)
+      if(!this.locked){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'render_categroys', val)
+      }
     },
 
     render_brands (val) {
-      Content.setContentToLocal(this.id || this.$route.params.id, 'render_brands', val)
+      if(!this.locked){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'render_brands', val)
+      }
     },
 
     render_scenes (val) {
-      Content.setContentToLocal(this.id || this.$route.params.id, 'render_scenes', val)
+      if(!this.locked){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'render_scenes', val)
+      }
     },
 
     render_specials (val) {
-      Content.setContentToLocal(this.id || this.$route.params.id, 'render_specials', val)
+      if(!this.locked){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'render_specials', val)
+      }
     },
 
     render_similars (val) {
-      Content.setContentToLocal(this.id || this.$route.params.id, 'render_similars', val)
+      if(!this.locked){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'render_similars', val)
+      }
     },
 
     images (val) {
-      if(val && val.length){
+      if(val && val.length && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'images', val)
       }
     },
     share_title (val) {
-      if(val && val.trim()){
+      if(val && val.trim() && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'share_title', val)
       }
     },
     wx_title (val) {
-      if(val && val.trim()){
+      if(val && val.trim() && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'wx_title', val)
       }
     },
     wb_title (val) {
-      if(val && val.trim()){
+      if(val && val.trim() && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'wb_title', val)
       }
     },
     ctype (val) {
-      Content.setContentToLocal(this.id || this.$route.params.id, 'ctype', val)
+      if(!this.locked){
+        Content.setContentToLocal(this.id || this.$route.params.id, 'ctype', val)
+      }
     },
     author (val) {
-      if(val && val.trim()){
+      if(val && val.trim() && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'author', val)
       }
     },
     timetopublish (val) {
-      if(val > Date.now()){
+      if(val > Date.now() && !this.locked){
         Content.setContentToLocal(this.id || this.$route.params.id, 'timetopublish', val)
       }
     },
@@ -409,6 +424,7 @@ export default {
     Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
   },
   methods: {
+
     setImageType(index, code) {
       const image = this.images[index]
       // image.type = types.length > 0 ? types.join(',') : ''
@@ -440,7 +456,7 @@ export default {
       console.log(this[`render_${type}s`])
       this[`render_${type}s`] =
         this[`render_${type}s`].concat(
-          // 去重，防止一次输入多个相同的keywodrs
+          // 去重，防止一次输入多个相同的keywords
           _.union(
             this[type].split(/ +|,|，/).filter(tag => tag.trim()) // 过滤非空的字符串
           ).filter(tag => { // 去重
@@ -473,11 +489,7 @@ export default {
                 if(!_.isEmpty(content)){
                   this.id = String(content.id || id)
                   this.images = (content.images || [])
-                  // .map(image => {
-                  //   const {type} = image
-                  //   if(type){ image.types = type.split(',') }
-                  //   return image
-                  // })
+
                   this.text = content.text || ''
                   this.author = content.author || ''
                   this.ctype = content.ctype || 0
@@ -608,14 +620,16 @@ export default {
       }
     },
     handleCheckChange (data, checked, indeterminat) {
-      const clickId = data.id
-      console.log(clickId);
-      if(checked && this.select_tags.indexOf(clickId) === -1){
-        this.select_tags.push(clickId)
-      }else{
-        this.select_tags.splice(_.findIndex(this.select_tags, t => t == clickId ), 1)
+      if(!this.locked){
+        const clickId = data.id
+        console.log(clickId);
+        if(checked && this.select_tags.indexOf(clickId) === -1){
+          this.select_tags.push(clickId)
+        }else{
+          this.select_tags.splice(_.findIndex(this.select_tags, t => t == clickId ), 1)
+        }
+        Content.setContentToLocal(this.id || this.$route.params.id, 'select_tags', this.select_tags)
       }
-      Content.setContentToLocal(this.id || this.$route.params.id, 'select_tags', this.select_tags)
     },
     open(dir) {
       switch (dir) {
@@ -863,7 +877,12 @@ export default {
   },
   filters: {
     lockedByFormat(lock_by) {
-      return `此文已被 ${lock_by} 锁住...`
+      const locked = Utils.isLocked(lock_by)
+      if(locked){
+        return `此文已被 ${lock_by} 锁住，只能查看信息，更改的信息无法被保存`
+      }else{
+        return '操作'
+      }
     },
     imageSizeFormat (size) {
       return Math.ceil(size / 1024) + 'kb'

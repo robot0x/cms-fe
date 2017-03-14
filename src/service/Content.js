@@ -36,16 +36,38 @@ export default class Content {
   static getContent(id){
     return new Promise((resolve, reject) => {
       try {
-        // 首先从缓存中拿数据
+
         const content = Content.getContentFormLocal(id)
+        const user = LoginUtils.getUsername()
+
         // const content = null
+        // 虽然缓存中有数据，但是也别忘了上锁
         if (content) {
-          resolve(content)
+          const url = `${API.articles.url}/?type=lock&id=${id}&user=${user}`
+          fetch(url)
+          .then(response => response.json())
+          .then(result => {
+            console.log(url,result)
+            const {message, res} = result
+            if(message !== 'SUCCESS'){
+              reject(message)
+            }else{
+              if(res && res.lock_by){
+                content.lock_by = res.lock_by
+              }else{
+                content.lock_by = user
+              }
+              resolve(content)
+            }
+          })
+          .catch(e => {
+            resolve(e.message)
+          })
         }
          else  // 如果没有缓存，从服务器上拿数据
         {
           try {
-            const url = `${API.articles.url}/?type=all&id=${id}&user=${LoginUtils.getUsername()}`
+            const url = `${API.articles.url}/?type=all&id=${id}&user=${user}`
             fetch(url)
             .then(response => response.json())
             .then(result => {
@@ -147,6 +169,9 @@ export default class Content {
                 resolve(ret)
               }
             })
+            .catch(e => {
+              resolve(e.message)
+            })
           } catch (e) {
             reject(e.message)
           }
@@ -210,12 +235,22 @@ export default class Content {
     return keywords.map(keyword => { return { name: keyword, type: type } })
   }
 
-  static setContentToLocal(id, key, val){
+  static setContentToLocal(id, key, val, check = false){
     id = String(id)
     if( id && id.trim() ){
-      const local = Content.getContentFormLocal(id) || {}
-      local[key] = val
-      localStorage.setItem(id, JSON.stringify(local))
+      let local = Content.getContentFormLocal(id)
+      if(check){
+        if(local){
+          local[key] = val
+          localStorage.setItem(id, JSON.stringify(local))
+        }
+      }else{
+        if(!local){
+          local = {}
+        }
+        local[key] = val
+        localStorage.setItem(id, JSON.stringify(local))
+      }
     }
   }
 
