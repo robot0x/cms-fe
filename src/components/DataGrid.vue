@@ -85,7 +85,7 @@
     <div class="pagination-bar">
       <!-- :page-sizes="[50, 100, 150, 200]" -->
       <el-pagination
-        :page-sizes="[1, 2, 3, 4]"
+        :page-sizes="[50, 100, 200, 400]"
         :page-size="pageSize"
         :current-page="currentPage"
         @size-change="handleSizeChange"
@@ -128,9 +128,12 @@ export default {
       articles_copy: [],
       loading: false,
       currentPage: 1,
-      pageSize: 2, // 一页50条
+      pageSize: 50, // 一页50条
       total: 0
     }
+  },
+  created () {
+    this.doQuery()
   },
   // 如果是keep-alive的话created不会执行
   activated () {
@@ -147,9 +150,12 @@ export default {
     },
     doNew () {
       this.loading = true
-      Article.newArticle().then(newArticle => {
+      Article
+      .newArticle()
+      .then(newArticle => {
         this.articles = [newArticle, ...this.articles]
         this.loading = false
+        this.$router.push({ name: 'edit', params: { id: newArticle.id }})
       })
       .catch(message => {
         this.loading = false

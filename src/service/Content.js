@@ -164,6 +164,13 @@ export default class Content {
                 if(tags){
                   tags = JSON.parse(tags)
                 }
+
+                let {lock_by} = ret
+                // 如果点击“新建文章”之后，那么自动跳转到编辑也的话，此时可能拿不到lock_by字段
+                // 所以在前端赋予lock_by字段的值
+                if(!lock_by){
+                  ret.lock_by = user
+                }
                 // console.log(ret);
                 // console.log(gift, keywords, tags);
                 resolve(ret)

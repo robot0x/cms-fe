@@ -106,7 +106,7 @@
               <el-tree
                 ref="tree"
                 :data="all_tags"
-                :check-strictly="true"
+                check-strictly
                 node-key="id"
                 show-checkbox
                 :props="{children: 'children',label: 'name'}"
@@ -412,10 +412,16 @@ export default {
   data() {
     return defaultData
   },
-  activated () {
+  created () {
+    console.log('edit created exec .....');
     this.loadData(this.$route.params.id)
     Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
   },
+  // activated () {
+  //   console.log('edit activated exec .....');
+  //   this.loadData(this.$route.params.id)
+  //   Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
+  // },
   methods: {
 
     setImageType(index, code) {
@@ -527,7 +533,7 @@ export default {
                   this.$alert(`id为${id}的文章不存在，自动跳转到首页`, '文章不存在', { confirmButtonText: '确定' })
                   this.$router.replace({ name:'content' })
                 }
-                if(cb && typeof cb === 'function'){
+                if(/function/.test(typeof cb)){
                   cb()
                 }
           })
@@ -718,8 +724,8 @@ export default {
         return this.$alert('必须填写作者', '作者未填写', { confirmButtonText: '确定' })
       }
 
-      console.log(select_tags);
-      return this.loading = false;
+      // console.log(select_tags);
+      // return this.loading = false;
       /**
        * [{
        *

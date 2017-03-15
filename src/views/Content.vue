@@ -75,9 +75,6 @@ export default {
       // this.query = { type: 'new', random: Math.random() + Date.now() }
       this.query = { type: 'new' }
     }
-  },
-  created () {
-
   }
 }
 </script>
