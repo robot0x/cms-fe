@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import LoginUtils from './LoginUtils'
+import fetch from 'isomorphic-fetch'
 class Utils {
-
-  static getNewType (types, code, remove = false){
+  static getNewType (types = '', code, remove = false){
     if(_.isString(types)){
         types = types.split(',').filter(t => t.trim()).map(t => String(t))
         code = String(code)

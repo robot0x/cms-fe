@@ -3,8 +3,8 @@ import fetch from 'isomorphic-fetch'
 import API from '../config/api'
 import _ from 'lodash'
 import LoginUtils from '../utils/LoginUtils'
-export default class Article {
 
+export default class Article {
 /**
  * 释放编辑锁
  */
@@ -148,8 +148,6 @@ static releaseLock (id) {
       }
     })
   }
-
-
 
   static deleteArticle (id) {
     return new Promise((resolve, reject) => {
