@@ -36,10 +36,8 @@ export default class Content {
   static getContent(id){
     return new Promise((resolve, reject) => {
       try {
-
         const content = Content.getContentFormLocal(id)
         const user = LoginUtils.getUsername()
-
         // const content = null
         // 虽然缓存中有数据，但是也别忘了上锁
         if (content) {

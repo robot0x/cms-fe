@@ -49,6 +49,9 @@ class Utils {
     }
     return ret
   }
+  static isValidString(str){
+    return  _.isString(str) && str && str.trim()
+  }
 
   static isValidArray(arr){
     return arr && Array.isArray(arr) && arr.length > 0

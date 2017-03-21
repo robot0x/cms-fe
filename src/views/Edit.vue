@@ -141,7 +141,6 @@
                 </el-checkbox-group>
               </el-form-item>
             </div>
-
           </el-col>
         </el-form>
       </el-row>
@@ -342,67 +341,67 @@ export default {
     },
 
     render_categroys (val) {
-      if(!this.locked){
+      if(!this.locked && Utils.isValidArray(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'render_categroys', val)
       }
     },
 
     render_brands (val) {
-      if(!this.locked){
+      if(!this.locked && Utils.isValidArray(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'render_brands', val)
       }
     },
 
     render_scenes (val) {
-      if(!this.locked){
+      if(!this.locked && Utils.isValidArray(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'render_scenes', val)
       }
     },
 
     render_specials (val) {
-      if(!this.locked){
+      if(!this.locked && Utils.isValidArray(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'render_specials', val)
       }
     },
 
     render_similars (val) {
-      if(!this.locked){
+      if(!this.locked && Utils.isValidArray(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'render_similars', val)
       }
     },
 
     images (val) {
-      if(val && val.length && !this.locked){
+      if(!this.locked && Utils.isValidArray(val)  ){
         Content.setContentToLocal(this.id || this.$route.params.id, 'images', val)
       }
     },
     share_title (val) {
-      if(val && val.trim() && !this.locked){
+      if(!this.locked && Utils.isValidString(val) ){
         Content.setContentToLocal(this.id || this.$route.params.id, 'share_title', val)
       }
     },
     wx_title (val) {
-      if(val && val.trim() && !this.locked){
+      if(!this.locked && Utils.isValidString(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'wx_title', val)
       }
     },
     wb_title (val) {
-      if(val && val.trim() && !this.locked){
+      if(!this.locked && Utils.isValidString(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'wb_title', val)
       }
     },
     ctype (val) {
-      if(!this.locked){
+      if(!this.locked && Utils.isValidString(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'ctype', val)
       }
     },
     author (val) {
-      if(val && val.trim() && !this.locked){
+      if(!this.locked && Utils.isValidString(val)){
         Content.setContentToLocal(this.id || this.$route.params.id, 'author', val)
       }
     },
     timetopublish (val) {
-      if(val > Date.now() && !this.locked){
+      if(!this.locked &&  val > Date.now()){
         Content.setContentToLocal(this.id || this.$route.params.id, 'timetopublish', val)
       }
     },
