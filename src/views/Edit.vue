@@ -432,7 +432,7 @@ export default {
     },
 
     _getIndexByTags(type, tag) {
-      return _.findIndex( this[`render_${type}s`],(t) => t.name === tag.name )
+      return _.findIndex( this[`render_${type}s`], t => t.name === tag.name )
     },
 
     addTags (type) {
