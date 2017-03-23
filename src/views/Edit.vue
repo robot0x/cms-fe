@@ -299,7 +299,7 @@ export default {
 
     used_for_gift (val) {
       if(!this.locked){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift', val)
+        Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift',  val? 1 : 0)
       }
     },
 
@@ -320,10 +320,10 @@ export default {
         Content.setContentToLocal(this.id || this.$route.params.id, 'characters', val)
       }
     },
-
+    // {"used_for_search":true,"images":[{"id":1,"aid":41,"url":"//content.image.alimmdn.com/cms/41/1490261497.png","used":0,"type":"","origin_filename":"F16EEF29-B357-41A2-908A-4669A11BA111.png","extension_name":"png","size":133884,"width":1078,"height":1078,"create_time":"2017-03-23T09:31:40.000Z"}],"author":"asdas","text":"# 新建文章\n\n暗示搭撒搭撒","render_categroys":[{"name":"爱上打是","type":"success"},{"name":"爱上打","type":"success"}]}
     used_for_search (val) {
       if(!this.locked){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_search', val)
+        Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_search', val? 1 : 0)
       }
     },
 
@@ -489,13 +489,13 @@ export default {
                   console.log('lock_by', lock_by)
                   this.lock_by = lock_by
                   // gift
-                  this.used_for_gift = content.used_for_gift === 1 ? true: false
+                  this.used_for_gift = content.used_for_gift === 1? true: false
                   this.scenes = content.scenes || []
                   this.relations = content.relations || []
                   this.characters = content.characters || []
 
                   // kehywords
-                  this.used_for_search = content.used_for_search === 1 ? true: false
+                  this.used_for_search = content.used_for_search === 1? true: false
                   this.render_categroys = content.render_categroys || []
                   this.render_brands = content.render_brands || []
                   this.render_scenes = content.render_scenes || []
