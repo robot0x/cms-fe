@@ -10,7 +10,7 @@ import './style/style.scss'
 import 'babel-polyfill'
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
-console.log(ElementUI.version);
+// console.log(ElementUI.version)
 /* eslint-disable no-new */
 var vm = new Vue({
   el: '#app',

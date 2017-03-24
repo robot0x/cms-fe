@@ -414,7 +414,6 @@ export default {
     return defaultData
   },
   created () {
-    console.log('edit created exec .....')
     this.loadData(this.$route.params.id)
     Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
   },
@@ -501,14 +500,12 @@ export default {
                   this.lock_by = lock_by
                   // gift
                   this.used_for_gift = Utils.getBoolean(content.used_for_gift)
-                  console.log('this.used_for_gift', this.used_for_gift)
                   this.scenes = content.scenes || []
                   this.relations = content.relations || []
                   this.characters = content.characters || []
 
                   // kehywords
                   this.used_for_search = Utils.getBoolean(content.used_for_search)
-                  console.log('this.used_for_search:', this.used_for_search)
                   this.render_categroys = content.render_categroys
                   this.render_brands = content.render_brands
                   this.render_scenes = content.render_scenes
