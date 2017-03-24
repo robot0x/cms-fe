@@ -140,7 +140,7 @@
           <ul class="image-list">
             <li v-for="(image, index) in images" class="image-item">
               <figure>
-                <img :src="image.url" draggable="true" @dragstart.stop="dragstart">
+                <img :src="image.url">
               </figure>
               <figcaption class="image-info">
                 <!-- {{image.size | imageSizeFormat}} -->
@@ -173,10 +173,18 @@
       </div>
     </panel>
     <div class="editor-area">
-      <raw-editor
+      <!-- <raw-editor
         class="raw-editor"
         @drop.native.stop.prevent="drop"
         @dragover.native.stop.prevent="dragover"
+        :insertImage="insertImage"
+        :class="{'left-small': leftSmall}"
+        :locked="locked"
+        :id="id"
+        :content="text">
+      </raw-editor> -->
+      <raw-editor
+        class="raw-editor"
         :insertImage="insertImage"
         :class="{'left-small': leftSmall}"
         :locked="locked"
@@ -205,44 +213,48 @@ import gift from '../config/gift'
 import _ from 'lodash'
 import { mapGetters } from 'vuex'
 
-const defaultData = {
-  loading: false,
-  leftSmall: false,
-  rightSmall: false,
-  locked: false,
-  lock_by: '',
-  dialogVisible: false, // 查看大图的dialog默认是隐藏的
-  dialogImageUrl: '',
+const emptyString = ''
+const False = false
+const True = false
 
-  used_for_gift: false, // 是否适合送礼。1-适合，0-不适合
+const defaultData = {
+  loading: False,
+  leftSmall: False,
+  rightSmall: False,
+  locked: False,
+  lock_by: emptyString,
+  dialogVisible: False, // 查看大图的dialog默认是隐藏的
+  dialogImageUrl: emptyString,
+
+  used_for_gift: False, // 是否适合送礼。1-适合，0-不适合
   scenes: [],
   relations: [],
   characters: [],
 
-  used_for_search: false, // 是否可搜
-  categroy: '',
+  used_for_search: False, // 是否可搜
+  categroy: emptyString,
   render_categroys: [],
-  brand: '',
+  brand: emptyString,
   render_brands: [],
-  scene: '',
+  scene: emptyString,
   render_scenes: [],
-  special: '',
+  special: emptyString,
   render_specials: [],
-  similar: '',
+  similar: emptyString,
   render_similars: [],
 
-  id: '', // 文章id
-  text: '', // 文章图文数据
-  insertImage: '', // 要插入文章图片中的图片url
+  id: emptyString, // 文章id
+  text: emptyString, // 文章图文数据
+  insertImage: emptyString, // 要插入文章图片中的图片url
   // formData: {
-    author: '', // 作者名
+    author: emptyString, // 作者名
     ctype: 0, // 文章类型
     // tag = ['0', '0-0','0-2', '3', '4-1','4-2'] // 被选中的node-key
     select_tags: [],  // 选中的key。格式跟tag一致
     timetopublish: Date.now(), // 文章发布时间
-    wx_title: '', // 分享到微信的标题
-    wb_title: '', // 分享到微博的标题
-    share_title: '', // 分享到的标题
+    wx_title: emptyString, // 分享到微信的标题
+    wb_title: emptyString, // 分享到微博的标题
+    share_title: emptyString, // 分享到的标题
   // }
   all_tags: [],
   // all_tags,
@@ -271,27 +283,29 @@ export default {
      */
     html ( {md} ) {
       try{
-
-        this.images = this.images.map(image => {
-          let { url, type } = image
-          // 进一步确定是否是banner图
-          const bannerReg = /```banner\s*(.|\n)+\s*```/g
-          const hasBanner = md.match(bannerReg)
-          // 是否是内容图
-          const isContent = Utils.isUsed(new String(md).toString().replace(bannerReg, ''), url)
-          // 是否是banner图
-          const isBanner = hasBanner && Utils.isUsed(hasBanner[0], url)
-
-          if(isContent) {
-            type = Utils.getNewType(type, '4')
-          }
-          if(isBanner){
-            type = Utils.getNewType(type, '3')
-          }
-          image.type = type
-          image.used = (isContent || isBanner || type.length > 0) ? 1 : 0
-          return image
-        })
+        const {images} = this
+        if(!_.isEmpty(images)){
+          this.images = images.map(image => {
+            let { url, type } = image
+            // 进一步确定是否是banner图
+            const bannerReg = /```banner\s*(.|\n)+\s*```/g
+            const hasBanner = md.match(bannerReg)
+            // 是否是内容图
+            const isContent = Utils.isUsed(md.replace(bannerReg, ''), url)
+            // 是否是banner图
+            const isBanner = hasBanner && Utils.isUsed(hasBanner[0], url)
+            if(isContent) {
+              type = Utils.getNewType(type, '4')
+            }
+            if(isBanner){
+              type = Utils.getNewType(type, '3')
+            }
+            image.type = type
+            // image.used = (isContent || isBanner || type.length > 0) ? 1 : 0
+            image.used = Utils.getCode(isContent || isBanner || type.length > 0)
+            return image
+          })
+        }
       }catch(e){
         console.log(e)
       }
@@ -299,97 +313,99 @@ export default {
 
     used_for_gift (val) {
       if(!this.locked){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift',  val? 1 : 0)
+        // Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift',  val? 1 : 0)
+        // Content.setContentToLocal(this.id, 'used_for_gift',  val? 1 : 0)
+        Content.setContentToLocal(this.id, 'used_for_gift',  Utils.getCode(val))
       }
     },
 
     scenes (val) {
       if(val && val.length && !this.locked){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'scenes', val)
+        Content.setContentToLocal(this.id, 'scenes', val)
       }
     },
 
     relations (val) {
       if(val && val.length && !this.locked){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'relations', val)
+        Content.setContentToLocal(this.id, 'relations', val)
       }
     },
 
     characters (val) {
       if(val && val.length && !this.locked){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'characters', val)
+        Content.setContentToLocal(this.id, 'characters', val)
       }
     },
-    // {"used_for_search":true,"images":[{"id":1,"aid":41,"url":"//content.image.alimmdn.com/cms/41/1490261497.png","used":0,"type":"","origin_filename":"F16EEF29-B357-41A2-908A-4669A11BA111.png","extension_name":"png","size":133884,"width":1078,"height":1078,"create_time":"2017-03-23T09:31:40.000Z"}],"author":"asdas","text":"# 新建文章\n\n暗示搭撒搭撒","render_categroys":[{"name":"爱上打是","type":"success"},{"name":"爱上打","type":"success"}]}
     used_for_search (val) {
       if(!this.locked){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_search', val? 1 : 0)
+        // Content.setContentToLocal(this.id, 'used_for_search', val? 1 : 0)
+        Content.setContentToLocal(this.id, 'used_for_search', Utils.getCode(val))
       }
     },
 
     render_categroys (val) {
       if(!this.locked && Utils.isValidArray(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'render_categroys', val)
+        Content.setContentToLocal(this.id, 'render_categroys', val)
       }
     },
 
     render_brands (val) {
       if(!this.locked && Utils.isValidArray(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'render_brands', val)
+        Content.setContentToLocal(this.id, 'render_brands', val)
       }
     },
 
     render_scenes (val) {
       if(!this.locked && Utils.isValidArray(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'render_scenes', val)
+        Content.setContentToLocal(this.id, 'render_scenes', val)
       }
     },
 
     render_specials (val) {
       if(!this.locked && Utils.isValidArray(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'render_specials', val)
+        Content.setContentToLocal(this.id, 'render_specials', val)
       }
     },
 
     render_similars (val) {
       if(!this.locked && Utils.isValidArray(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'render_similars', val)
+        Content.setContentToLocal(this.id, 'render_similars', val)
       }
     },
 
     images (val) {
       if(!this.locked && Utils.isValidArray(val)  ){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'images', val)
+        Content.setContentToLocal(this.id, 'images', val)
       }
     },
     share_title (val) {
       if(!this.locked && Utils.isValidString(val) ){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'share_title', val)
+        Content.setContentToLocal(this.id, 'share_title', val)
       }
     },
     wx_title (val) {
       if(!this.locked && Utils.isValidString(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'wx_title', val)
+        Content.setContentToLocal(this.id, 'wx_title', val)
       }
     },
     wb_title (val) {
       if(!this.locked && Utils.isValidString(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'wb_title', val)
+        Content.setContentToLocal(this.id, 'wb_title', val)
       }
     },
     ctype (val) {
       if(!this.locked && Utils.isValidString(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'ctype', val)
+        Content.setContentToLocal(this.id, 'ctype', val)
       }
     },
     author (val) {
       if(!this.locked && Utils.isValidString(val)){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'author', val)
+        Content.setContentToLocal(this.id, 'author', val)
       }
     },
     timetopublish (val) {
       if(!this.locked &&  val > Date.now()){
-        Content.setContentToLocal(this.id || this.$route.params.id, 'timetopublish', val)
+        Content.setContentToLocal(this.id, 'timetopublish', val)
       }
     },
     '$route': 'routeChange'
@@ -398,7 +414,7 @@ export default {
     return defaultData
   },
   created () {
-    console.log('edit created exec .....');
+    console.log('edit created exec .....')
     this.loadData(this.$route.params.id)
     Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
   },
@@ -408,26 +424,25 @@ export default {
   //   Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
   // },
   methods: {
-
     setImageType(index, code) {
       const image = this.images[index]
       // image.type = types.length > 0 ? types.join(',') : ''
-      image.type = Utils.getNewType(image.type, code, true)
+      image.type = Utils.getNewType(image.type, code, True)
       // 当image.type的长度为0时，不能简单地认为这张图片没有被使用
       // 而应该看看是否在markdown中存在
-      image.used = (image.type.length || Utils.isUsed(this.html.md, image.url)) ? 1 : 0
+      image.used = Utils.getCode(image.type.length || Utils.isUsed(this.html.md, image.url))
       this.$set(this.images, index, image)
     },
 
     viewImage (url) {
       this.dialogImageUrl = url;
-      this.dialogVisible = true;
+      this.dialogVisible = True;
     },
 
     removeTag(type, tag) {
-      console.log(type, tag);
+      console.log(type, tag)
       const index = this._getIndexByTags(type,tag)
-      console.log('index:', index);
+      console.log('index:', index)
       this[`render_${type}s`].splice(index, 1)
     },
 
@@ -436,10 +451,9 @@ export default {
     },
 
     addTags (type) {
-      console.log(type)
-      console.log(this[`render_${type}s`])
+      const array = this[`render_${type}s`] || []
       this[`render_${type}s`] =
-        this[`render_${type}s`].concat(
+        array.concat(
           // 去重，防止一次输入多个相同的keywords
           _.union(
             this[type].split(/ +|,|，/).filter(tag => tag.trim()) // 过滤非空的字符串
@@ -456,7 +470,7 @@ export default {
             }
           })
         )
-        this[type] = ''
+      this[type] = ''
     },
 
     routeChange () {
@@ -469,38 +483,37 @@ export default {
         Content
           .getContent(id)
           .then(content => {
-                content = content || {}
                 if(!_.isEmpty(content)){
                   this.id = String(content.id || id)
-                  this.images = (content.images || [])
+                  this.images = content.images
 
-                  this.text = content.text || ''
-                  this.author = content.author || ''
-                  this.ctype = content.ctype || 0
-                  this.tag = content.tag || {}
+                  this.text = content.text
+                  this.author = content.author
+                  this.ctype = content.ctype
+                  this.tag = content.tag
                   this.timetopublish = content.timetopublish || Date.now()
-                  this.wx_title = content.wx_title || ''
-                  this.wb_title = content.wb_title || ''
-                  this.share_title = content.share_title || ''
+                  this.wx_title = content.wx_title
+                  this.wb_title = content.wb_title
+                  this.share_title = content.share_title
 
                   const { lock_by } = content
                   this.locked = Utils.isLocked(lock_by)
-                  console.log('locked', Utils.isLocked(lock_by))
-                  console.log('lock_by', lock_by)
                   this.lock_by = lock_by
                   // gift
-                  this.used_for_gift = content.used_for_gift === 1? true: false
+                  this.used_for_gift = Utils.getBoolean(content.used_for_gift)
+                  console.log('this.used_for_gift', this.used_for_gift)
                   this.scenes = content.scenes || []
                   this.relations = content.relations || []
                   this.characters = content.characters || []
 
                   // kehywords
-                  this.used_for_search = content.used_for_search === 1? true: false
-                  this.render_categroys = content.render_categroys || []
-                  this.render_brands = content.render_brands || []
-                  this.render_scenes = content.render_scenes || []
-                  this.render_specials = content.render_specials || []
-                  this.render_similars = content.render_similars || []
+                  this.used_for_search = Utils.getBoolean(content.used_for_search)
+                  console.log('this.used_for_search:', this.used_for_search)
+                  this.render_categroys = content.render_categroys
+                  this.render_brands = content.render_brands
+                  this.render_scenes = content.render_scenes
+                  this.render_specials = content.render_specials
+                  this.render_similars = content.render_similars
                   this.$nextTick(() => {
                     // this.select_tags = [1,2]
                   })
@@ -531,43 +544,39 @@ export default {
 
     insert(index) {
       this.insertImage = ''
-      setTimeout(() => {
-        this.insertImage = this.images[index].url
-      })
+      setTimeout(() => { this.insertImage = this.images[index].url })
     },
     // raw-editor 必须要监听dragover事件，否则safari的drop事件将不会执行（chrome没有这个问题）
-    dragover() {
-      return false
-    },
-
-    drop(event) {
-      this.insertImage = event.dataTransfer.getData('src')
-    },
-
-    dragstart(event) {
-      event.dataTransfer.setData('src', event.target.src)
-    },
+    // dragover() {
+    //   return false
+    // },
+    // drop(event) {
+    //   this.insertImage = event.dataTransfer.getData('src')
+    // },
+    // dragstart(event) {
+    //   event.dataTransfer.setData('src', event.target.src)
+    // },
 
     handleBeforeUpload (file){
       if(['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) === -1){
         this.$alert('只能上传格式为jpg/jpeg/png/gif的图片文件', `上传文件格式不符合要求`, { confirmButtonText: '确定' })
-        return false
+        return False
       }
       if( (file.size / 1024) > 500 ){
         this.$alert('上传图片大小不能超过500kb', `上传文件大小不符合要求`, { confirmButtonText: '确定' })
-        return false
+        return False
       }
+      return True
     },
-    handlePreview(file) {
-      console.log('handlePreview')
-      console.log(file)
-    },
-    handleRemove(file) {
-      console.log('handleRemove')
-      console.log(file)
-    },
+    // handlePreview(file) {
+    //   console.log('handlePreview')
+    //   console.log(file)
+    // },
+    // handleRemove(file) {
+    //   console.log('handleRemove')
+    //   console.log(file)
+    // },
     handleSuccess(res) {
-      console.log(res);
       const message = res.msg
       const state = res.state
       if(state !== 'success' ){ // error
@@ -618,16 +627,16 @@ export default {
     open(dir) {
       switch (dir) {
         case 'left':
-          this.rightSmall = true
-          this.leftSmall = false
+          this.rightSmall = True
+          this.leftSmall = False
           break;
         case 'right':
-          this.leftSmall = true
-          this.rightSmall = false
+          this.leftSmall = True
+          this.rightSmall = False
           break;
         default:
-          this.leftSmall = false
-          this.rightSmall = false
+          this.leftSmall = False
+          this.rightSmall = False
       }
     },
     // 没必要，全选删除即可
@@ -669,7 +678,7 @@ export default {
     },
     save() {
       // return console.log(this.images)
-      this.loading = true
+      this.loading = True
       // 从VM中提取数据
       let {
         ctype,
@@ -700,12 +709,12 @@ export default {
       let { title } = html
       let last_update_by = LoginUtils.getUsername()
       if(!title){
-        this.loading = false
+        this.loading = False
         return this.$alert('请在文章编辑区填写标题，格式为: # 文章标题', '标题未填写', { confirmButtonText: '确定' })
       }
       // 数据合法性验证
       if(!author){
-        this.loading = false
+        this.loading = False
         return this.$alert('必须填写作者', '作者未填写', { confirmButtonText: '确定' })
       }
 
@@ -732,28 +741,29 @@ export default {
         `width
         `height`
        */
-      let images_handled = images.map(image => {
-        // 1-cover图-封面图/2-thumb图-缩略图/3-banner图/4-文章内容图。存储以逗号隔开的字符串，例如：1,2,4 即这张图片的类型为cover图 & thumb图 & 内容图
-        const ret =  {
-          id: Number(image.id || 0), // 图片的id
-          aid: Number(id || 0),
-          url: image.url,
-          type: image.type,
-          used: image.used,
-          origin_filename: image.name || '',
-          // origin_filename: 'image',
-          extension_name: Utils.getExtensionName(image.name) || '',
-          size: image.size,
-          width: image.width,
-          height: image.height
-        }
-        const isModify = Utils.isModify(image, images) ? 1 : 0
-        console.log('isModify:', Utils.isModify(ret, images));
-        ret.isModify = isModify
-        console.log(ret);
-        console.log(images);
-        return ret
-      })
+      let images_handled = []
+      if(!_.isEmpty(images)){
+        images_handled = images.map(image => {
+          // 1-cover图-封面图/2-thumb图-缩略图/3-banner图/4-文章内容图。存储以逗号隔开的字符串，例如：1,2,4 即这张图片的类型为cover图 & thumb图 & 内容图
+          const ret =  {
+            id: Number(image.id || 0), // 图片的id
+            aid: Number(id || 0),
+            url: image.url,
+            type: image.type,
+            used: image.used,
+            origin_filename: image.name || '',
+            // origin_filename: 'image',
+            extension_name: Utils.getExtensionName(image.name),
+            size: image.size,
+            width: image.width,
+            height: image.height
+          }
+          // ret.isModify = Utils.isModify(image, images) ? 1 : 0
+          ret.isModify = Utils.getCode(Utils.isModify(image, images))
+          console.log('isModify:', ret.isModify)
+          return ret
+        })
+      }
       // return console.log(images_handled)
       // console.log(gift);
       const postData = {
@@ -771,59 +781,46 @@ export default {
         images: images_handled,
         content: this.html.md,
         gift: {
-          used_for_gift: used_for_gift === true? 1 : 0,
+          // used_for_gift: used_for_gift === True? 1 : 0,
+          used_for_gift: Utils.getCode(used_for_gift),
           hints: (() => {
-            const temp = {
-              scenes: scenes.join(' '),
-              relations: relations.join(' '),
-              characters: characters.join(' ')
+            const temp = {}
+            const handle = array => array.join(' ')
+            if(!_.isEmpty(scenes)){
+              temp.scenes = handle(scenes)
             }
-            if (!temp.scenes){
-              delete temp.scenes
+            if(!_.isEmpty(relations)){
+              temp.relations = handle(relations)
             }
-            if (!temp.relations){
-              delete temp.relations
+            if(!_.isEmpty(characters)){
+              temp.characters = handle(characters)
             }
-            if (!temp.characters){
-              delete temp.characters
-            }
-            if( _.isEmpty(temp)){
-              return ''
-            }else{
-              return JSON.stringify(temp)
-            }
+            return _.isEmpty(temp)? '' : JSON.stringify(temp)
           })()
         },
+
         keywords: {
-          used_for_search: used_for_search === true? 1 : 0,
+          // used_for_search: used_for_search? 1 : 0,
+          used_for_search: Utils.getCode(used_for_gift),
           keywords: (() => {
-            const temp = {
-              categroys: render_categroys.map(categroy => categroy.name).join(' '),
-              brands: render_brands.map(brand => brand.name).join(' '),
-              scenes: render_scenes.map(brand => brand.name).join(' '),
-              specials: render_specials.map(brand => brand.name).join(' '),
-              similars: render_similars.map(brand => brand.name).join(' '),
+            const temp = {}
+            const handle = array => array.map(item => item.name).join(' ')
+            if(!_.isEmpty(render_categroys)){
+              temp.categroys = handle(render_categroys)
             }
-            if (!temp.categroys){
-              delete temp.categroys
+            if(!_.isEmpty(render_brands)){
+              temp.brands = handle(render_brands)
             }
-            if (!temp.brands){
-              delete temp.brands
+            if(!_.isEmpty(render_scenes)){
+              temp.scenes = handle(render_scenes)
             }
-            if (!temp.scenes){
-              delete temp.scenes
+            if(!_.isEmpty(render_specials)){
+              temp.specials = handle(render_specials)
             }
-            if (!temp.specials){
-              delete temp.specials
+            if(!_.isEmpty(render_similars)){
+              temp.similars = handle(render_similars)
             }
-            if (!temp.similars){
-              delete temp.similars
-            }
-            if( _.isEmpty(temp)){
-              return ''
-            }else{
-              return JSON.stringify(temp)
-            }
+            return _.isEmpty(temp)? '' : JSON.stringify(temp)
           })()
         },
         tags: Utils.splitTags(select_tags, this.all_tags)
@@ -837,14 +834,14 @@ export default {
       // console.log("发布时间：", timetopublish)
 
       Content.save(postData).then(res => {
-        this.loading = false
+        this.loading = False
         this.$message({
           type: 'success',
           message: '文章保存成功'
         })
         Utils.clearCache(id)
       }).catch( message => {
-        this.loading = false
+        this.loading = False
         console.log(message)
         this.$notify({ message: message, type: 'error' })
       })
@@ -859,24 +856,16 @@ export default {
 
     }
   },
+
   filters: {
     lockedByFormat(lock_by) {
-      const locked = Utils.isLocked(lock_by)
-      if(locked){
-        return `此文已被 ${lock_by} 锁住，只能查看信息，更改的信息无法被保存`
-      }else{
-        return '操作'
-      }
+      return Utils.isLocked(lock_by)? `此文已被 ${lock_by} 锁住，只能查看信息，更改的信息无法被保存`:'操作'
     },
     imageSizeFormat (size) {
       return Math.ceil(size / 1024) + 'kb'
     },
     imageWidthAndHeightFormat (width, height) {
-      let ret = ''
-      if(width && height){
-        ret = width + ' X ' + height
-      }
-      return ret
+      return width && height ? width + ' X ' + height : ''
     }
   }
 }

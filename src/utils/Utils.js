@@ -2,6 +2,31 @@ import _ from 'lodash'
 import LoginUtils from './LoginUtils'
 import fetch from 'isomorphic-fetch'
 class Utils {
+
+  /**
+   * code:
+   *  1 => true
+   *  0 => false
+   */
+  static getBoolean(code) {
+    if(typeof code === 'boolean') {
+      return code
+    }
+    return code == 0 ? False : True
+  }
+  /**
+   * bol:
+   *  true => 1
+   *  false => 0
+   *  此方法是_getBoolean的逆运算
+   */
+  static getCode(bol){
+    if(typeof bol === 'number'){
+      return bol
+    }
+    return code ? 1 : 0
+  }
+
   static getNewType (types = '', code, remove = false){
     if(_.isString(types)){
         types = types.split(',').filter(t => t.trim()).map(t => String(t))
@@ -83,11 +108,7 @@ class Utils {
    'filename.with.many.dots.ext'	'ext'
   */
   static getExtensionName (filename) {
-     if(filename){
-       return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
-     }else{
-       return ''
-     }
+    return filename? filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2) : ''
   }
 
   static insertContent(obj, str) {

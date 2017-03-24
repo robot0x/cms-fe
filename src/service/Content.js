@@ -33,6 +33,7 @@ const CTYPES = ['好物', '专刊', '专题', '首页', '测评', '长文']
  */
 
 export default class Content {
+
   static getContent(id){
     return new Promise((resolve, reject) => {
       try {
@@ -55,6 +56,7 @@ export default class Content {
               }else{
                 content.lock_by = user
               }
+              content.from = 'cache'
               resolve(content)
             }
           })
@@ -94,69 +96,40 @@ export default class Content {
                   const {categroys, brands, scenes, specials, similars} = keywords
                   // 品类
                   if(categroys){
-                    ret.render_categroys = categroys.split(' ').map(item => {
-                      return {
-                        type: 'primary',
-                        name: item
-                      }
-                    })
+                    ret.render_categroys = Content._handleKeywords(categroys)
                   }
                   // 品牌
                   if(brands){
-                    ret.render_brands = brands.split(' ').map(item => {
-                      return {
-                        type: 'primary',
-                        name: item
-                      }
-                    })
+                    ret.render_brands =  Content._handleKeywords(brands)
                   }
 
                   // 使用场景
                   if(scenes){
-                    ret.render_scenes = scenes.split(' ').map(item => {
-                      return {
-                        type: 'primary',
-                        name: item
-                      }
-                    })
+                    ret.render_scenes =  Content._handleKeywords(scenes)
                   }
 
                   // 特别之处
                   if(specials){
-                    ret.render_specials = specials.split(' ').map(item => {
-                      return {
-                        type: 'primary',
-                        name: item
-                      }
-                    })
+                    ret.render_specials = Content._handleKeywords(specials)
                   }
 
                   // 类似产品
                   if(similars){
-                    ret.render_similars = similars.split(' ').map(item => {
-                      return {
-                        type: 'primary',
-                        name: item
-                      }
-                    })
+                    ret.render_similars = Content._handleKeywords(similars)
                   }
                 }
 
-                // used_for_gift: false, // 是否适合送礼。1-适合，0-不适合
-                // scenes: [],
-                // relations: [],
-                // characters: [],
                 if(gift){
                   gift = JSON.parse(gift)
                   const {scenes, relations, characters} = gift
                   if(scenes){
-                    ret.scenes = scenes.split(' ').filter(s => s.trim()).map(s => Number(s))
+                    ret.scenes = Content._handleGift(scenes)
                   }
                   if(relations){
-                    ret.relations = relations.split(' ').filter(s => s.trim()).map(s => Number(s))
+                    ret.relations = Content._handleGift(relations)
                   }
                   if(characters){
-                    ret.characters = characters.split(' ').filter(s => s.trim()).map(s => Number(s))
+                    ret.characters = Content._handleGift(characters)
                   }
                 }
                 if(tags){
@@ -169,6 +142,7 @@ export default class Content {
                 if(!lock_by){
                   ret.lock_by = user
                 }
+                ret.from = 'server'
                 // console.log(ret);
                 // console.log(gift, keywords, tags);
                 resolve(ret)
@@ -195,7 +169,6 @@ export default class Content {
         // }
       } catch (e) {
         reject(e.message)
-      } finally {
       }
     })
   }
@@ -235,9 +208,12 @@ export default class Content {
     })
   }
 
+  static _handleKeywords (keywords, type = 'primary'){
+    return keywords.split(' ').map(item => { return { type, name: item}})
+  }
 
-  static handleKeywords(keywords, type = 'success'){
-    return keywords.map(keyword => { return { name: keyword, type: type } })
+  static _handleGift (gifts){
+    return gifts.split(' ').filter(s => s.trim()).map(s => Number(s))
   }
 
   static setContentToLocal(id, key, val, check = false){

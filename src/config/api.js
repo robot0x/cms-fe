@@ -2,7 +2,7 @@
 const API = (function () {
   // const fetchURL = '//c.diaox2.com/view/app'
   // const fetchURL = '//127.0.0.1:3000'
-  const fetchURL = '//172.16.1.121:3000'
+  const fetchURL = '//123.56.242.50:3000'
   // 下列接口都是GET请求
   return {
     articles: {
