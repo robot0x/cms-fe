@@ -12,7 +12,7 @@ class Utils {
     if(typeof code === 'boolean') {
       return code
     }
-    return code == 0 ? False : True
+    return code == 0 ? false : true
   }
   /**
    * bol:
@@ -24,7 +24,7 @@ class Utils {
     if(typeof bol === 'number'){
       return bol
     }
-    return code ? 1 : 0
+    return bol ? 1 : 0
   }
 
   static getNewType (types = '', code, remove = false){
