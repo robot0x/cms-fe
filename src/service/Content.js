@@ -1,10 +1,9 @@
-import content from '../mocks/content'
 import fetch from 'isomorphic-fetch'
-import images from '../mocks/images'
 import API from '../config/api'
 import _ from 'lodash'
 import LoginUtils from '../utils/LoginUtils'
 const CTYPES = ['好物', '专刊', '专题', '首页', '测评', '长文']
+const successCode = 'SUCCESS'
 // 根据id查询Content
 /*
   {
@@ -48,7 +47,7 @@ export default class Content {
           .then(result => {
             console.log(url,result)
             const {message, res} = result
-            if(message !== 'SUCCESS'){
+            if(message !== successCode){
               reject(message)
             }else{
               if(res && res.lock_by){
@@ -73,7 +72,7 @@ export default class Content {
             .then(result => {
               console.log(url, result)
               const message = result.message
-              if(message !== 'SUCCESS'){
+              if(message !== successCode){
                 reject(message)
               }else{
 
@@ -196,7 +195,7 @@ export default class Content {
         .then(result => {
           console.log(url, result)
           const message = result.message
-          if(message !== 'SUCCESS'){
+          if(message !== successCode){
             reject(message)
           }else{
             resolve({})

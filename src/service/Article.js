@@ -1,9 +1,9 @@
-import articles from '../mocks/articles'
 import fetch from 'isomorphic-fetch'
 import API from '../config/api'
 import _ from 'lodash'
 import LoginUtils from '../utils/LoginUtils'
 
+const successCode = 'SUCCESS'
 export default class Article {
 /**
  * 释放编辑锁
@@ -18,7 +18,7 @@ static releaseLock (id) {
       .then(result => {
         console.log(url, result)
         const message = result.message
-        if(message !== 'SUCCESS') {
+        if(message !== successCode) {
           reject(message)
         }else{
           resolve(result.res)
@@ -40,7 +40,7 @@ static releaseLock (id) {
        .then(result => {
          console.log(url, result);
          const message = result.message
-         if(message !== 'SUCCESS') {
+         if(message !== successCode) {
            reject(message)
          }else{
            resolve(result.res)
@@ -74,7 +74,7 @@ static releaseLock (id) {
         .then(result => {
           console.log(url, result)
           const message = result.message
-          if(message !== 'SUCCESS'){
+          if(message !== successCode){
             reject(message)
           }else{
             resolve({
@@ -129,7 +129,7 @@ static releaseLock (id) {
         .then(result => {
           console.log(url, result)
           const message = result.message
-          if(message !== 'SUCCESS'){
+          if(message !== successCode){
             reject(message)
           }else{
             if(result.res){
@@ -151,7 +151,7 @@ static releaseLock (id) {
 
   static deleteArticle (id) {
     return new Promise((resolve, reject) => {
-      resolve('SUCCESS')
+      resolve(successCode)
     })
   }
 

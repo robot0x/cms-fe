@@ -1,7 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import API from '../config/api'
-import _ from 'lodash'
-import LoginUtils from '../utils/LoginUtils'
+const successCode = 'SUCCESS'
 
 export default class User {
   static auth (username, password) {
@@ -17,7 +16,7 @@ export default class User {
           fetch(`${API.users.url}/?user=${username}&password=${password}`)
           .then(response => response.json())
           .then(result => {
-            if(result.message !== 'SUCCESS'){
+            if(result.message !== successCode){
               reject(result.message)
             }else{
               if(result.res.auth){
@@ -47,7 +46,7 @@ export default class User {
           fetch(API.users.url)
           .then(response => response.json())
           .then(result => {
-            if(result.message !== 'SUCCESS'){
+            if(result.message !== successCode){
               reject(result.message)
             }else{
               resolve(result.res)

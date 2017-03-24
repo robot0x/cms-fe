@@ -1,4 +1,19 @@
-@import "../sass-lib/_common";
+html{
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+   text-rendering: optimizeLegibility;
+  /*  font-family: "Hiragino Sans GB", "Helvetica Neue", Helvetica, "Microsoft Yahei", heiti, Arial, sans-serif;*/
+   font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+   font: 16px/1.5;
+   height:100%;
+}
+body{height: 100%}
+body,div,p,ul,li,form,input,h1,h2,h3,h4,h5,h6,table,dl,dd,textarea,ol,figure, figcaption{margin:0;padding:0;}
+ul,ol,li{list-style:none;}
+img{vertical-align: middle;border:none;display:inline-block;}
+a{text-decoration: none;border: none;}
+input{outline:none;border:none;}
+*{box-sizing: border-box;}
 /* 路由渐变样式及active样式 --start*/
 $headerActiveBorderHeight: 4px;
 .slide-fade-enter-active {

@@ -132,7 +132,9 @@ class Utils {
   static setCookie(key, value, days = 5) {
     // 设置cookie过期事件,默认是30天
     const expire = new Date()
-    expire.setTime(expire.getTime() + days * 24 * 60 * 60 * 1000)
+    // expire.setTime(expire.getTime() + days * 24 * 60 * 60 * 1000)
+    // expire.setTime(expire.getTime() + days * 86400000)
+    expire.setTime(expire.getTime() + days * 864e5)
     document.cookie = key + "=" + encodeURIComponent(value) + ";expires=" + expire.toGMTString()
   }
 
