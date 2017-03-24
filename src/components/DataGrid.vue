@@ -113,7 +113,6 @@ export default {
   },
   watch: {
     input (val, oldVal) {
-      console.log('input 改变了....', val)
       // if(_.isEqual(val, oldVal)) return
       if(val.type === 'new'){
         this.doNew()
