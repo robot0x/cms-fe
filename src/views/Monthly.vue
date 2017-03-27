@@ -7,7 +7,7 @@
              <template slot="title">{{ item.year }}年（{{item.count}}）</template>
              <el-menu-item :index="index | calcIndex(i)" v-for="(month, i) in item.months"> {{ month.month | monthFormat }}（{{month.count}}）</el-menu-item>
            </el-submenu>
-       </el-menu>
+         </el-menu>
       </el-col>
       <el-col :span="20">
         <data-grid class="data-grid" :input="query"></data-grid>

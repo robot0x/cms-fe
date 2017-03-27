@@ -213,48 +213,44 @@ import gift from '../config/gift'
 import _ from 'lodash'
 import { mapGetters } from 'vuex'
 
-const emptyString = ''
-const False = false
-const True = false
-
 const defaultData = {
-  loading: False,
-  leftSmall: False,
-  rightSmall: False,
-  locked: False,
-  lock_by: emptyString,
-  dialogVisible: False, // 查看大图的dialog默认是隐藏的
-  dialogImageUrl: emptyString,
+  loading: false,
+  leftSmall: false,
+  rightSmall: false,
+  locked: false,
+  lock_by: '',
+  dialogVisible: false, // 查看大图的dialog默认是隐藏的
+  dialogImageUrl: '',
 
-  used_for_gift: False, // 是否适合送礼。1-适合，0-不适合
+  used_for_gift: false, // 是否适合送礼。1-适合，0-不适合
   scenes: [],
   relations: [],
   characters: [],
 
-  used_for_search: False, // 是否可搜
-  categroy: emptyString,
+  used_for_search: false, // 是否可搜
+  categroy: '',
   render_categroys: [],
-  brand: emptyString,
+  brand: '',
   render_brands: [],
-  scene: emptyString,
+  scene: '',
   render_scenes: [],
-  special: emptyString,
+  special: '',
   render_specials: [],
-  similar: emptyString,
+  similar: '',
   render_similars: [],
 
-  id: emptyString, // 文章id
-  text: emptyString, // 文章图文数据
-  insertImage: emptyString, // 要插入文章图片中的图片url
+  id: '', // 文章id
+  text: '', // 文章图文数据
+  insertImage: '', // 要插入文章图片中的图片url
   // formData: {
-    author: emptyString, // 作者名
+    author: '', // 作者名
     ctype: 0, // 文章类型
     // tag = ['0', '0-0','0-2', '3', '4-1','4-2'] // 被选中的node-key
     select_tags: [],  // 选中的key。格式跟tag一致
     timetopublish: Date.now(), // 文章发布时间
-    wx_title: emptyString, // 分享到微信的标题
-    wb_title: emptyString, // 分享到微博的标题
-    share_title: emptyString, // 分享到的标题
+    wx_title: '', // 分享到微信的标题
+    wb_title: '', // 分享到微博的标题
+    share_title: '', // 分享到的标题
   // }
   all_tags: [],
   // all_tags,
@@ -426,7 +422,7 @@ export default {
     setImageType(index, code) {
       const image = this.images[index]
       // image.type = types.length > 0 ? types.join(',') : ''
-      image.type = Utils.getNewType(image.type, code, True)
+      image.type = Utils.getNewType(image.type, code, true)
       // 当image.type的长度为0时，不能简单地认为这张图片没有被使用
       // 而应该看看是否在markdown中存在
       image.used = Utils.getCode(image.type.length || Utils.isUsed(this.html.md, image.url))
@@ -435,7 +431,7 @@ export default {
 
     viewImage (url) {
       this.dialogImageUrl = url;
-      this.dialogVisible = True;
+      this.dialogVisible = true;
     },
 
     removeTag(type, tag) {
@@ -557,13 +553,12 @@ export default {
     handleBeforeUpload (file){
       if(['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) === -1){
         this.$alert('只能上传格式为jpg/jpeg/png/gif的图片文件', `上传文件格式不符合要求`, { confirmButtonText: '确定' })
-        return False
+        return false
       }
       if( (file.size / 1024) > 500 ){
         this.$alert('上传图片大小不能超过500kb', `上传文件大小不符合要求`, { confirmButtonText: '确定' })
-        return False
+        return false
       }
-      return True
     },
     // handlePreview(file) {
     //   console.log('handlePreview')
@@ -590,13 +585,18 @@ export default {
           if(url.indexOf('//') === -1){
             url = '//' + url
           }
-          this.images.push({
+          const img = {
              url: url,
              name: res.orginfo.file.name,
              width: res.info[0],
              height: res.info[1],
              size: res.orginfo.file.size
-           })
+          }
+          if(_.isEmpty(this.images)){
+            this.images = [img]
+          }else{
+            this.images.push(img)
+          }
         }
       }
     },
@@ -624,16 +624,16 @@ export default {
     open(dir) {
       switch (dir) {
         case 'left':
-          this.rightSmall = True
-          this.leftSmall = False
+          this.rightSmall = true
+          this.leftSmall = false
           break;
         case 'right':
-          this.leftSmall = True
-          this.rightSmall = False
+          this.leftSmall = true
+          this.rightSmall = false
           break;
         default:
-          this.leftSmall = False
-          this.rightSmall = False
+          this.leftSmall = false
+          this.rightSmall = false
       }
     },
     // 没必要，全选删除即可
@@ -675,7 +675,7 @@ export default {
     },
     save() {
       // return console.log(this.images)
-      this.loading = True
+      this.loading = true
       // 从VM中提取数据
       let {
         ctype,
@@ -706,12 +706,12 @@ export default {
       let { title } = html
       let last_update_by = LoginUtils.getUsername()
       if(!title){
-        this.loading = False
+        this.loading = false
         return this.$alert('请在文章编辑区填写标题，格式为: # 文章标题', '标题未填写', { confirmButtonText: '确定' })
       }
       // 数据合法性验证
       if(!author){
-        this.loading = False
+        this.loading = false
         return this.$alert('必须填写作者', '作者未填写', { confirmButtonText: '确定' })
       }
 
@@ -778,7 +778,7 @@ export default {
         images: images_handled,
         content: this.html.md,
         gift: {
-          // used_for_gift: used_for_gift === True? 1 : 0,
+          // used_for_gift: used_for_gift === true? 1 : 0,
           used_for_gift: Utils.getCode(used_for_gift),
           hints: (() => {
             const temp = {}
@@ -831,14 +831,14 @@ export default {
       // console.log("发布时间：", timetopublish)
 
       Content.save(postData).then(res => {
-        this.loading = False
+        this.loading = false
         this.$message({
           type: 'success',
           message: '文章保存成功'
         })
         Utils.clearCache(id)
       }).catch( message => {
-        this.loading = False
+        this.loading = false
         console.log(message)
         this.$notify({ message: message, type: 'error' })
       })

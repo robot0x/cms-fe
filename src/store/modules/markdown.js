@@ -51,9 +51,6 @@ const state = {
 // https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 // https://help.github.com/categories/writing-on-github/
 const getters = {
-  title: (state, getters, rootState) => {
-
-  },
   html: (state, getters, rootState) => {
     const renderer = new marked.Renderer
     const options = {
@@ -129,6 +126,8 @@ const actions = {
 
 const mutations = {
   change (state, payload) {
+    console.log('change 执行 。。。。')
+    console.log(payload)
     state.md = payload
   }
 }

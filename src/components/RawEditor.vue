@@ -22,9 +22,11 @@ export default {
   },
   watch: {
     content (input) {
+      // console.log(input);
       this.text = input
     },
     text () {
+      console.log('text 发生了变化 ...');
       this.commit()
     },
     insertImage (val) {
@@ -36,7 +38,9 @@ export default {
   methods: {
     commit (text = this.text) {
       this.$store.commit('change', text)
-      Content.setContentToLocal(this.id, 'text', text, true)
+      if(this.id){
+        Content.setContentToLocal(this.id, 'text', text, true)
+      }
     }
   }
 }
@@ -71,7 +75,6 @@ export default {
     resize: none;
     flex: 1;
   }
-
   .operate-area {
     height: 45px;
     padding: 0;
