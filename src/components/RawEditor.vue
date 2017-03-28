@@ -1,6 +1,5 @@
 <template>
   <div class="component-raw-editor">
-    <!-- <textarea v-model="text" :disabled="locked" ref="textarea" rows="1000"></textarea> -->
     <textarea v-model="text" :disabled="locked" ref="textarea"></textarea>
   </div>
 </template>
@@ -22,11 +21,9 @@ export default {
   },
   watch: {
     content (input) {
-      // console.log(input);
       this.text = input
     },
     text () {
-      console.log('text 发生了变化 ...');
       this.commit()
     },
     insertImage (val) {
