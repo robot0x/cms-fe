@@ -7,7 +7,7 @@ import Archive from '../views/Archive'
 import Monthly from '../views/Monthly'
 import User from '../views/User'
 import Login from '../views/Login'
-// import Help from '../views/Help'
+import Help from '../views/Help'
 // import Password from '../views/Password'
 // import Register from '../views/Register'
 import NotFound from '../views/NotFound'
@@ -44,7 +44,7 @@ const routes = [
   },
   // { path: '/monthly', component: Monthly },
   // { path: '/author', component: Author },
-  // { path: '/help', component: Help },
+  { path: '/help', component: Help },
   { path: '/login/', name: 'login', component: Login },
   // { path: '/password/', name: 'password', component: Password }, // 修改密码
   // { path: '/register/', name: 'register', component: Register },
