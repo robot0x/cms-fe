@@ -18,11 +18,6 @@
                 <i class="el-icon-menu"></i><span>归档</span>
               </router-link>
             </li>
-            <li>
-              <router-link class="nav-link" to="/help">
-                <span>帮助</span>
-              </router-link>
-            </li>
             <li class="author">
               <span>你好，{{author}}</span>
               <a href="javascript:void(0);" class="logout" @click="logout">退出</a>
