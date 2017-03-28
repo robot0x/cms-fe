@@ -51,10 +51,9 @@ const state = {
 // https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
 // https://help.github.com/categories/writing-on-github/
 const getters = {
-  title: (state, getters, rootState) => {
-
-  },
   html: (state, getters, rootState) => {
+    console.log('html exec ...')
+    console.log('md is null:', state.md === '');
     const renderer = new marked.Renderer
     const options = {
       // default: false github flavored markdown github风格的markdown

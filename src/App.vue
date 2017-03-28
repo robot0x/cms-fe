@@ -20,7 +20,7 @@
             </li>
             <li>
               <router-link class="nav-link" to="/help">
-                <i class="el-icon-menu"></i><span>帮助</span>
+                <i class="el-icon-information"></i><span>帮助</span>
               </router-link>
             </li>
             <li class="author">
