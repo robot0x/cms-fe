@@ -21,9 +21,11 @@ export default {
   },
   watch: {
     content (input) {
+      console.log('content change ...');
       this.text = input
     },
     text () {
+      console.log('text change ...');
       this.commit()
     },
     insertImage (val) {
@@ -34,8 +36,12 @@ export default {
   },
   methods: {
     commit (text = this.text) {
+      console.log('commit exec ...')
       this.$store.commit('change', text)
-      Content.setContentToLocal(this.id, 'text', text, true)
+      const { id } = this
+      if(id){
+        Content.setContentToLocal(id, 'text', text, true)
+      }
     }
   }
 }

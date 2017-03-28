@@ -52,6 +52,8 @@ const state = {
 // https://help.github.com/categories/writing-on-github/
 const getters = {
   html: (state, getters, rootState) => {
+    console.log('html exec ...')
+    console.log('md is null:', state.md === '');
     const renderer = new marked.Renderer
     const options = {
       // default: false github flavored markdown github风格的markdown
