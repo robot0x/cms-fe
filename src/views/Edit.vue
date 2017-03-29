@@ -212,7 +212,6 @@ import { ctypes } from '../config/content_page_data'
 import gift from '../config/gift'
 import _ from 'lodash'
 import { mapGetters } from 'vuex'
-
 const defaultData = {
   loading: false,
   leftSmall: false,

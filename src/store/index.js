@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import mutations from './mutations'
-import * as actions from './actions'
-import * as getters from './getters'
-import article from './modules/article'
-import image from './modules/image'
-import author from './modules/author'
+// import * as actions from './actions'
+// import * as getters from './getters'
+// import article from './modules/article'
+// import image from './modules/image'
+// import author from './modules/author'
 import markdown from './modules/markdown'
-import DataGrid from './modules/DataGrid'
+// import DataGrid from './modules/DataGrid'
 const debug = process.env.NODE_ENV !== 'production'
 Vue.use(Vuex)
 /**
@@ -21,11 +21,11 @@ Vue.use(Vuex)
  */
 export default new Vuex.Store({
   modules: {
-    article,
-    image,
-    author,
-    markdown,
-    DataGrid
+    // article,
+    // image,
+    // author,
+    markdown
+    // DataGrid
   },
   state: {
     // count: 1999,

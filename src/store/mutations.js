@@ -4,7 +4,6 @@ export default {
   // [types.INCREMENT] (state) {
   //   state.count++
   // },
-  //
   // [types.DECREMENT] (state) {
   //   state.count--
   // },
