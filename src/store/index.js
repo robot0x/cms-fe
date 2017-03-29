@@ -32,7 +32,7 @@ export default new Vuex.Store({
     username: ''
   },
   mutations,
-  // getters,
   // actions,
+  // getters,
   strict: debug
 })
