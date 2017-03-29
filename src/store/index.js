@@ -31,8 +31,8 @@ export default new Vuex.Store({
     // count: 1999,
     username: ''
   },
-  getters,
-  actions,
+  // getters,
+  // actions,
   mutations,
   strict: debug
 })
