@@ -95,24 +95,26 @@ CMS系统的特点是：
 
 技术支持：有问题报给@李彦峰（大哥）
 `;
-  this.$nextTick(() => {
+  // this.$nextTick(() => {
     this.text = text
-  })
+  // })
   },
   methods: {
     open(dir) {
+      const True = true
+      const False = false
       switch (dir) {
         case 'left':
-          this.rightSmall = true
-          this.leftSmall = false
+          this.rightSmall = True
+          this.leftSmall = False
           break;
         case 'right':
-          this.leftSmall = true
-          this.rightSmall = false
+          this.leftSmall = True
+          this.rightSmall = False
           break;
         default:
-          this.leftSmall = false
-          this.rightSmall = false
+          this.leftSmall = False
+          this.rightSmall = False
       }
     },
   }
@@ -138,13 +140,11 @@ CMS系统的特点是：
 .render-editor {
     flex: 7;
     transition: all 0.2s ease-in-out;
-    // width: 100%;
 }
 
 .render-editor {
     flex: 6;
 }
-
 .left-small,
 .right-small {
     flex: 0;
