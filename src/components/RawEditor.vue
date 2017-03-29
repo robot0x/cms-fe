@@ -19,13 +19,21 @@ export default {
   data () {
     return { text: '' }
   },
+  created () {
+    this.text = this.content
+  },
   watch: {
+    /**
+     * 这个content必须watch，否则的话
+     * this.text = input 将不会执行，很奇怪
+     */
     content (input) {
-      console.log('content change ...');
+      console.log('RawEditor.vue watcher named content exec ...')
+      console.log(input)
       this.text = input
     },
     text () {
-      console.log('text change ...');
+      console.log('RawEditor.vue watcher named text exec ...')
       this.commit()
     },
     insertImage (val) {
@@ -36,7 +44,7 @@ export default {
   },
   methods: {
     commit (text = this.text) {
-      console.log('commit exec ...')
+      console.log('RawEditor.vue commit mutation named change exec ...')
       this.$store.commit('change', text)
       const { id } = this
       if(id){

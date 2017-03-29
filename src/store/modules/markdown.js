@@ -52,8 +52,8 @@ const state = {
 // https://help.github.com/categories/writing-on-github/
 const getters = {
   html: (state, getters, rootState) => {
-    console.log('html exec ...')
-    console.log('md is null:', state.md === '');
+    console.log('md\'s getter named html exec ...')
+    console.log('md is null:', state.md === '')
     const renderer = new marked.Renderer
     const options = {
       // default: false github flavored markdown github风格的markdown
@@ -112,9 +112,10 @@ const getters = {
     }
     options.renderer = renderer
     marked.setOptions(options)
-    return marked(state.md, (err, content) => {
+    const {md} = state
+    return marked(md, (err, content) => {
       return {
-        md: state.md || '',
+        md,
         content,
         title,
       }
@@ -122,9 +123,7 @@ const getters = {
   }
 }
 
-const actions = {
-
-}
+// const actions = {}
 
 const mutations = {
   change (state, payload) {
@@ -137,6 +136,6 @@ const mutations = {
 export default {
   state,
   getters,
-  actions,
+  // actions,
   mutations
 }

@@ -53,7 +53,7 @@ var text = `
 若省略的话，则默认为“小编说”。
 \`\`\`
 
-CMS系统支持的浏览为（排名有先后）：
+CMS系统支持的浏览器为（排名有先后）：
 
 1. Chrome
 2. Safari
@@ -92,25 +92,29 @@ CMS系统的特点是：
 这个段落中含有我们的其他[文章的链接](9466)，只需要在"()”填写我们的文章id即可
 
 这个段落中含有引用非文章[链接](http://www.diaox2.com)
+
+技术支持：有问题报给@李彦峰（大哥）
 `;
-  this.$nextTick(() => {
+  // this.$nextTick(() => {
     this.text = text
-  })
+  // })
   },
   methods: {
     open(dir) {
+      const True = true
+      const False = false
       switch (dir) {
         case 'left':
-          this.rightSmall = true
-          this.leftSmall = false
+          this.rightSmall = True
+          this.leftSmall = False
           break;
         case 'right':
-          this.leftSmall = true
-          this.rightSmall = false
+          this.leftSmall = True
+          this.rightSmall = False
           break;
         default:
-          this.leftSmall = false
-          this.rightSmall = false
+          this.leftSmall = False
+          this.rightSmall = False
       }
     },
   }
@@ -136,13 +140,11 @@ CMS系统的特点是：
 .render-editor {
     flex: 7;
     transition: all 0.2s ease-in-out;
-    // width: 100%;
 }
 
 .render-editor {
     flex: 6;
 }
-
 .left-small,
 .right-small {
     flex: 0;

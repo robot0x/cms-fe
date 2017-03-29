@@ -402,21 +402,17 @@ export default {
       if(!this.locked &&  val > Date.now()){
         Content.setContentToLocal(this.id, 'timetopublish', val)
       }
-    },
-    '$route': 'routeChange'
+    }
+    // ,'$route': 'routeChange'
   },
   data() {
     return defaultData
   },
   created () {
+    console.log('Edit.vue created exec ...')
     this.loadData(this.$route.params.id)
     Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
   },
-  // activated () {
-  //   console.log('edit activated exec .....');
-  //   this.loadData(this.$route.params.id)
-  //   Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
-  // },
   methods: {
     setImageType(index, code) {
       const image = this.images[index]
@@ -467,45 +463,68 @@ export default {
       this[type] = ''
     },
 
-    routeChange () {
-      this.loadData(this.$route.params.id)
-    },
+    // routeChange () {
+    //   console.log('routeChange exec ...');
+    //   this.loadData(this.$route.params.id)
+    // },
 
     loadData (id, cb) {
+      console.log('Edit.vue loadData exec id is :', id);
       if(id){
         this.id = String(id)
         Content
           .getContent(id)
           .then(content => {
                 if(!_.isEmpty(content)){
-                  this.id = String(content.id || id)
-                  this.images = content.images
+                  const {
+                    images,
+                    text,
+                    author,
+                    ctype,
+                    tag,
+                    timetopublish,
+                    wx_title,
+                    wb_title,
+                    share_title,
+                    lock_by,
+                    // 礼物搜索
+                    used_for_gift,
+                    scenes,
+                    relations,
+                    characters,
+                    // 是否可搜
+                    used_for_search,
+                    render_categroys,
+                    render_brands,
+                    render_scenes,
+                    render_specials,
+                    render_similars
+                  } = content
+                  this.images = images
+                  this.text = text
+                  this.author = author
+                  this.ctype = ctype
+                  this.tag = tag
+                  this.timetopublish = timetopublish || Date.now()
+                  this.wx_title = wx_title
+                  this.wb_title = wb_title
+                  this.share_title = share_title
 
-                  this.text = content.text
-                  this.author = content.author
-                  this.ctype = content.ctype
-                  this.tag = content.tag
-                  this.timetopublish = content.timetopublish || Date.now()
-                  this.wx_title = content.wx_title
-                  this.wb_title = content.wb_title
-                  this.share_title = content.share_title
-
-                  const { lock_by } = content
                   this.locked = Utils.isLocked(lock_by)
                   this.lock_by = lock_by
                   // gift
-                  this.used_for_gift = Utils.getBoolean(content.used_for_gift)
-                  this.scenes = content.scenes || []
-                  this.relations = content.relations || []
-                  this.characters = content.characters || []
+                  this.used_for_gift = Utils.getBoolean(used_for_gift)
+                  this.scenes = scenes || []
+                  this.relations = relations || []
+                  this.characters = characters || []
 
                   // kehywords
-                  this.used_for_search = Utils.getBoolean(content.used_for_search)
-                  this.render_categroys = content.render_categroys
-                  this.render_brands = content.render_brands
-                  this.render_scenes = content.render_scenes
-                  this.render_specials = content.render_specials
-                  this.render_similars = content.render_similars
+                  this.used_for_search = Utils.getBoolean(used_for_search)
+                  this.render_categroys = render_categroys
+                  this.render_brands = render_brands
+                  this.render_scenes = render_scenes
+                  this.render_specials = render_specials
+                  this.render_similars = render_similars
                   this.$nextTick(() => {
                     // this.select_tags = [1,2]
                   })
@@ -650,13 +669,6 @@ export default {
         const { id } = this
         Utils.clearCache(id)
         window.location.reload()
-        //
-        // this.loadData(id, () => {
-        //   this.$message({
-        //     type: 'success',
-        //     message: '缓存删除成功'
-        //   })
-        // })
       })
     },
     releaseLock () {
