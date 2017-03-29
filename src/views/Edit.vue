@@ -577,7 +577,6 @@ export default {
         this.$alert('上传图片大小不能超过500kb', `上传文件大小不符合要求`, { confirmButtonText: '确定' })
         return false
       }
-      return true
     },
     // handlePreview(file) {
     //   console.log('handlePreview')
