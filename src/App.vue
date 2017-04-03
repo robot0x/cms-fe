@@ -19,6 +19,11 @@
               </router-link>
             </li>
             <li>
+              <router-link class="nav-link" to="/author">
+                <i class="el-icon-setting"></i><span>作者管理</span>
+              </router-link>
+            </li>
+            <li>
               <router-link class="nav-link" to="/help">
                 <i class="el-icon-information"></i><span>帮助</span>
               </router-link>
