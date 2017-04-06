@@ -75,7 +75,6 @@ export default class Content {
               if(message !== successCode){
                 reject(message)
               }else{
-
                 // used_for_search: false, // 是否可搜
                 // categroy: '',
                 // render_categroys: [],
@@ -87,7 +86,6 @@ export default class Content {
                 // render_specials: [],
                 // similar: '',
                 // render_similars: [],
-
                 const ret = result.res
                 let {gift, keywords, tags} = ret
                 if(keywords){
@@ -101,17 +99,14 @@ export default class Content {
                   if(brands){
                     ret.render_brands =  Content._handleKeywords(brands)
                   }
-
                   // 使用场景
                   if(scenes){
                     ret.render_scenes =  Content._handleKeywords(scenes)
                   }
-
                   // 特别之处
                   if(specials){
                     ret.render_specials = Content._handleKeywords(specials)
                   }
-
                   // 类似产品
                   if(similars){
                     ret.render_similars = Content._handleKeywords(similars)
@@ -142,8 +137,6 @@ export default class Content {
                   ret.lock_by = user
                 }
                 ret.from = 'server'
-                // console.log(ret);
-                // console.log(gift, keywords, tags);
                 resolve(ret)
               }
             })
@@ -181,16 +174,14 @@ export default class Content {
         } else {
           return reject('您还未填写信息')
         }
-        const opts = {
+        fetch(API.articles.url, {
           method: 'PUT',
           mode: 'cors',
           body: JSON.stringify(data),
           headers: new Headers({
             'Content-Type': 'json'
           })
-        }
-        const url = API.articles.url
-        fetch(url, opts)
+        })
         .then(response => response.json())
         .then(result => {
           console.log(url, result)

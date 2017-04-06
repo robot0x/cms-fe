@@ -3,6 +3,20 @@ import LoginUtils from './LoginUtils'
 import fetch from 'isomorphic-fetch'
 class Utils {
 
+  static getPaginationParam (query, offset, pageSize){
+    let param = null
+    if(query){
+      param = {...query}
+      param.offset = offset
+      param.pageSize = pageSize
+    }else{
+      param = {
+        offset,
+        pageSize: pageSize
+      }
+    }
+    return param
+  }
   /**
    * code:
    *  1 => true

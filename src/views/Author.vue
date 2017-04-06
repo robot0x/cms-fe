@@ -1,22 +1,6 @@
 <template>
  <div class="page-author">
-   <!-- <div class="author-card">
-     <div class="author-header author-border"><img :src="srcfrom" width="34" height="32" class="author-avatar"><span>作者</span></div>
-     <div class="author-content">
-       <img :src="authorCard.pic_uri" width=100 height=100>
-       <div class="author-title-and-value">
-         <h1>{{authorCard.title}}</h1>
-         <p>{{authorCard.value}}</p>
-       </div>
-     </div>
-     <p class="author-intro">
-       简介： {{authorCard.intro}}
-     </p>
-   </div> -->
-   <el-table
-    :data="tableData"
-    border
-    style="width: 100%">
+   <el-table :data="authors" border style="width: 100%">
     <el-table-column label="pic_uri">
       <template scope="scope">
         <img :src="scope.row.pic_uri" width="80" height="80" alt="scope.row.title">
@@ -76,16 +60,13 @@
           :icon="scope.row.editing? 'check': 'edit'"
           size="small"
           @click="handleEdit(scope.$index, scope.row)">{{scope.row.editText}}</el-button>
-          <!-- <el-button
-            icon="edit"
-            size="small"
-            @click="handleEdit(scope.$index, scope.row)">查看</el-button> -->
+          <el-button size="small" @click="handleView(scope.$index, scope.row)" title="查看渲染到页面的效果">查看</el-button>
       </template>
     </el-table-column>
   </el-table>
   <div class="pagination-bar">
     <el-pagination
-      :page-sizes="[50, 100, 200, 400]"
+      :page-sizes="pageSizes"
       :page-size="pageSize"
       :current-page="currentPage"
       @size-change="handleSizeChange"
@@ -94,11 +75,28 @@
       :total="total">
     </el-pagination>
  </div>
+ <el-dialog v-model="dialogVisible" size="tiny">
+   <div class="author-card">
+     <div class="author-header author-border"><img :src="srcfrom" width="34" height="32" class="author-avatar"><span>作者</span></div>
+     <div class="author-content author-border">
+       <img :src="authorCard.pic_uri" width=100 height=100>
+       <div class="author-title-and-value">
+         <h1>{{authorCard.title}}</h1>
+         <p>{{authorCard.value}}</p>
+       </div>
+     </div>
+     <p class="author-intro">
+       <base target="_blank"/>
+       简介：<span v-html="authorCard.intro"></span>
+     </p>
+   </div>
+ </el-dialog>
  </div>
 </template>
 <script>
-import tableData from './authors'
+import Author from '../service/Author'
 import srcfrom from '../assets/srcfrom.png'
+import Utils from '../utils/Utils'
 export default {
   components: {},
   computed: {
@@ -108,55 +106,89 @@ export default {
   },
   data () {
     return {
+      authorCard: {},
+      dialogVisible: false,
       srcfrom,
-      tableData: tableData.map(data => {data.editing = false, data.editText = '编辑'; return data}),
+      authors: [],
       editing: false,
-      pageSize: 50,
+      // pageSize: 50,
+      pageSizes:[1, 2, 3, 4],
+      pageSize: 2,
       currentPage: 1,
       pageSize: 50, // 一页50条
-      total: tableData.length
-      // ,authorCard: {
-      //   pic_uri: 'http://z.diaox2.com/cms/diaodiao/people/zrj.jpg',
-      //   source: '开山怪',
-      //   title: '开山怪',
-      //   value: '不约',
-      //   intro: '猎天下奇，会天下友，扯三句淡，粗两句口。迷失在：脑洞 + 节操 = 定值　的天赋树方程里。'
-      // }
+      total: 0
     }
   },
   created () {
-
+   this.doQuery()
   },
   methods: {
-    handleSizeChange () {
-
+    doQuery(query, resetPage = true){
+      this.loading = true
+      let param = Utils.getPaginationParam(query, resetPage ? 0 : this.offset, this.pageSize)
+      Author.getAuthors(param).then(res => {
+        const {authors, total} = res
+        if(authors.length){
+          this.authors = authors.map(data => {data.editing = false, data.editText = '编辑'; return data})
+          this.total = total || authors.length
+          if(resetPage){
+            this.currentPage = 1
+          }
+        }else{
+          this.$notify({
+            message: '没有搜索到符合条件的数据',
+            type: 'success'
+          })
+        }
+        this.loading = false
+      })
+      .catch(message => {
+        this.loading = false
+      })
     },
-    handleCurrentChange () {
-
+    handleView (index, row) {
+      this.dialogVisible = true
+      this.authorCard = row
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.doQuery(Utils.getPaginationParam(null, val, this.pageSize))
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.doQuery(Utils.getPaginationParam(null, val, this.pageSize))
     },
     handleEdit (index, row) {
       console.log(row)
       const { editing } = row
       if(!editing){
         // save
-        
+
         row.editText = '保存'
       } else {
         row.editText = '编辑'
       }
       row.editing = !editing
     }
+  },
+  filters: {
+    htmlFilter (html) {
+      console.log(html)
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
+  img {
+    vertical-align: middle;
+  }
   .pagination-bar {
     text-align: center;
     padding: 20px 0;
   }
   .author-card {
     background-color: #fff;
-    padding: 20px;
+    // padding: 20px;
     color: #8e8e93;
     font-size: 22px;
     line-height: 1.9;
@@ -176,12 +208,25 @@ export default {
     padding-bottom: 22px;
   }
   .author-content {
+    padding: 20px 0;
     display: flex;
   }
+  .author-intro {
+    padding-top: 12px;
+  }
   .author-title-and-value {
-    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 0 24px;
+    justify-content: space-around;
     h1 {
+      font-size: 28px;
+      color: #616368;
       line-height: 1;
+    }
+    p {
+      font-size: 22px;
+      line-height: 1.4;
     }
   }
 </style>

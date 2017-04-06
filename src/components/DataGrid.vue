@@ -135,9 +135,9 @@ export default {
     this.doQuery()
   },
   // 如果是keep-alive的话created不会执行
-  activated () {
-    this.doQuery()
-  },
+  // activated () {
+  //   this.doQuery()
+  // },
   filters: {
     ctypefilter(ctype){
       console.log(ctype);
@@ -162,18 +162,17 @@ export default {
     },
     doQuery (query, resetPage = true) {
       this.loading = true
-      let param = null
-      const offset = resetPage ? 0 : this.offset
-      if(query){
-        param = {...query}
-        param.offset = offset
-        param.pageSize = this.pageSize
-      }else{
-        param = {
-          offset,
-          pageSize: this.pageSize
-        }
-      }
+      let param = Utils.getPaginationParam(query, resetPage ? 0 : this.offset, this.pageSize)
+      // if(query){
+      //   param = {...query}
+      //   param.offset = offset
+      //   param.pageSize = this.pageSize
+      // }else{
+      //   param = {
+      //     offset,
+      //     pageSize: this.pageSize
+      //   }
+      // }
       // debugger;
       Article.getArticles(param).then(res => {
         const {articles, total} = res
@@ -184,7 +183,7 @@ export default {
             }
             return article
           })
-          this.total = total
+          this.total = total || articles.length
           if(resetPage){
             this.currentPage = 1
           }
