@@ -97,6 +97,7 @@
 import Author from '../service/Author'
 import srcfrom from '../assets/srcfrom.png'
 import Utils from '../utils/Utils'
+import _ from 'lodash'
 export default {
   components: {},
   computed: {
@@ -110,12 +111,14 @@ export default {
       dialogVisible: false,
       srcfrom,
       authors: [],
+      authors_copy: [],
       editing: false,
-      // pageSize: 50,
-      pageSizes:[1, 2, 3, 4],
-      pageSize: 2,
-      currentPage: 1,
+      pageSize: 50,
+      // pageSizes:[1, 2, 3, 4],
+      pageSizes:[50, 100, 200, 400],
+      // pageSize: 2,
       pageSize: 50, // 一页50条
+      currentPage: 1,
       total: 0
     }
   },
@@ -129,6 +132,7 @@ export default {
       Author.getAuthors(param).then(res => {
         const {authors, total} = res
         if(authors.length){
+          this.authors_copy = _.cloneDeep(authors)
           this.authors = authors.map(data => {data.editing = false, data.editText = '编辑'; return data})
           this.total = total || authors.length
           if(resetPage){
@@ -152,21 +156,36 @@ export default {
     },
     handleSizeChange (val) {
       this.pageSize = val
-      this.doQuery(Utils.getPaginationParam(null, val, this.pageSize))
+      this.doQuery(Utils.getPaginationParam(null, this.currentPage, this.pageSize))
     },
     handleCurrentChange (val) {
       this.currentPage = val
-      this.doQuery(Utils.getPaginationParam(null, val, this.pageSize))
+      this.doQuery(Utils.getPaginationParam(null, this.currentPage, this.pageSize), false)
     },
     handleEdit (index, row) {
       console.log(row)
       const { editing } = row
       if(!editing){
-        // save
-
         row.editText = '保存'
       } else {
         row.editText = '编辑'
+        const data = _.cloneDeep(row)
+        const {id} = data
+        console.log(id)
+        delete data.editing
+        delete data.editText
+        const authorCopy = this.authors_copy[index]
+        // 只有当数据发生了变化才访问网络
+        if(!_.isEqual(authorCopy, data)){
+          Author
+          .update(data)
+          .then(res=> {
+            console.log(res)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+        }
       }
       row.editing = !editing
     }

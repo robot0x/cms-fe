@@ -1,8 +1,6 @@
 import _ from 'lodash'
 import LoginUtils from './LoginUtils'
-import fetch from 'isomorphic-fetch'
 class Utils {
-
   static getPaginationParam (query, offset, pageSize){
     let param = null
     if(query){

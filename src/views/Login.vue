@@ -7,8 +7,8 @@
        <div class="reme-box">
          <el-tooltip class="item" effect="dark" :content="content" placement="right-start">
             <span class="reme-desc">记住我</span>
-            <el-switch v-model="reme" on-color="#13ce66" off-color="#ff4949"></el-switch>
          </el-tooltip>
+         <el-switch v-model="reme" on-color="#13ce66" off-color="#ff4949"></el-switch>
          <a href="javascript:void(0);" @click="modifyPassword" class="modify-password">修改密码</a>
        </div>
        <el-button type="primary" @click="login" :loading="loading">{{ loginMsg }}</el-button>
