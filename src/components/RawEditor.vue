@@ -29,7 +29,6 @@ export default {
      */
     content (input) {
       console.log('RawEditor.vue watcher named content exec ...')
-      console.log(input)
       this.text = input
     },
     text () {

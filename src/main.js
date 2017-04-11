@@ -100,6 +100,7 @@ var vm = new Vue({
 //
 //   return true
 // }
+
 // console.log(candy('abcd'));
 // // 除了在vm实例中用this指向vm，也可以在外面使用 vm 的实例方法或属性
 //
@@ -115,6 +116,7 @@ var vm = new Vue({
 //   }
 //   return []
 // }
+
 // console.log(twoSum([1,2,3,5], 6))
 // console.log(twoSum([1,2,5,3], 6))
 // console.log(twoSum([1,2,3,5], 3))

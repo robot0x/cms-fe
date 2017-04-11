@@ -44,6 +44,11 @@ function rendeArticle(content) {
   return ''
 }
 
+function rendeDesc(content = '') {
+  console.log(content)
+  return `<p>${content}</p>`
+}
+
 const state = {
   md: ''
 }
@@ -87,6 +92,7 @@ const getters = {
     }
 
     renderer.code = (content, type) => {
+      console.log(type)
       const EDS = 'eds'
       let eds = ''
       if( type.indexOf(EDS) !== -1 ) {
@@ -106,6 +112,9 @@ const getters = {
           break;
         case 'article':
           ret = rendeArticle(content)
+          break;
+        default:
+          ret = rendeDesc(content)
           break;
       }
       return ret

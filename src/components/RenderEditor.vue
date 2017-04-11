@@ -112,7 +112,7 @@ export default {
       border-left-width: 4px;
     }
 
-    & > ul {
+    ul {
       padding-right:40px;
       margin-top: 30px;
       & > li {
