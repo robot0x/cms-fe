@@ -61,27 +61,44 @@ const getters = {
     console.log('md is null:', state.md === '')
     const renderer = new marked.Renderer
     const options = {
-      // default: false github flavored markdown github风格的markdown
+      // gfm default: false github flavored markdown github风格的markdown
       gfm: true,
-      // default: true 使用 gfm 风格的表格，想要这个生效，需要设置 gfm 为 true
+      // tables default: true 使用 gfm 风格的表格，想要这个生效，需要设置 gfm 为 true
       tables: true,
-      // default: false 使用 gfm 风格的断行（line breaks），想要这个生效，需要设置 gfm 为 true
-      breaks: true, // 按一次enter键，还是在一个p标签里，不过使用<br>来换行了，按两次enter键，就变成了两个p标签
-      // default: false 学究式的 尽量遵从markdown.pl的复杂部分，不修复任何markdown的bug和奇怪行为
+      // breaks default: false 使用 gfm 风格的断行（line breaks），想要这个生效，需要设置 gfm 为 true
+      breaks: false, // 按一次enter键，还是在一个p标签里，不过使用<br>来换行了，按两次enter键，就变成了两个p标签
+      // pedantic default: false 学究式的 尽量遵从markdown.pl的复杂部分，不修复任何markdown的bug和奇怪行为
       pedantic: false,
-      // default: false 净化、清洁  净化输出，忽略html标签。如果设置为true，<span style="color:red;">红</span>将不起作用
+      // sanitize default: false 净化、清洁  净化输出，忽略html标签。如果设置为true，<span style="color:red;">红</span>将不起作用
       sanitize: false,
-      // default: true 使用相对于原始markdown语法智能的表格
+      // smartLists default: true 使用相对于原始markdown语法智能的表格
       smartLists: true,
-      // default: false 与标点符号有关
+      // smartypants default: false 与标点符号有关
       smartypants: false
     }
+
     let title = ''
     renderer.heading = (text, level) => {
       if(text && text.trim()){
         title = text
       }
-      return '<h' + level + '>' + title + '</h' + level + '>'
+      return `<h${level}>${title}</h${level}>`
+    }
+
+    /**
+     * codespan 前后都有一个空的p标签，太奇怪了
+     * 经过测试，发现是这个问题：
+     *  由于p标签不能嵌套
+     *  所以 <p><p>这是内部的p标签</p></p>
+     *  将会解析成
+     *   <p></p>
+     *   <p>这是内部的p标签</p>
+     *   <p></p>
+     */
+    renderer.codespan = (text) => {
+      // console.log(text)
+      // return text
+      return `<p class="lift">${text}</p>`
     }
 
     renderer.link = (href, title = '', text ) => {
@@ -90,6 +107,24 @@ const getters = {
       }
       return `<a target="_blank" href="${href}">${text || href}</a>`
     }
+    // renderer.image = (href, title, text) => {
+    //   return `<img src="${href}" alt="${title || ''}"></img>`
+    // }
+    // renderer.paragraph = (text) => {
+    //   // console.log(text);
+    //   // if(!text || /^\s+$/.test(text)){
+    //   //   console.log('!text.trim()命中：',text);
+    //   //   // return ''
+    //   // }
+    //   // if(/^<img.+>$/.test(text)){
+    //   //   console.log('/\^<img.*\>&/命中：', text)
+    //   //   return text
+    //   // }
+    //   // console.log(!text || /^\s+$/.test(text))
+    //   // console.log(/^<img.+>$/.test(text))
+    //   // return `<p>${text}</p>`
+    //   return text
+    // }
 
     renderer.code = (content, type) => {
       console.log(type)
@@ -121,6 +156,12 @@ const getters = {
     }
     options.renderer = renderer
     marked.setOptions(options)
+
+    const lexer = new marked.Lexer(options)
+    console.log(lexer)
+    // const tokens = lexer.lex(md)
+    // console.log(tokens)
+
     const {md} = state
     return marked(md, (err, content) => {
       return {

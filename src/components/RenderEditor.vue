@@ -46,6 +46,7 @@ export default {
     li {
       position: relative;
       margin-right: 5px;
+      padding-left: 0 !important;
       span {
         position: absolute;
         font-size: 14px;
@@ -58,6 +59,9 @@ export default {
         text-align: center;
         line-height: 20px;
         color:#fff;
+      }
+      &::before {
+        display: none;
       }
     }
   }
@@ -107,7 +111,6 @@ export default {
        padding-left: 6px;
     }
 
-
     h3 {
       border-left-width: 4px;
     }
@@ -119,7 +122,6 @@ export default {
         position: relative;
         padding-left: 50px;
       }
-
       & > li::before {
         content: '';
         position: absolute;
@@ -193,6 +195,19 @@ export default {
     .editorcontent{
       padding: 0 50px 0 40px;
       color: #999;
+    }
+
+    .lift {
+      line-height: 1;
+      color: #8e8e93;
+      margin: 0;
+      padding: 0;
+      margin: 0 0 0 40px;
+      padding: 6px 0 0 10px;
+    }
+    img + .lift {
+      text-align: center;
+      margin-left: -40px;
     }
   }
 </style>
