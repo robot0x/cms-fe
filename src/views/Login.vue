@@ -46,7 +46,8 @@ export default {
       this.loading = true
       this.loginMsg = '正在登录中，请稍候...'
       const username = this.username
-      console.log(username, this.password);
+      console.log('用户填写的username为：', username)
+      // console.log(username, this.password)
       User
       .auth(username, this.password)
       .then((res) => {
@@ -56,6 +57,7 @@ export default {
         // 存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
         // 应该结合着本地存储来做
         this.$store.commit('setUsername', username)
+        console.log("提交Mutation：", username)
         this.$router.replace('/')
       })
       .catch(message => {

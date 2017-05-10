@@ -55,8 +55,17 @@ export default {
     author () {
       // 首先看看 store 中是否有存储的username，没有的话，则去本地缓存中拿
       // 单独存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
+      console.log('this.$store.state.username:', this.$store.state.username)
       return this.$store.state.username || LoginUtils.getUsername()
     }
+  },
+  created () {
+    console.log('created exec .....')
+    this.author = this.$store.state.username || LoginUtils.getUsername()
+  },
+  activated () {
+    console.log('activated exec .....')
+    this.author = this.$store.state.username || LoginUtils.getUsername()
   },
   methods: {
     logout () {

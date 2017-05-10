@@ -24,8 +24,8 @@ export default new Vuex.Store({
     markdown
     // DataGrid
   },
+  // 这个一定要写
   state: {
-    // count: 1999,
     username: ''
   },
   mutations,

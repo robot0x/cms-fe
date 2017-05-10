@@ -27,9 +27,8 @@ function rendeBanner(content) {
 }
 
 function rendeSku(content = '') {
-  console.log(content)
   const contents = content.split(/\s/)
-  console.log(contents)
+  // console.log(contents)
   let skuCardHtml = ''
   for(let cont of contents){
     cont = _.toSafeInteger(cont)
@@ -57,8 +56,8 @@ const state = {
 // https://help.github.com/categories/writing-on-github/
 const getters = {
   html: (state, getters, rootState) => {
-    console.log('md\'s getter named html exec ...')
-    console.log('md is null:', state.md === '')
+    // console.log('md\'s getter named html exec ...')
+    // console.log('md is null:', state.md === '')
     const renderer = new marked.Renderer
     const options = {
       // gfm default: false github flavored markdown github风格的markdown
@@ -127,7 +126,7 @@ const getters = {
     // }
 
     renderer.code = (content, type) => {
-      console.log(type)
+      // console.log(type)
       const EDS = 'eds'
       let eds = ''
       if( type.indexOf(EDS) !== -1 ) {
@@ -158,10 +157,9 @@ const getters = {
     marked.setOptions(options)
 
     const lexer = new marked.Lexer(options)
-    console.log(lexer)
+    // console.log(lexer)
     // const tokens = lexer.lex(md)
     // console.log(tokens)
-
     const {md} = state
     return marked(md, (err, content) => {
       return {

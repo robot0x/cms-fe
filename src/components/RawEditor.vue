@@ -28,11 +28,11 @@ export default {
      * this.text = input 将不会执行，很奇怪
      */
     content (input) {
-      console.log('RawEditor.vue watcher named content exec ...')
+      // console.log('RawEditor.vue watcher named content exec ...')
       this.text = input
     },
     text () {
-      console.log('RawEditor.vue watcher named text exec ...')
+      // console.log('RawEditor.vue watcher named text exec ...')
       this.commit()
     },
     insertImage (val) {
@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     commit (text = this.text) {
-      console.log('RawEditor.vue commit mutation named change exec ...')
+      // console.log('RawEditor.vue commit mutation named change exec ...')
       this.$store.commit('change', text)
       const { id } = this
       if(id){

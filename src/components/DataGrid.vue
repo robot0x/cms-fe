@@ -6,6 +6,7 @@
       :data="articles"
       :row-class-name="tableRowClassName"
       stripe
+      border
       style="width: 100%">
       <el-table-column type="expand">
         <template scope="props">
@@ -181,6 +182,7 @@ export default {
             if(Utils.isLocked(article.lock_by)){
               article.title = article.title + ' 🔒'
             }
+            article.ctype = Utils.convertCtype(article.ctype)
             return article
           })
           this.total = total || articles.length

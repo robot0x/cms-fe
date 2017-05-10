@@ -1,6 +1,68 @@
 import _ from 'lodash'
 import LoginUtils from './LoginUtils'
 class Utils {
+  /**
+    *  1. firstpage (type = show)                                http://c.diaox2.com/view/app/?m=show&id=9669
+    *  2. goodthing (type = show)                                http://c.diaox2.com/view/app/?m=show&id=5344
+    *  3. zhuankan (type = show)                                 http://c.diaox2.com/view/app/?m=show&id=1022
+    *  4. activity (type = show)                                 http://c.diaox2.com/view/app/?m=zk&id=3053
+    *  5. experience (type = show )
+    *  7. zdm (type = scene)线上原来出现过，但是现在没用过了      http://c.diaox2.com/view/app/?m=scene&id=3045
+    *  8. ceping (type = scene)线上原来出现过，但是现在没用过了      http://c.diaox2.com/view/app/?m=scene&id=3045
+    *  9. zhuanti (type = zhuanti)                                http://c.diaox2.com/view/app/?m=zt&id=7080
+   */
+  static convertCtype (ctype) {
+    let ret = null
+    // 1-首页/2-好物/3-专刊/4-活动/5-经验/7-值得买/8-评测/9-专题
+    if(Number.isInteger(+ctype)) {
+      switch (ctype) {
+        case 1:
+          ret = '首页'
+          break;
+        case 2:
+          ret = '好物'
+          break;
+        case 3:
+          ret = '专刊'
+          break;
+        case 4:
+          ret = '活动'
+          break;
+        case 5:
+          ret = '经验'
+          break;
+        case 7:
+          ret = '值得买'
+          break;
+        case 8:
+          ret = '评测'
+          break;
+        case 9:
+          ret = '专题'
+          break;
+      }
+    } else {
+      switch (ctype) {
+        case '好物':
+          ret = 1
+          break;
+        case 1:
+          ret = 2
+          break;
+        case '经验':
+          ret = 3
+          break;
+        case '专刊':
+          ret = 4
+          break;
+        case '专题':
+          ret = 5
+          break;
+      }
+    }
+    return ret
+  }
+
   static getPaginationParam (query, offset, pageSize){
     let param = null
     if(query){

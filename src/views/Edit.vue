@@ -18,6 +18,15 @@
               <el-input v-model="author" :readonly="locked"></el-input>
             </el-form-item>
 
+            <el-form-item label="标题" prop="title">
+              <el-input v-model="title" :readonly="locked"></el-input>
+            </el-form-item>
+
+            <!-- 专刊专用 -->
+            <el-form-item label="专刊副标题" prop="titleex" v-if="ctype == 3">
+              <el-input v-model="titleex" :readonly="locked" placeholder="专刊用。类似于 七个好物、八种经验之类的"></el-input>
+            </el-form-item>
+
             <el-form-item label="分享到的标题" prop="share_title">
               <el-input v-model="share_title" placeholder="文章分享出去显示出的标题，若不填，默认是文章标题" @input.native="share_titleInput" :readonly="locked"></el-input>
             </el-form-item>
@@ -140,32 +149,32 @@
           <ul class="image-list">
             <li v-for="(image, index) in images" class="image-item">
               <figure>
-                <img :src="image.url">
+                <img :src="image.url | imageUrlFilter">
               </figure>
               <figcaption class="image-info">
-                <!-- {{image.size | imageSizeFormat}} -->
-                <!-- {{image.width | imageWidthAndHeightFormat(image.height)}} -->
-                <div class="images-attr">{{image.width | imageWidthAndHeightFormat(image.height)}} &nbsp; {{image.size | imageSizeFormat}}</div>
+                <div class="images-attr">{{image.width | imageWidthAndHeightFormat(image.height)}}</div>
+                <div class="">
+                  {{image.size | imageSizeFormat}}
+                </div>
                 <div class="images-oper-tool">
                   <i class="el-icon-view" @click="viewImage(image.url)" title="查看大图"></i>
                   <i class="el-icon-check" @click="insert(index)" title="插入到文章内"></i>
-                  <a :href="image.url" target="_blank" title="跳转到图片所在链接"><i class="el-icon-picture"></i></a>
+                  <a :href="image.url | addProtocol" target="_blank" title="跳转到图片所在链接"><i class="el-icon-picture"></i></a>
                 </div>
                 <div class="set-image-type">
-                  <!-- 1为封面图（cover） -->
-                  <!-- 2为缩略图（thumb） -->
-                  <el-button type="primary" size="mini" @click="setImageType(index, 1)">设为封面</el-button>
-                  <el-button type="danger" size="mini" @click="setImageType(index, 2)">设为缩略</el-button>
+                  <el-button type="primary" size="mini" @click="setImageType(index, 2)">cover</el-button>
+                  <el-button type="danger" size="mini" @click="setImageType(index, 4)">coverex</el-button>
+                  <el-button type="success" size="mini" @click="setImageType(index, 8)">thumb</el-button>
                 </div>
               </figcaption>
               <span class="used-label" v-if="image.used"><i class="el-icon-check"></i></span>
-              <div class="image-types" v-if="image.type && image.type.split(',').filter(t => t == 1 || t == 2).length > 0">
+              <!-- <div class="image-types" v-if="image.type && image.type.split(',').filter(t => t == 1 || t == 2).length > 0">
                 <span v-for="t in image.type.split(',').filter(t => t == 1 || t == 2)" :style="t == 1 ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t == 1 ? '此图为封面图': '此图为缩略图'"></span>
-              </div>
+              </div> -->
              </li>
             </ul>
             <el-dialog v-model="dialogVisible" size="tiny">
-              <img width="100%" :src="dialogImageUrl">
+              <img width="100%" :src="dialogImageUrl | addProtocol">
             </el-dialog>
           </el-col>
         </el-row>
@@ -212,6 +221,7 @@ import { ctypes } from '../config/content_page_data'
 import gift from '../config/gift'
 import _ from 'lodash'
 import { mapGetters } from 'vuex'
+import moment from 'moment'
 const defaultData = {
   loading: false,
   leftSmall: false,
@@ -247,6 +257,8 @@ const defaultData = {
     // tag = ['0', '0-0','0-2', '3', '4-1','4-2'] // 被选中的node-key
     select_tags: [],  // 选中的key。格式跟tag一致
     timetopublish: Date.now(), // 文章发布时间
+    title: '', // 文章标题
+    titleex: '', // 专刊专用副标题
     wx_title: '', // 分享到微信的标题
     wb_title: '', // 分享到微博的标题
     share_title: '', // 分享到的标题
@@ -279,28 +291,28 @@ export default {
     html ( {md} ) {
       try{
         const {images} = this
-        if(!_.isEmpty(images)){
-          this.images = images.map(image => {
-            let { url, type } = image
-            // 进一步确定是否是banner图
-            const bannerReg = /```banner\s*(.|\n)+\s*```/g
-            const hasBanner = md.match(bannerReg)
-            // 是否是内容图
-            const isContent = Utils.isUsed(md.replace(bannerReg, ''), url)
-            // 是否是banner图
-            const isBanner = hasBanner && Utils.isUsed(hasBanner[0], url)
-            if(isContent) {
-              type = Utils.getNewType(type, '4')
-            }
-            if(isBanner){
-              type = Utils.getNewType(type, '3')
-            }
-            image.type = type
-            // image.used = (isContent || isBanner || type.length > 0) ? 1 : 0
-            image.used = Utils.getCode(isContent || isBanner || type.length > 0)
-            return image
-          })
-        }
+        // if(!_.isEmpty(images)){
+        //   this.images = images.map(image => {
+        //     let { url, type } = image
+        //     // 进一步确定是否是banner图
+        //     const bannerReg = /```banner\s*(.|\n)+\s*```/g
+        //     const hasBanner = md.match(bannerReg)
+        //     // 是否是内容图
+        //     const isContent = Utils.isUsed(md.replace(bannerReg, ''), url)
+        //     // 是否是banner图
+        //     const isBanner = hasBanner && Utils.isUsed(hasBanner[0], url)
+        //     if(isContent) {
+        //       type = Utils.getNewType(type, '4')
+        //     }
+        //     if(isBanner){
+        //       type = Utils.getNewType(type, '3')
+        //     }
+        //     image.type = type
+        //     // image.used = (isContent || isBanner || type.length > 0) ? 1 : 0
+        //     image.used = Utils.getCode(isContent || isBanner || type.length > 0)
+        //     return image
+        //   })
+        // }
       }catch(e){
         console.log(e)
       }
@@ -389,7 +401,7 @@ export default {
       }
     },
     ctype (val) {
-      if(!this.locked && Utils.isValidString(val)){
+      if(!this.locked){
         Content.setContentToLocal(this.id, 'ctype', val)
       }
     },
@@ -411,7 +423,10 @@ export default {
   created () {
     console.log('Edit.vue created exec ...')
     this.loadData(this.$route.params.id)
-    Tags.getAllTags().then(all_tags => this.all_tags = all_tags)
+    Tags.getAllTags().then(all_tags => {
+      this.all_tags = all_tags
+      // console.log(all_tags);
+    })
   },
   methods: {
     setImageType(index, code) {
@@ -469,20 +484,22 @@ export default {
     // },
 
     loadData (id, cb) {
-      console.log('Edit.vue loadData exec id is :', id);
+      // console.log('Edit.vue loadData exec id is :', id);
       if(id){
         this.id = String(id)
         Content
           .getContent(id)
           .then(content => {
+                console.log('[Edit.vue.loadData] 数据：', content)
                 if(!_.isEmpty(content)){
-                  const {
+                  let {
                     images,
                     text,
                     author,
                     ctype,
                     tag,
                     timetopublish,
+                    title,
                     wx_title,
                     wb_title,
                     share_title,
@@ -501,11 +518,14 @@ export default {
                     render_similars
                   } = content
                   this.images = images
+                  timetopublish = new Date(moment(timetopublish, 'YYYYMMDD'))
+                  console.log('timetopublish:', timetopublish)
                   this.text = text
                   this.author = author
                   this.ctype = ctype
                   this.tag = tag
                   this.timetopublish = timetopublish || Date.now()
+                  this.title = title
                   this.wx_title = wx_title
                   this.wb_title = wb_title
                   this.share_title = share_title
@@ -517,7 +537,6 @@ export default {
                   this.scenes = scenes || []
                   this.relations = relations || []
                   this.characters = characters || []
-
                   // kehywords
                   this.used_for_search = Utils.getBoolean(used_for_search)
                   this.render_categroys = render_categroys
@@ -525,18 +544,6 @@ export default {
                   this.render_scenes = render_scenes
                   this.render_specials = render_specials
                   this.render_similars = render_similars
-                  this.$nextTick(() => {
-                    // this.select_tags = [1,2]
-                  })
-                  // this.$refs.tree.setCheckedKeys([1,2,3])
-                  // tag
-                  // this.$refs.tree.setCheckedKeys(content.select_tags || [])
-                  // this.select_tags = content.select_tags || []
-                  // console.log(content.select_tags)
-                  // console.log(this.select_tags)
-                  // this.$refs.tree.setCheckedKeys(['1'])
-                  // console.log(this.$refs.tree);
-                  // console.log(this.$refs.tree.setCheckedKeys);
                 } else {
                   // 若根据ID查询不到任何数据，则直接跳转到首页
                   this.$alert(`id为${id}的文章不存在，自动跳转到首页`, '文章不存在', { confirmButtonText: '确定' })
@@ -749,17 +756,31 @@ export default {
         images_handled = images.map(image => {
           // 1-cover图-封面图/2-thumb图-缩略图/3-banner图/4-文章内容图。存储以逗号隔开的字符串，例如：1,2,4 即这张图片的类型为cover图 & thumb图 & 内容图
           const ret =  {
+            // `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
+            // `aid` int(11) unsigned NOT NULL COMMENT '文章的id',
+            // `url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '图片url',
+            // `used` tinyint(1) unsigned NOT NULL DEFAULT 0 COMMENT '是否被使用。0-未被使用/1-被使用',
+            // `type` smallint unsigned COMMENT '图片的类型。''0未设置类型（没有被使用/第1位-内容图(1)/第2位cover图(2)/第3位coverex图(4)/第4位thumb图(8)/第5位swipe图(16)/第6位banner图(32)', -- 12 封面图 缩略图
+            // `origin_filename` varchar(32) DEFAULT '' COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '上传时的文件名',
+            // `extension_name` varchar(10) DEFAULT '' COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '图片扩展名，jpg/jpeg/png/gif...',
+            // `size` int unsigned NOT NULL DEFAULT 0 COMMENT '图片尺寸。单位为byte',
+            // `width` smallint(4) unsigned NOT NULL DEFAULT 0 COMMENT '上传时的原始宽度。单位为px',
+            // `height` smallint(4) unsigned NOT NULL DEFAULT 0 COMMENT '上传时的原始高度。单位为px',
+            // `alt` varchar(32) DEFAULT '' COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'img的alt属性',
+            // `title` varchar(32) DEFAULT '' COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'img的title属性',
+            // `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '图片上传时间',
             id: Number(image.id || 0), // 图片的id
             aid: Number(id || 0),
             url: image.url,
-            type: image.type,
             used: image.used,
+            type: image.type, // 1 => content, 2 => cover, 4 => coverex, 8 => thumb, 16 => swipe, 32 => banner, ....
             origin_filename: image.name || '',
-            // origin_filename: 'image',
             extension_name: Utils.getExtensionName(image.name),
             size: image.size,
             width: image.width,
-            height: image.height
+            height: image.height,
+            // alt: image.alt, // 目前可以不写
+            // title: image.title // 目前可以不写
           }
           // ret.isModify = Utils.isModify(image, images) ? 1 : 0
           ret.isModify = Utils.getCode(Utils.isModify(image, images))
@@ -767,22 +788,51 @@ export default {
           return ret
         })
       }
+
       // return console.log(images_handled)
       // console.log(gift);
       const postData = {
         id,
         meta: {
+          // `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
+          // `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '文章title',
+          // `share_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '分享出去的文章的title',
+          // `wx_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '分享到微信的文章的title',
+          // `wb_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '分享到微博的文章的title',
+          // `ctype` tinyint(1) unsigned DEFAULT 0 COMMENT '文章类型：1-首页/2-好物/3-专刊/4-活动/5-经验/7-值得买/8-评测/9-专题',
+          // `titleex` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '专刊专用。在专刊上显示 七个好物、八种经验之类的',
+          // `titlecolor` int(32) unsigned DEFAULT 0 COMMENT '专刊专用。用来指定标题颜色',
+          // `buylink` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '分享出去的文章的title',
+          // `timetopublish` int(10) unsigned DEFAULT 0 COMMENT '定时发布。格式是UNIX时间戳',
+          // `price` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '价格串。形如：越￥360',
+          // `status` tinyint(1) unsigned NOT NULL DEFAULT 0 COMMENT '当前文章状态: 0-新增的文章/1-已发布/2-未发布',
+          // `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '文章创建时间',
+          // `last_update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON update CURRENT_TIMESTAMP COMMENT '文章最后更新时间',
+          // `user` varchar(60) DEFAULT '' COMMENT '文章被那个用户所创建',
+          // `lock_by` varchar(60) DEFAULT '' COMMENT '被那个用户锁定',
+          // `last_update_by` varchar(60) DEFAULT '' COMMENT '最后一次更新的用户',
+          // `author` varchar(60) DEFAULT '' COMMENT '文章作者姓名',
           title,
           share_title,
           wx_title,
           wb_title,
-          author,
           ctype,
+          // titleex, // 需要，专刊专有属性
+          // titlecolor, // 不需要，使用默认值即可
+          // buylink, // 需要填写
+          // timetopublish, // 需要填写
+          // price, // 需要填写
+          // status, // 不需要，使用默认值即可
+          // create_time, // 不需要，使用mysql的自动插值
+          // last_update_time, // 不需要，使用mysql的自动插值
+          // user, // 不需要，在创建这篇文章时就已经有值，且值不会变
           lock_by: '',
           last_update_by,
+          author
         },
         images: images_handled,
         content: this.html.md,
+        // "gift": { "used_for_gift": 1, "hints": "{\"scenes\":\"3 0\",\"relations\":\"3\"}" }
         gift: {
           // used_for_gift: used_for_gift === true? 1 : 0,
           used_for_gift: Utils.getCode(used_for_gift),
@@ -801,7 +851,7 @@ export default {
             return _.isEmpty(temp)? '' : JSON.stringify(temp)
           })()
         },
-
+        // "keywords": { "used_for_search": 1, "keywords": "{\"categroys\":\"爱上打\",\"brands\":\"苹果\"}" }
         keywords: {
           // used_for_search: used_for_search? 1 : 0,
           used_for_search: Utils.getCode(used_for_gift),
@@ -828,14 +878,13 @@ export default {
         },
         tags: Utils.splitTags(select_tags, this.all_tags)
       }
-
       // console.log("作者：", author)
       // console.log("分享到标题：", share_title)
       // console.log("微信标题：", wx_title)
       // console.log("微博标题：", wb_title)
       // console.log("类型：", ctype)
       // console.log("发布时间：", timetopublish)
-
+      console.log('[Edit.vue.save] postData：', JSON.stringify(postData))
       Content.save(postData).then(res => {
         this.loading = false
         this.$message({
@@ -861,6 +910,9 @@ export default {
   },
 
   filters: {
+    addProtocol (url) {
+      return '//' + url
+    },
     lockedByFormat(lock_by) {
       return Utils.isLocked(lock_by)? `此文已被 ${lock_by} 锁住，只能查看信息，更改的信息无法被保存`:'操作'
     },
@@ -869,6 +921,9 @@ export default {
     },
     imageWidthAndHeightFormat (width, height) {
       return width && height ? width + ' X ' + height : ''
+    },
+    imageUrlFilter (url) {
+      return `//${url}`
     }
   }
 }
@@ -902,7 +957,7 @@ export default {
         // cursor: default;
         text-align: center;
         color: #fff;
-        opacity: 0;
+        opacity: 1;
         font-size: 14px;
         background-color: rgba(0,0,0,.7);
         transition: opacity .3s;
@@ -932,6 +987,7 @@ export default {
       .set-image-type {
         position: absolute;
         bottom: 20px;
+        display: flex;
       }
       .image-types {
         position: absolute;
