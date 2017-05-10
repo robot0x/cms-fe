@@ -8,7 +8,6 @@ export default {
   //   state.count--
   // },
   [types.SET_USERNAME] (state, username) {
-    console.log('[Mutation: setUsername exec ...] THE username IS:', username)
     state.username = username
   }
 }

@@ -46,8 +46,6 @@ export default {
       this.loading = true
       this.loginMsg = '正在登录中，请稍候...'
       const username = this.username
-      console.log('用户填写的username为：', username)
-      // console.log(username, this.password)
       User
       .auth(username, this.password)
       .then((res) => {
