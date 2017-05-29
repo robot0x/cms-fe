@@ -4,7 +4,7 @@ class LoginUtils {
 
   // 不设置为true，防止猜出语义
   static get FLAG () {
-    return +new Date
+    return +new Date()
   }
 
   static get IS_LOGIN () {
@@ -67,7 +67,7 @@ class LoginUtils {
 
   static stringToBoolean (str) {
     let ret = false
-    if( str && str !== '0'){
+    if (str && str !== '0') {
       ret = true
     }
     return ret

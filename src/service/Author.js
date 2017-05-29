@@ -9,34 +9,32 @@ export default class Author {
     return new Promise((resolve, reject) => {
       try {
         console.log(query)
-        let {offset, pageSize} = query
+        let { offset, pageSize } = query
         let queryString = ''
-        if(_.isInteger(pageSize)){
-          if(!_.isInteger(offset)){
+        if (_.isInteger(pageSize)) {
+          if (!_.isInteger(offset)) {
             offset = 0
           }
-          queryString = `${queryString? '&' : '?'}offset=${offset}&limit=${pageSize}`
+          queryString = `${queryString ? '&' : '?'}offset=${offset}&limit=${pageSize}`
           // queryString = queryString ? queryString + `&offset=${offset}&limit=${pageSize}`: `?offset=${offset}&limit=${pageSize}`
         }
         const url = `${API.authors.url}/${queryString}`
-        fetch(url)
-        .then(response => response.json())
-        .then(result => {
+        fetch(url).then(response => response.json()).then(result => {
           console.log(url, result)
           const message = result.message
-          if(message !== successCode) {
+          if (message !== successCode) {
             reject(message)
-          }else{
+          } else {
             resolve(result.res)
           }
         })
       } catch (e) {
-         console.log(e)
-         reject(e.message)
+        console.log(e)
+        reject(e.message)
       }
     })
   }
-  static update(data) {
+  static update (data) {
     console.log(data)
     return new Promise((resolve, reject) => {
       try {
@@ -59,19 +57,19 @@ export default class Author {
             'Content-Type': 'json'
           })
         })
-        .then(response => response.json())
-        .then(result => {
-          console.log(API.authors.url, result)
-          const message = result.message
-          if(message !== successCode) {
-            reject(message)
-          }else{
-            resolve(result.res)
-          }
-        })
+          .then(response => response.json())
+          .then(result => {
+            console.log(API.authors.url, result)
+            const message = result.message
+            if (message !== successCode) {
+              reject(message)
+            } else {
+              resolve(result.res)
+            }
+          })
       } catch (e) {
-         console.log(e)
-         reject(e.message)
+        console.log(e)
+        reject(e.message)
       }
     })
   }

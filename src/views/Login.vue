@@ -78,12 +78,13 @@ export default {
     modifyPassword () {
       // 防止多次点击
       if( !this.loading ){
-        const username = this.username
+        const {username, password} = this
         this.loading = true
         this.loginMsg = '验证成功可改密码，验证中...'
-        LoginUtils.auth( username, this.password, (message) => {
+        User.auth( username, password).then(message => {
           this.loading = false
           this.loginMsg = '登录'
+          console.log('message:', message)
           if( message ){
             return this.$notify({
               message: message,
@@ -97,13 +98,31 @@ export default {
                 inputPattern: /.+/,
                 inputErrorMessage: '新密码不能为空'
               }).then(({ value }) => {
-                this.$notify({
-                  title: '密码修改成功',
-                  message: `你的密码是: ${value} 请牢记`,
-                  type: 'success'
+                console.log('value:', value)
+                User.modifyPassword(username, value).then(() => {
+                    this.$notify({
+                      title: '密码修改成功',
+                      message: `你的密码是: ${value} 请牢记`,
+                      type: 'success'
+                    })
+                }).catch(e => {
+                  this.$notify({
+                      title: '密码修改失败',
+                      message: e,
+                      type: 'warning'
+                  })
                 })
+                
               })
           }
+        }).catch(e => {
+          console.log(e)
+          this.$notify({
+              message: e,
+              type: 'warning'
+           })
+           this.loading = false
+           this.loginMsg = '登录'
         })
       }
     }

@@ -6,52 +6,48 @@ import LoginUtils from '../utils/LoginUtils'
 
 const successCode = 'SUCCESS'
 export default class Article {
-/**
+  /**
  * 释放编辑锁
  */
-static releaseLock (id) {
-  const currentUser = LoginUtils.getUsername()
-  return new Promise((resolve, reject) => {
-    try {
-      const url = `${API.articles.url}/?type=release&id=${id}&user=${currentUser}`
-      fetch(url)
-      .then(response => response.json())
-      .then(result => {
-        const message = result.message
-        if(message !== successCode) {
-          reject(message)
-        }else{
-          resolve(result.res)
-        }
-      })
-    } catch (e) {
-       console.log(e)
-       reject(e.message)
-    }
-  })
-}
-
- static getStatistics () {
-   return new Promise((resolve, reject) => {
-     try {
-       const url = `${API.articles.url}/?type=monthly`
-       fetch(url)
-       .then(response => response.json())
-       .then(result => {
-         console.log(url, result);
-         const message = result.message
-         if(message !== successCode) {
-           reject(message)
-         }else{
-           resolve(result.res)
-         }
-       })
-     } catch (e) {
+  static releaseLock (id) {
+    const currentUser = LoginUtils.getUsername()
+    return new Promise((resolve, reject) => {
+      try {
+        const url = `${API.articles.url}/?type=release&id=${id}&user=${currentUser}`
+        fetch(url).then(response => response.json()).then(result => {
+          const message = result.message
+          if (message !== successCode) {
+            reject(message)
+          } else {
+            resolve(result.res)
+          }
+        })
+      } catch (e) {
         console.log(e)
         reject(e.message)
-     }
-   })
- }
+      }
+    })
+  }
+
+  static getStatistics () {
+    return new Promise((resolve, reject) => {
+      try {
+        const url = `${API.articles.url}/?type=monthly`
+        fetch(url).then(response => response.json()).then(result => {
+          console.log(url, result)
+          const message = result.message
+          if (message !== successCode) {
+            reject(message)
+          } else {
+            resolve(result.res)
+          }
+        })
+      } catch (e) {
+        console.log(e)
+        reject(e.message)
+      }
+    })
+  }
 
   static newArticle () {
     return new Promise((resolve, reject) => {
@@ -69,14 +65,12 @@ static releaseLock (id) {
           })
         }
         const url = API.articles.url
-        fetch(url, opts)
-        .then(response => response.json())
-        .then(result => {
+        fetch(url, opts).then(response => response.json()).then(result => {
           console.log(url, result)
           const message = result.message
-          if(message !== successCode){
+          if (message !== successCode) {
             reject(message)
-          }else{
+          } else {
             resolve({
               id: result.res.id,
               title: '新建文章',
@@ -94,56 +88,57 @@ static releaseLock (id) {
    * select * from table limit offset pageSize where query
    */
   static getArticles (query) {
-    // debugger;
+    // debugger
     return new Promise((resolve, reject) => {
-      try{
+      try {
         let ret = []
-        let {type, search, offset, pageSize, like} = query
+        let { type, search, offset, pageSize, like } = query
         let queryString = ''
 
-        if(type && search){
+        if (type && search) {
           queryString = `?${type}=${search}`
         }
 
-        if(_.isInteger(pageSize)){
-          if(!_.isInteger(offset)){
+        if (_.isInteger(pageSize)) {
+          if (!_.isInteger(offset)) {
             offset = 0
           }
-          if(queryString){
+          if (queryString) {
             queryString = queryString + `&offset=${offset}&limit=${pageSize}`
-          }else{
+          } else {
             queryString = `?offset=${offset}&limit=${pageSize}`
           }
         }
-        if(like){
-          if(queryString) {
+        if (like) {
+          if (queryString) {
             queryString += '&like'
-          }else{
+          } else {
             queryString = '?like'
           }
         }
 
         const url = `${API.articles.url}/${queryString}`
         fetch(url)
-        .then(response => response.json())
-        .then(result => {
-          console.log(url, result)
-          const message = result.message
-          if(message !== successCode){
-            reject(message)
-          }else{
-            if(result.res){
-              resolve(result.res)
-            }else{
-              resolve({total: 0,articles: []})
+          .then(response => response.json())
+          .then(result => {
+            console.log(url, result)
+            const message = result.message
+            if (message !== successCode) {
+              reject(message)
+            } else {
+              if (result.res) {
+                resolve(result.res)
+              } else {
+                resolve({ total: 0, articles: [] })
+              }
             }
-          }
-        }).catch(e => {
-          console.log(e);
-        })
-      }catch(e){
+          })
+          .catch(e => {
+            console.log(e)
+          })
+      } catch (e) {
         // 事实上，走了这块儿
-        console.log(e);
+        console.log(e)
         reject(e.message)
       }
     })
@@ -158,5 +153,4 @@ static releaseLock (id) {
   static randArray (data, len) {
     return data.sort(() => Math.random() - 0.5).slice(0, len)
   }
-
 }

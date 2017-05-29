@@ -67,12 +67,12 @@ router.beforeEach((to, from, next) => {
   // console.log("from:",from.name)
   // console.log("to:",to.name)
   const {name} = to
-  if( name === 'login' ) {
+  if (name === 'login') {
     return next()
   }
 
   let isLogin = LoginUtils.checkLoginInfo()
-  if( !isLogin ) {
+  if (!isLogin) {
     router.replace({name: 'login'})
   } else {
     // if( name === 'edit'){
@@ -91,7 +91,7 @@ router.beforeEach((to, from, next) => {
     //     }
     //   })
     // }else{
-      next()
+    next()
     // }
   }
 })

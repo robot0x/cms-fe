@@ -87,7 +87,27 @@ export default {
       font-weight: normal;
       font-family:$fontFamily;
     }
-
+    .lift {
+      margin-left: 40px;
+      padding: 0 0 0 10px;
+      line-height: 1;
+      color: #8e8e93;
+      margin-top: 6px;
+      text-align: center;
+      em {
+          margin-left: -80px;
+          display: inline-block;
+          width: 740px;
+      }
+    }
+    .lift2 {
+      margin-left: 40px;
+      text-align: left;
+      padding: 0 0 0 10px;
+      line-height: 1;
+      color: #8e8e93;
+      margin-top: 6px;
+    }
     & > p {
       padding: 24px 40px 0;
       a {
@@ -210,4 +230,261 @@ export default {
       margin-left: -40px;
     }
   }
+
+// 专刊样式
+  .card {
+    position: relative;
+    width: 100%;
+    background-color: #fff;
+    max-width: 720px;
+    min-width: 480px;
+  }
+  .bottomshadow {
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+  }
+  .headgrayband {
+    max-width: 720px;
+    min-width: 480px;
+    height: 24px;
+    background-color: #efeff4;
+}
+.mask {
+    position: absolute;
+    z-index: 9;
+    background-color: #000;
+    filter: alpha(opacity=15);
+    -moz-opacity: 0.15;
+    opacity: 0.15;
+}
+#headtitle {
+    color: #fff;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    text-align: center;
+    z-index: 10;
+}
+#headtitle p {
+    margin: 0 24px 17px;
+    font-size: 40px;
+    line-height: 54px;
+}
+#head > div {
+    width: 100%;
+    line-height: 0;
+    position: relative;
+}
+#head img {
+    width: 100%;
+}
+.wrapper {
+    padding: 24px 24px 0px;
+    width: 100%;
+    position: relative;
+    background-color: #fff;
+    line-height: 0;
+}
+.title {
+    margin: 10px 24px -7px;
+    color: #252629;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 46px;
+}
+.desc {
+    font-size: 32px;
+    line-height: 40px;
+    color: #616368;
+    word-break: break-word;
+    word-wrap: break-word;
+    margin: 20px 24px;
+}
+.pseudoB {
+    height: 64px;
+    width: auto;
+    margin: 20px 24px 24px;
+    line-height: 0;
+    position: relative;
+}
+.pseudoB span {
+    line-height: 28px;
+    font-size: 28px;
+    padding: 18px 24px;
+    cursor: pointer;
+    color: #fff;
+    float: right;
+    background-color: rgba(230,0,18,0.5);
+    border-radius: 8px;
+    margin-right: 24px;
+}
+.pseudoB p {
+    line-height: 28px;
+    font-size: 28px;
+    padding: 16px 24px;
+    color: #f38089;
+    float: right;
+    cursor: pointer;
+    /* background-color: rgba(230,0,18,0.5); */
+    border-radius: 8px;
+    border: 2px solid;
+}
+// 专题样式
+.headdesc {
+    padding: 22px;
+}
+.zthead h4 {
+    color: #616368;
+    font-size: 32px;
+    line-height: 38px;
+    color: #252629;
+    font-weight: normal;
+    margin: 0 0 12px;
+}
+.zthead p {
+    color: #8e8e93;
+    word-break: break-word;
+    word-wrap: break-word;
+    font-size: 28px;
+    line-height: 38px;
+}
+.grayband {
+    height: 24px;
+    background-color: #efeff4;
+    min-width: 480px;
+}
+.ztcard {
+    display: table;
+    padding: 24px 24px 0;
+}
+.articlecard {
+    position: relative;
+    width: 100%;
+    height: 236px;
+    background-color: #fff;
+    line-height: 0;
+    cursor: pointer;
+}
+.ztleft {
+    display: table-cell;
+    width: 188px;
+    height: 188px;
+}
+.ztright {
+    display: table-cell;
+    padding-left: 24px;
+    position: relative;
+    vertical-align: top;
+    word-break: break-all;
+}
+.ztleft img {
+    width: 188px;
+    height: 188px;
+    border-radius: 8px;
+}
+.ztright .p1 {
+    color: #616368;
+    font-size: 28px;
+    line-height: 36px;
+    max-height: 72px;
+    padding-right: 12px;
+    overflow-y: hidden;
+    margin-bottom: 8px;
+}
+.ztright .p2 {
+    color: #8e8e93;
+    font-size: 24px;
+    line-height: 32px;
+    max-height: 64px;
+    padding-right: 12px;
+    overflow-y: hidden;
+    word-break: break-word;
+    word-wrap: break-word;
+}
+.ztright .p3 {
+    color: #d0d0d0;
+    font-size: 28px;
+    line-height: 36px;
+    position: absolute;
+    bottom: 19px;
+}
+// sku
+.revarticlecard {
+    height: 198px;
+    margin-bottom: 12px;
+}
+.articlecard {
+    width: 700px;
+    position: relative;
+    height: 236px;
+    background-color: #efeff4;
+    font-size: 28px;
+    line-height: 38px;
+    color: #535353;
+    margin: 20px auto;
+}
+.bottomshadow {
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+}
+
+.revarticlecard .articleimg {
+    width: 150px;
+    height: 150px;
+    border-radius: 4px;
+}
+.articleimg {
+    display: inline;
+    width: 188px;
+    height: 188px;
+    border-radius: 8px;
+    position: relative;
+    top: 24px;
+    left: 24px;
+}
+.revarticlecard .articletitle, .revarticlecard .brand {
+    left: 198px;
+}
+.articletitle {
+    position: absolute;
+    top: 19px;
+    left: 236px;
+    font-size: 28px;
+    color: #616368;
+    line-height: 38px;
+}
+.revarticlecard .articletitle, .revarticlecard .brand {
+    left: 198px;
+}
+.brand {
+    position: absolute;
+    left: 236px;
+    bottom: 24px;
+    font-size: 24px;
+}
+.buy-button-area {
+    position: absolute;
+    right: 12px;
+    font-size: 14px;
+    bottom: 24px;
+}
+.buy-button {
+    display: block;
+    width: 110px;
+    height: 37px;
+    padding-top: 4px;
+    padding-right: 8px;
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+    outline: none;
+    border: none;
+    border-radius: 6px;
+    background-color: #e60012;
+    color: #fff;
+    font-size: 20px;
+}
+.buy-button span {
+    display: block;
+    height: 28px;
+    line-height: 27px;
+}
+
 </style>

@@ -33,8 +33,8 @@ const successCode = 'SUCCESS'
  */
 
 export default class Content {
-
-  static getContent(id){
+  static getContent (id) {
+    console.log('getContent执行 ...')
     return new Promise((resolve, reject) => {
       try {
         const content = Content.getContentFormLocal(id)
@@ -44,106 +44,112 @@ export default class Content {
         if (content) {
           const url = `${API.articles.url}/?type=lock&id=${id}&user=${user}`
           fetch(url)
-          .then(response => response.json())
-          .then(result => {
-            console.log(url,result)
-            const {message, res} = result
-            if(message !== successCode){
-              reject(message)
-            }else{
-              if(res && res.lock_by){
-                content.lock_by = res.lock_by
-              }else{
-                content.lock_by = user
-              }
-              content.from = 'cache'
-              resolve(content)
-            }
-          })
-          .catch(e => {
-            resolve(e.message)
-          })
-        }
-         else  // 如果没有缓存，从服务器上拿数据
-        {
-          try {
-            const url = `${API.articles.url}/?type=all&id=${id}&user=${user}`
-            fetch(url)
             .then(response => response.json())
             .then(result => {
               console.log(url, result)
-              const message = result.message
-              if(message !== successCode){
+              const { message, res } = result
+              if (message !== successCode) {
                 reject(message)
-              }else{
-                // used_for_search: false, // 是否可搜
-                // categroy: '',
-                // render_categroys: [],
-                // brand: '',
-                // render_brands: [],
-                // scene: '',
-                // render_scenes: [],
-                // special: '',
-                // render_specials: [],
-                // similar: '',
-                // render_similars: [],
-                const ret = result.res
-                let {gift, keywords, tags} = ret
-                if(keywords){
-                  keywords = JSON.parse(keywords)
-                  const {categroys, brands, scenes, specials, similars} = keywords
-                  // 品类
-                  if(categroys){
-                    ret.render_categroys = Content._handleKeywords(categroys)
-                  }
-                  // 品牌
-                  if(brands){
-                    ret.render_brands =  Content._handleKeywords(brands)
-                  }
-                  // 使用场景
-                  if(scenes){
-                    ret.render_scenes =  Content._handleKeywords(scenes)
-                  }
-                  // 特别之处
-                  if(specials){
-                    ret.render_specials = Content._handleKeywords(specials)
-                  }
-                  // 类似产品
-                  if(similars){
-                    ret.render_similars = Content._handleKeywords(similars)
-                  }
+              } else {
+                if (res && res.lock_by) {
+                  content.lock_by = res.lock_by
+                } else {
+                  content.lock_by = user
                 }
-
-                if(gift){
-                  gift = JSON.parse(gift)
-                  const {scenes, relations, characters} = gift
-                  if(scenes){
-                    ret.scenes = Content._handleGift(scenes)
-                  }
-                  if(relations){
-                    ret.relations = Content._handleGift(relations)
-                  }
-                  if(characters){
-                    ret.characters = Content._handleGift(characters)
-                  }
-                }
-                if(tags){
-                  tags = JSON.parse(tags)
-                }
-
-                let {lock_by} = ret
-                // 如果点击“新建文章”之后，那么自动跳转到编辑也的话，此时可能拿不到lock_by字段
-                // 所以在前端赋予lock_by字段的值
-                if(!lock_by){
-                  ret.lock_by = user
-                }
-                ret.from = 'server'
-                resolve(ret)
+                content.from = 'cache'
+                resolve(content)
               }
             })
             .catch(e => {
               resolve(e.message)
             })
+        } else {
+          // 如果没有缓存，从服务器上拿数据
+          try {
+            console.log('从服务器上拿数据 .... ')
+            const url = `${API.articles.url}/?type=all&id=${id}&user=${user}`
+            fetch(url)
+              .then(response => response.json())
+              .then(result => {
+                console.log(url, result)
+                const message = result.message
+                if (message !== successCode) {
+                  reject(message)
+                } else {
+                  // used_for_search: false, // 是否可搜
+                  // categroy: '',
+                  // render_categroys: [],
+                  // brand: '',
+                  // render_brands: [],
+                  // scene: '',
+                  // render_scenes: [],
+                  // special: '',
+                  // render_specials: [],
+                  // similar: '',
+                  // render_similars: [],
+                  const ret = result.res
+                  let { gift, keywords, tags } = ret
+                  if (keywords) {
+                    keywords = JSON.parse(keywords)
+                    const {
+                      categroys,
+                      brands,
+                      scenes,
+                      specials,
+                      similars
+                    } = keywords
+                    // 品类
+                    if (categroys) {
+                      ret.render_categroys = Content._handleKeywords(categroys)
+                    }
+                    // 品牌
+                    if (brands) {
+                      ret.render_brands = Content._handleKeywords(brands)
+                    }
+                    // 使用场景
+                    if (scenes) {
+                      ret.render_scenes = Content._handleKeywords(scenes)
+                    }
+                    // 特别之处
+                    if (specials) {
+                      ret.render_specials = Content._handleKeywords(specials)
+                    }
+                    // 类似产品
+                    if (similars) {
+                      ret.render_similars = Content._handleKeywords(similars)
+                    }
+                  }
+
+                  if (gift) {
+                    gift = JSON.parse(gift)
+                    const { scenes, relations, characters } = gift
+                    if (scenes) {
+                      ret.scenes = Content._handleGift(scenes)
+                    }
+                    if (relations) {
+                      ret.relations = Content._handleGift(relations)
+                    }
+                    if (characters) {
+                      ret.characters = Content._handleGift(characters)
+                    }
+                  }
+                  // if (tags) {
+                  //   tags = JSON.parse(tags)
+                  // }
+
+                  let { lock_by } = ret
+                  // 如果点击“新建文章”之后，那么自动跳转到编辑也的话，此时可能拿不到lock_by字段
+                  // 所以在前端赋予lock_by字段的值
+                  if (!lock_by) {
+                    ret.lock_by = user
+                  }
+                  ret.from = 'server'
+                  resolve(ret)
+                }
+              })
+              .catch(e => {
+                resolve(e.message)
+              })
           } catch (e) {
             reject(e.message)
           }
@@ -167,10 +173,10 @@ export default class Content {
   }
 
   static save (data) {
-    console.log(data);
+    console.log(data)
     return new Promise((resolve, reject) => {
       try {
-        if(data){
+        if (data) {
           data.type = 'all'
         } else {
           return reject('您还未填写信息')
@@ -183,41 +189,44 @@ export default class Content {
             'Content-Type': 'json'
           })
         })
-        .then(response => response.json())
-        .then(result => {
-          console.log(url, result)
-          const message = result.message
-          if(message !== successCode){
-            reject(message)
-          }else{
-            resolve({})
-          }
-        })
+          .then(response => response.json())
+          .then(result => {
+            console.log(API.articles.url, result)
+            const message = result.message
+            if (message !== successCode) {
+              reject(message)
+            } else {
+              resolve({})
+            }
+          })
       } catch (e) {
         reject(e.message)
       }
     })
   }
 
-  static _handleKeywords (keywords, type = 'primary'){
-    return keywords.split(' ').map(item => { return { type, name: item}})
+  static _handleKeywords (keywords, type = 'primary') {
+    return keywords.split(' ').map(item => {
+      return { type, name: item }
+    })
   }
 
-  static _handleGift (gifts){
+  static _handleGift (gifts) {
     return gifts.split(' ').filter(s => s.trim()).map(s => Number(s))
   }
 
-  static setContentToLocal(id, key, val, check = false){
+  static setContentToLocal (id, key, val, check = false) {
     id = String(id)
-    if( id && id.trim() ){
+    const {localStorage} = window
+    if (id && id.trim()) {
       let local = Content.getContentFormLocal(id)
-      if(check){
-        if(local){
+      if (check) {
+        if (local) {
           local[key] = val
           localStorage.setItem(id, JSON.stringify(local))
         }
-      }else{
-        if(!local){
+      } else {
+        if (!local) {
           local = {}
         }
         local[key] = val
@@ -227,23 +236,23 @@ export default class Content {
   }
 
   static getContentFormLocal (id) {
-      return JSON.parse(localStorage.getItem(String(id)))
-      // const article = localStorage.getItem('')
-      // return {
-      //   text: localStorage.getItem('article')        || '',
-      //   images: JSON.parse(localStorage.getItem('images')) || images || [],
-      //   formData: {
-      //     aName: localStorage.getItem('aName') || '',
-      //     ctype: parseInt(localStorage.getItem('ctype'))     || 1,
-      //     keywords: Content.handleKeywords(JSON.parse(localStorage.getItem('keywords')) || []),
-      //     shareTitle: localStorage.getItem('shareTitle') ||'',
-      //     wxTitle: localStorage.getItem('wxTitle') ||'',
-      //     wbTitle: localStorage.getItem('wbTitle') ||'',
-      //     timetopublish: Date.now()
-      //   }
-      // }
+    const {localStorage} = window
+    return JSON.parse(localStorage.getItem(String(id)))
+    // const article = localStorage.getItem('')
+    // return {
+    //   text: localStorage.getItem('article')        || '',
+    //   images: JSON.parse(localStorage.getItem('images')) || images || [],
+    //   formData: {
+    //     aName: localStorage.getItem('aName') || '',
+    //     ctype: parseInt(localStorage.getItem('ctype'))     || 1,
+    //     keywords: Content.handleKeywords(JSON.parse(localStorage.getItem('keywords')) || []),
+    //     shareTitle: localStorage.getItem('shareTitle') ||'',
+    //     wxTitle: localStorage.getItem('wxTitle') ||'',
+    //     wbTitle: localStorage.getItem('wbTitle') ||'',
+    //     timetopublish: Date.now()
+    //   }
+    // }
   }
-
 }
 
 // `# 这是文章标题

@@ -113,7 +113,6 @@ export default {
       authors: [],
       authors_copy: [],
       editing: false,
-      pageSize: 50,
       // pageSizes:[1, 2, 3, 4],
       pageSizes:[50, 100, 200, 400],
       // pageSize: 2,
@@ -126,12 +125,12 @@ export default {
    this.doQuery()
   },
   methods: {
-    doQuery(query, resetPage = true){
+    doQuery (query, resetPage = true) {
       this.loading = true
       let param = Utils.getPaginationParam(query, resetPage ? 0 : this.offset, this.pageSize)
       Author.getAuthors(param).then(res => {
         const {authors, total} = res
-        if(authors.length){
+        if(!_.isEmpty(authors)){
           this.authors_copy = _.cloneDeep(authors)
           this.authors = authors.map(data => {data.editing = false, data.editText = '编辑'; return data})
           this.total = total || authors.length
