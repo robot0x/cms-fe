@@ -3,7 +3,7 @@
    <el-table :data="authors" border style="width: 100%">
     <el-table-column label="pic_uri">
       <template scope="scope">
-        <img :src="scope.row.pic_uri" width="80" height="80" alt="scope.row.title">
+        <img :src="scope.row.pic_uri | addPrefix" width="80" height="80" alt="scope.row.title">
       </template>
     </el-table-column>
     <el-table-column label="source">
@@ -79,7 +79,7 @@
    <div class="author-card">
      <div class="author-header author-border"><img :src="srcfrom" width="34" height="32" class="author-avatar"><span>作者</span></div>
      <div class="author-content author-border">
-       <img :src="authorCard.pic_uri" width=100 height=100>
+       <img :src="authorCard.pic_uri | addPrefix" width=100 height=100>
        <div class="author-title-and-value">
          <h1>{{authorCard.title}}</h1>
          <p>{{authorCard.value}}</p>
@@ -192,6 +192,9 @@ export default {
   filters: {
     htmlFilter (html) {
       console.log(html)
+    },
+    addPrefix (url) {
+      return `//c.diaox2.com${url}`
     }
   }
 }
