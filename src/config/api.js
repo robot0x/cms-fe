@@ -3,7 +3,7 @@ const debug = process.env.NODE_ENV !== 'production'
 // cms-be端口
 const port = 3000
 const API = (function () {
-  const fetchURL = debug ? '//127.0.0.1:' + port : '//s3.a.dx2rd.com:' + port
+  const fetchURL = debug ? '//127.0.0.1:' + port : 'http://z.diaox2.com:' + port
   // 下列接口都是GET请求
   return {
     articles: {
