@@ -295,9 +295,24 @@ const getters = {
       return `<p class="lift">${text}</p>`
     }
 
-    renderer.link = (href, title = '', text) => {
+    renderer.link = (href, title = '', text = '') => {
+      console.log('href:', href)
+      console.log('title:', title)
+      console.log('text:', text)
+      let imgReg = /\s*img:\s*/
+      let imgUrl = ''
+      if (imgReg.test(href)) {
+        [href, imgUrl] = href.split(imgReg)
+        text += `<img src="${imgUrl}">`
+      }
       if (/^\d+$/.test(href)) {
-        href = `//www.diaox2.com/article/${href}.html`
+        if (href == 7216) {
+          href = '//c.diaox2.com/view/app/?m=pcollection'
+        } else {
+          href = `//www.diaox2.com/article/${href}.html`
+        }
+      } else if (/pcollection/i.test(href)) {
+        href = '//c.diaox2.com/view/app/?m=pcollection'
       }
       return `<a target="_blank" href="${href}">${text || href}</a>`
     }
@@ -369,7 +384,7 @@ const getters = {
     options.renderer = renderer
     marked.setOptions(options)
     const lexer = new marked.Lexer(options)
-    console.log('markdown.js md:', md)
+    // console.log('markdown.js md:', md)
     // console.log(lexer)
     // const tokens = lexer.lex(md)
     // console.log(tokens)
@@ -377,7 +392,7 @@ const getters = {
       if (err) {
         console.log(err)
       }
-      console.log('markdown.js content:', content)
+      // console.log('markdown.js content:', content)
       return {
         md,
         content

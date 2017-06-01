@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-05-25 16:59:24
+ * @Last Modified time: 2017-06-01 14:26:37
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -119,6 +119,9 @@ class Utils {
           break;
         case 9:
           ret = '专题';
+          break;
+        case 10:
+          ret = '测评集合';
           break;
       }
     } else {

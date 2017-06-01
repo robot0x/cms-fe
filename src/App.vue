@@ -28,6 +28,11 @@
                 <i class="el-icon-information"></i><span>帮助</span>
               </router-link>
             </li>
+             <!--<li>
+              <router-link class="nav-link" to="/pcollection">
+                <i class="el-icon-date"></i><span>测评集合</span>
+              </router-link>
+            </li>-->
             <li class="author">
               <span>你好，{{author}}</span>
               <a href="javascript:void(0);" class="logout" @click="logout">退出</a>

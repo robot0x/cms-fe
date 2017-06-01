@@ -512,9 +512,14 @@ export default {
     console.log('Edit.vue created exec ...')
     // BUG:当编辑有图片的文章时，然后再编辑新建文章，图片还是显示上一篇文章的图片
     // 所以，显式地清空一下图片
+    const id = this.$route.params.id
+    // 如果是测评集合页（pcollection），则只显示编辑框即可，无需展示渲染框，造成编辑的困扰
+    if (id == 7216) {
+      this.open('left')
+    }
     this.images = []
     this.ctype = 2
-    this.loadData(this.$route.params.id)
+    this.loadData(id)
     // Tags.getAllTags().then(all_tags => {
     //   this.all_tags = all_tags
     //   console.log('created.all_tags:', JSON.stringify(all_tags))

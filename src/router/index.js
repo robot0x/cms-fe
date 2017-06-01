@@ -9,6 +9,8 @@ import User from '../views/User'
 import Login from '../views/Login'
 import Help from '../views/Help'
 import Author from '../views/Author'
+// 测评集合管理
+import PCollection from '../views/PCollection'
 // import Password from '../views/Password'
 // import Register from '../views/Register'
 import NotFound from '../views/NotFound'
@@ -46,6 +48,7 @@ const routes = [
   // { path: '/monthly', component: Monthly },
   { path: '/author', component: Author },
   { path: '/help', component: Help },
+  { path: '/pcollection', component: PCollection },
   { path: '/login/', name: 'login', component: Login },
   // { path: '/password/', name: 'password', component: Password }, // 修改密码
   // { path: '/register/', name: 'register', component: Register },
