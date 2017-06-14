@@ -77,8 +77,8 @@ export default class Content {
                   reject(message)
                 } else {
                   // used_for_search: false, // 是否可搜
-                  // categroy: '',
-                  // render_categroys: [],
+                  // category: '',
+                  // render_categorys: [],
                   // brand: '',
                   // render_brands: [],
                   // scene: '',
@@ -89,40 +89,43 @@ export default class Content {
                   // render_similars: [],
                   const ret = result.res
                   let { gift, keywords, tags } = ret
+                  console.log('加载的数据keywords:', keywords);
                   if (keywords) {
                     keywords = JSON.parse(keywords)
                     const {
-                      categroys,
-                      brands,
-                      scenes,
-                      specials,
-                      similars
+                      category,
+                      brand,
+                      scene,
+                      special,
+                      similar
                     } = keywords
                     // 品类
-                    if (categroys) {
-                      ret.render_categroys = Content._handleKeywords(categroys)
+                    if (category) {
+                      ret.render_categorys = Content._handleKeywords(category)
                     }
                     // 品牌
-                    if (brands) {
-                      ret.render_brands = Content._handleKeywords(brands)
+                    if (brand) {
+                      ret.render_brands = Content._handleKeywords(brand)
                     }
                     // 使用场景
-                    if (scenes) {
-                      ret.render_scenes = Content._handleKeywords(scenes)
+                    if (scene) {
+                      ret.render_scenes = Content._handleKeywords(scene)
                     }
                     // 特别之处
-                    if (specials) {
-                      ret.render_specials = Content._handleKeywords(specials)
+                    if (special) {
+                      ret.render_specials = Content._handleKeywords(special)
                     }
                     // 类似产品
-                    if (similars) {
-                      ret.render_similars = Content._handleKeywords(similars)
+                    if (similar) {
+                      ret.render_similars = Content._handleKeywords(similar)
                     }
                   }
 
                   if (gift) {
                     gift = JSON.parse(gift)
-                    const { scenes, relations, characters } = gift
+                    const scenes = gift.scene
+                    const relations = gift.relation
+                    const characters = gift.character
                     if (scenes) {
                       ret.scenes = Content._handleGift(scenes)
                     }
@@ -212,7 +215,8 @@ export default class Content {
   }
 
   static _handleGift (gifts) {
-    return gifts.split(' ').filter(s => s.trim()).map(s => Number(s))
+    // 数据库存的是从1开始的索引，所以要变为真实的索引
+    return gifts.split(' ').filter(s => s.trim()).map(s => Number(s) - 1)
   }
 
   static setContentToLocal (id, key, val, check = false) {

@@ -250,18 +250,19 @@ const getters = {
       } else if (lift2Reg.test(text)) {
         ret = `<p class="lift2">${text.replace(lift2Reg, '')}</p>`
       } else if (skuReg.test(text)) {
-        let sid = text.replace(skuReg, '')
-        if (sid && (sid = sid.trim()) && /^\d+$/.test(sid)) {
-          const xhr = new window.XMLHttpRequest()
-          xhr.open('GET', `http://s5.a.dx2rd.com:3000/v1/getsimplesku/${sid}`, false)
-          xhr.send(null)
-          xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-              console.log(xhr.responseText)
-            }
-          }
-          ret = `<p class="sku">${text.replace(skuReg, '')}</p>`
-        }
+        return `<p class="sku">${text.replace(skuReg, '')}</p>`
+        // let sid = text.replace(skuReg, '')
+        // if (sid && (sid = sid.trim()) && /^\d+$/.test(sid)) {
+        //   const xhr = new window.XMLHttpRequest()
+        //   xhr.open('GET', `http://s5.a.dx2rd.com:3000/v1/getsimplesku/${sid}`, false)
+        //   xhr.send(null)
+        //   xhr.onreadystatechange = () => {
+        //     if (xhr.readyState === 4 && xhr.status === 200) {
+        //       console.log(xhr.responseText)
+        //     }
+        //   }
+        //   ret = `<p class="sku">${text.replace(skuReg, '')}</p>`
+        // }
       } else {
         ret = `<p>${text}</p>`
       }
@@ -296,9 +297,9 @@ const getters = {
     }
 
     renderer.link = (href, title = '', text = '') => {
-      console.log('href:', href)
-      console.log('title:', title)
-      console.log('text:', text)
+      // console.log('href:', href)
+      // console.log('title:', title)
+      // console.log('text:', text)
       let imgReg = /\s*img:\s*/
       let imgUrl = ''
       if (imgReg.test(href)) {

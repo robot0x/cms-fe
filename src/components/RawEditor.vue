@@ -1,6 +1,6 @@
 <template>
   <div class="component-raw-editor">
-    <textarea v-model="text" :disabled="locked" ref="textarea"></textarea>
+    <textarea v-model="text" :disabled="locked" ref="textarea" v-on:keyup.prevent.stop="keyup"></textarea>
   </div>
 </template>
 <script>
@@ -31,17 +31,28 @@ export default {
       // console.log('RawEditor.vue watcher named content exec ...')
       this.text = input
     },
+    /**
+     * 不用每次监控，只有编辑按键 `ctrl + s` 才渲染
+     */
     text () {
       // console.log('RawEditor.vue watcher named text exec ...')
       this.commit()
     },
     insertImage (val) {
-      if(val){
-        this.commit(Utils.insertContent(this.$refs.textarea, `\n![](${val})\n`))
+      if (val) {
+        Utils.insertContent(this.$refs.textarea, `\n![](${val})\n`)
       }
+      // if(val){
+      //   this.commit(Utils.insertContent(this.$refs.textarea, `\n![](${val})\n`))
+      // }
     }
   },
   methods: {
+    keyup (event) {
+      if (event.keyCode === 83 && event.ctrlKey) {
+        console.log(this.$store)
+      }
+    },
     commit (text = this.text) {
       // console.log('RawEditor.vue commit mutation named change exec ...')
       this.$store.commit('change', text)

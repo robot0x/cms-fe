@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-01 14:26:37
+ * @Last Modified time: 2017-06-13 16:23:07
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -203,6 +203,42 @@ class Utils {
 
   static isLocked (lockBy) {
     return lockBy && LoginUtils.getUsername() !== lockBy;
+  }
+
+  static ctypeToM (ctype) {
+    ctype = Number(ctype)
+    // console.log(ctype)
+    // 1-首页/2-好物/3-专刊/4-活动/5-经验/7-值得买/8-评测/9-专题
+    let m = ''
+    switch (ctype) {
+      case 1:
+        m = 'show'
+        break
+      case 2:
+        m = 'show'
+        break
+      case 3:
+        m = 'zk'
+        break
+      case 4:
+        m = 'show'
+        break
+      case 5:
+        m = 'show'
+        break
+      case 7:
+        m = 'zdm'
+        break
+      case 8:
+        m = 'ceping'
+        break
+      case 9:
+        m = 'zt'
+        break
+      default:
+        m = null
+    }
+    return m
   }
 
   static clearCache (id) {

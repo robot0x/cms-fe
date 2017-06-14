@@ -2,12 +2,16 @@
 <div class="page-edit" v-loading.fullscreen.lock="loading" element-loading-text="正在保存中...">
   <!-- 如果被锁了，也就不必显示操作区了 -->
   <!-- <panel title="操作" closeable class="panel" v-if="!locked"> -->
+  <!--<panel :title="lock_by | lockedByFormat" closeable class="panel" :close="true">-->
   <panel :title="lock_by | lockedByFormat" closeable class="panel">
 
     <span slot="panel-heading-middle">
       <el-button type="success" size="small" icon="upload" @click="save" v-if="!locked">保存</el-button>
       <el-button type="info" size="small" @click="releaseLock" v-if="!locked">解除锁定</el-button>
       <el-button type="danger" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
+      <el-button type="warning" size="small" icon="search">
+        <a :href="href" style="color:#fff;" target="_blank">预览线上版本</a>
+      </el-button>
     </span>
 
     <div slot="panel-body" class="panel-body">
@@ -73,8 +77,8 @@
 
             <div class="keywords-panel" v-if="used_for_search">
               <el-form-item label="具体品类">
-                <el-input v-model="categroy" placeholder="包含同义词（如：指甲剪，指甲钳）" @keyup.native.enter.stop.prevent="addTags('categroy')" :readonly="locked"></el-input>
-                <el-tag v-for="tag in render_categroys" :closable="!locked" :type="tag.type" @close="removeTag('categroy',tag)"> {{tag.name}} </el-tag>
+                <el-input v-model="category" placeholder="包含同义词（如：指甲剪，指甲钳）" @keyup.native.enter.stop.prevent="addTags('category')" :readonly="locked"></el-input>
+                <el-tag v-for="tag in render_categorys" :closable="!locked" :type="tag.type" @close="removeTag('category',tag)"> {{tag.name}} </el-tag>
               </el-form-item>
 
               <el-form-item label="品牌">
@@ -135,21 +139,21 @@
               <el-form-item label="场景">
                 <el-checkbox-group v-model="scenes">
                   <template v-for="(s,i) in gift.scenes">
-                    <el-checkbox :label="i">{{s}}</el-checkbox>
+                    <el-checkbox :label="i+1">{{s}}</el-checkbox>
                   </template>
                 </el-checkbox-group>
               </el-form-item>
               <el-form-item label="关系">
                 <el-checkbox-group v-model="relations">
                   <template v-for="(r,i) in gift.relations">
-                    <el-checkbox :label="i">{{r}}</el-checkbox>
+                    <el-checkbox :label="i+1">{{r}}</el-checkbox>
                   </template>
                 </el-checkbox-group>
               </el-form-item>
               <el-form-item label="特点">
                 <el-checkbox-group v-model="characters">
                   <template v-for="(c,i) in gift.characters">
-                    <el-checkbox :label="i">{{c}}</el-checkbox>
+                    <el-checkbox :label="i+1">{{c}}</el-checkbox>
                   </template>
                 </el-checkbox-group>
               </el-form-item>
@@ -251,7 +255,7 @@ import moment from 'moment'
 const defaultData = {
   loading: false,
   leftSmall: false,
-  rightSmall: false,
+  rightSmall: true,
   locked: false,
   lock_by: '',
   dialogVisible: false, // 查看大图的dialog默认是隐藏的
@@ -262,8 +266,8 @@ const defaultData = {
   characters: [],
 
   used_for_search: false, // 是否可搜
-  categroy: '',
-  render_categroys: [],
+  category: '',
+  render_categorys: [],
   brand: '',
   render_brands: [],
   scene: '',
@@ -309,7 +313,12 @@ export default {
     Panel,
     MaxWindow
   },
-  computed: { ...mapGetters(['html']) },
+  computed: {
+    ...mapGetters(['html']),
+    href: function () {
+      return `//z.diaox2.com:3001/?m=${Utils.ctypeToM(this.ctype)}&id=${this.id}`
+    }
+  },
   watch: {
     /**
      * 判断一张图片的类型
@@ -406,9 +415,10 @@ export default {
       }
     },
 
-    render_categroys (val) {
+    render_categorys (val) {
+      console.log('watch render_categorys exec ....')
       if(!this.locked && Utils.isValidArray(val)){
-        Content.setContentToLocal(this.id, 'render_categroys', val)
+        Content.setContentToLocal(this.id, 'render_categorys', val)
       }
     },
 
@@ -639,7 +649,7 @@ export default {
                     characters,
                     // 是否可搜
                     used_for_search,
-                    render_categroys,
+                    render_categorys,
                     render_brands,
                     render_scenes,
                     render_specials,
@@ -731,7 +741,7 @@ export default {
                   this.characters = characters || []
                   // kehywords
                   this.used_for_search = Utils.getBoolean(used_for_search)
-                  this.render_categroys = render_categroys
+                  this.render_categorys = render_categorys
                   this.render_brands = render_brands
                   this.render_scenes = render_scenes
                   this.render_specials = render_specials
@@ -852,6 +862,7 @@ export default {
           this.rightSmall = false
       }
     },
+    
     // 没必要，全选删除即可
     clearCache () {
       console.log('清空缓存 ...')
@@ -911,7 +922,7 @@ export default {
         characters,
 
         used_for_search,
-        render_categroys,
+        render_categorys,
         render_brands,
         render_scenes,
         render_specials,
@@ -939,7 +950,6 @@ export default {
       let select_tags = []
       // TODO: 标签相关的逻辑前后端
       if (!_.isEmpty(tags)) {
-        console.log('save tags:', tags)
         select_tags = Utils.findTagById(this.all_tags, tags)
         // console.log('select_tags:', select_tags)
         // return this.loading = false
@@ -1015,38 +1025,38 @@ export default {
             const temp = {}
             const handle = array => array.join(' ')
             if(!_.isEmpty(scenes)){
-              temp.scenes = handle(scenes)
+              temp.scene = handle(scenes)
             }
             if(!_.isEmpty(relations)){
-              temp.relations = handle(relations)
+              temp.relation = handle(relations)
             }
             if(!_.isEmpty(characters)){
-              temp.characters = handle(characters)
+              temp.character = handle(characters)
             }
             return _.isEmpty(temp)? '' : JSON.stringify(temp)
           })()
         },
-        // "keywords": { "used_for_search": 1, "keywords": "{\"categroys\":\"爱上打\",\"brands\":\"苹果\"}" }
+        // "keywords": { "used_for_search": 1, "keywords": "{\"categorys\":\"爱上打\",\"brands\":\"苹果\"}" }
         keywords: {
           // used_for_search: used_for_search? 1 : 0,
           used_for_search: Utils.getCode(used_for_search),
           keywords: (() => {
             const temp = {}
             const handle = array => array.map(item => item.name).join(' ')
-            if(!_.isEmpty(render_categroys)){
-              temp.categroys = handle(render_categroys)
+            if(!_.isEmpty(render_categorys)){
+              temp.category = handle(render_categorys)
             }
             if(!_.isEmpty(render_brands)){
-              temp.brands = handle(render_brands)
+              temp.brand = handle(render_brands)
             }
             if(!_.isEmpty(render_scenes)){
-              temp.scenes = handle(render_scenes)
+              temp.scene = handle(render_scenes)
             }
             if(!_.isEmpty(render_specials)){
-              temp.specials = handle(render_specials)
+              temp.special = handle(render_specials)
             }
             if(!_.isEmpty(render_similars)){
-              temp.similars = handle(render_similars)
+              temp.similar = handle(render_similars)
             }
             return _.isEmpty(temp)? '' : JSON.stringify(temp)
           })()
