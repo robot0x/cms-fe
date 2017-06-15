@@ -32,9 +32,9 @@ export default {
     type (val) {
       console.log(val);
       if(val === 'ctype') {
-        this.placeholder = '请输入文章类型'
+        this.placeholder = '请输入文章类型，可输入的值有：首页、好物、活动、经验、专刊、专题'
       }else if(val === 'user'){
-        this.placeholder = '请输入用户名称'
+        this.placeholder = '请输入CMS系统的用户名称'
       }else{
         this.placeholder = '输入文章ID或文章title'
       }
@@ -49,10 +49,10 @@ export default {
        * author  为按照authorname进行搜索     like搜索
        * monthly 为按照月份进行搜索           范围搜索
        */
-      let {type, search} = this
+      let { type, search } = this
       let like = false
-      if( !type ){
-        if(/^\d+$/.test(search)){
+      if ( !type ) {
+        if (/^\d+$/.test(search)) {
           type = 'id'
           search = Number(search)
         } else {
@@ -60,8 +60,8 @@ export default {
           like = true
         }
       }
-      this.query = {type, search}
-      if(like){
+      this.query = { type, search }
+      if (like) {
         this.query.like = like
       }
     },

@@ -161,8 +161,12 @@ export default {
         this.loading = false
       })
     },
-    doQuery (query, resetPage = true) {
+    doQuery (query = {}, resetPage = true) {
       this.loading = true
+      let {type, search} = query
+      if (type === 'ctype' && !/^\d{1}$/.test(search)) {
+        query.search = Utils.typeToCtype(search)
+      }
       let param = Utils.getPaginationParam(query, resetPage ? 0 : this.offset, this.pageSize)
       // if(query){
       //   param = {...query}

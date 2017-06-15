@@ -2,11 +2,29 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-13 16:23:07
+ * @Last Modified time: 2017-06-15 14:15:52
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
 class Utils {
+  static typeToCtype (type) {
+    // 1-首页/2-好物/3-专刊/4-活动/5-经验/7-值得买/8-评测/9-专题
+    let ctype = 0;
+    if (type === '首页' || type === 'firstpage') {
+      ctype = 1
+    } else if (type === '好物' || type === 'goodthing') {
+      ctype = 2
+    } else if (type === '专刊' || type === 'zhuankan') {
+      ctype = 3
+    } else if (type === '活动' || type === 'activity') {
+      ctype = 4
+    } else if (type === '经验' || type === 'experience') {
+      ctype = 5
+    } else if (type === '专题' || type === 'zhuanti') {
+      ctype = 9
+    }
+    return ctype;
+  }
   /**
    * @static
    * @param {array} allTags [{}]
@@ -16,7 +34,7 @@ class Utils {
    * @memberof Utils
    */
   static findTagById (allTags, ids) {
-    let ret = []
+    let ret = [];
     for (let id of ids) {
       for (let tag of allTags) {
         let { children } = tag;
@@ -25,7 +43,7 @@ class Utils {
             ret.push({
               tag1: tag.name,
               tag2: child.name
-            })
+            });
           }
         }
       }
@@ -206,39 +224,39 @@ class Utils {
   }
 
   static ctypeToM (ctype) {
-    ctype = Number(ctype)
+    ctype = Number(ctype);
     // console.log(ctype)
     // 1-首页/2-好物/3-专刊/4-活动/5-经验/7-值得买/8-评测/9-专题
-    let m = ''
+    let m = '';
     switch (ctype) {
       case 1:
-        m = 'show'
-        break
+        m = 'show';
+        break;
       case 2:
-        m = 'show'
-        break
+        m = 'show';
+        break;
       case 3:
-        m = 'zk'
-        break
+        m = 'zk';
+        break;
       case 4:
-        m = 'show'
-        break
+        m = 'show';
+        break;
       case 5:
-        m = 'show'
-        break
+        m = 'show';
+        break;
       case 7:
-        m = 'zdm'
-        break
+        m = 'zdm';
+        break;
       case 8:
-        m = 'ceping'
-        break
+        m = 'ceping';
+        break;
       case 9:
-        m = 'zt'
-        break
+        m = 'zt';
+        break;
       default:
-        m = null
+        m = null;
     }
-    return m
+    return m;
   }
 
   static clearCache (id) {
