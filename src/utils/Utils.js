@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-15 14:15:52
+ * @Last Modified time: 2017-06-15 15:05:53
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -370,32 +370,32 @@ class Utils {
 
   static setCookie (key, value, days = 5) {
     // 设置cookie过期事件,默认是30天
-    const expire = new Date();
+    const expire = new Date()
     // expire.setTime(expire.getTime() + days * 24 * 60 * 60 * 1000)
     // expire.setTime(expire.getTime() + days * 86400000)
-    expire.setTime(expire.getTime() + days * 864e5);
+    expire.setTime(expire.getTime() + days * 864e5)
     document.cookie =
-      key + '=' + encodeURIComponent(value) + 'expires=' + expire.toGMTString();
+      key + '=' + encodeURIComponent(value) + ';expires=' + expire.toUTCString() + ';'
   }
 
   static deleteCookie (key) {
-    const expire = new Date();
-    expire.setTime(expire.getTime() - 1);
-    const cval = Utils.getCookie(key);
+    const expire = new Date()
+    expire.setTime(expire.getTime() - 1)
+    const cval = Utils.getCookie(key)
     // 把toGMTString改成了toUTCString，两者等价。但是ECMAScript推荐使用toUTCString方法。toGMTString的存在仅仅是
     // 为了向下兼容
     if (cval != null) {
-      document.cookie = key + '=' + cval + 'expires=' + expire.toUTCString();
+      document.cookie = key + '=' + cval + ';expires=' + expire.toUTCString() + ';'
     }
   }
 
   static getCookie (key) {
-    let arr;
-    const reg = new RegExp('(^| )' + key + '=([^]*)(|$)');
+    let arr
+    const reg = new RegExp('(^| )' + key + '=([^;]*)(;|$)')
     if ((arr = document.cookie.match(reg))) {
-      return decodeURIComponent(arr[2]);
+      return decodeURIComponent(arr[2])
     } else {
-      return null;
+      return null
     }
   }
 }
