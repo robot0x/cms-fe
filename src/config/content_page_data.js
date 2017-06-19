@@ -41,6 +41,10 @@ export const ctypes = [
   {
     label: '专题',
     value: 9
+  },
+  {
+    label: '评测集合',
+    value: 10
   }
   // ,{
   //   label: '场景',

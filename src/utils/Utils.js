@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-15 15:05:53
+ * @Last Modified time: 2017-06-16 11:47:18
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -22,6 +22,8 @@ class Utils {
       ctype = 5
     } else if (type === '专题' || type === 'zhuanti') {
       ctype = 9
+    } else if (type === '评测集合') {
+      ctype = 10
     }
     return ctype;
   }
@@ -72,24 +74,32 @@ class Utils {
    * @returns {object} {isAnchor: boolean, text: string}
    * @memberof Utils
    * 输入一段文本，按照约定好的markdown anchor语法，输出对象
-   * 比如 "aanchor 这是一段儿文本" 输出 {isAnchor: true, anchor:'anchor', text: '这是一段儿文本'}
-   *      "a锚点 这是一段儿文本" 输出 {isAnchor: true, anchor:'锚点', text: '这是一段儿文本'}
-   *      "a锚点 a呵呵 这是一段儿文本" 输出 {isAnchor: true, anchor:'锚点', text: 'a呵呵 这是一段儿文本'}
+   * 比如 "$$$anchor 这是一段儿文本" 输出 {isAnchor: true, anchor:'anchor', text: '这是一段儿文本'}
+   *      "$$$锚点 这是一段儿文本" 输出 {isAnchor: true, anchor:'锚点', text: '这是一段儿文本'}
+   *      "$$$锚点 a呵呵 这是一段儿文本" 输出 {isAnchor: true, anchor:'锚点', text: 'a呵呵 这是一段儿文本'}
    *      "这是一段儿文本" 输出 {isAnchor: false, anchor:'', text: '这是一段儿文本'}
+   *      "这是一段儿文本" 输出 {isAnchor: false, anchor:'', text: '这是一段儿文本'}
+   *      "$$$youdiao <img src="http://content.image.alimmdn.com/cms/sites/default/files/20170517/firstpage/guanyupingce.jpg" alt="">"
+   *      输出 {isAnchor: true, anchor:'youdiao', text: '<img src="http://content.image.alimmdn.com/cms/sites/default/files/20170517/firstpage/guanyupingce.jpg" alt="">'}
    */
   static anchorHandler (text) {
-    if (!text) return text;
-    const anchorReg = /^a(.+?)\s+/i;
-    const match = text.match(anchorReg);
-    const ret = Object.create(null);
-    ret.isAnchor = false;
-    ret.anchor = '';
+    if (!text) return text
+    /**
+     * 必须是非贪婪的，只匹配到第一个空格即可，不然若后面还有空格，就会出现错误
+     * 例如 $$$youdiao <img src="http://content.image.alimmdn.com/cms/sites/default/files/20170517/firstpage/guanyupingce.jpg" alt="">
+     * 若是贪婪的，则会一直匹配到 alt="" 前面的空格
+     */
+    const anchorReg = /^\${3}(.+?) /
+    const match = text.match(anchorReg)
+    const ret = Object.create(null)
+    ret.isAnchor = false
+    ret.anchor = ''
     if (match) {
-      ret.isAnchor = true;
-      ret.anchor = match[1];
+      ret.isAnchor = true
+      ret.anchor = match[1]
     }
-    ret.text = text.replace(anchorReg, '');
-    return ret;
+    ret.text = text.replace(anchorReg, '')
+    return ret
   }
   /**
    *
@@ -129,12 +139,12 @@ class Utils {
         case 5:
           ret = '经验';
           break;
-        case 7:
-          ret = '值得买';
-          break;
-        case 8:
-          ret = '评测';
-          break;
+        // case 7:
+        //   ret = '值得买';
+        //   break;
+        // case 8:
+        //   ret = '评测';
+        //   break;
         case 9:
           ret = '专题';
           break;
@@ -144,20 +154,26 @@ class Utils {
       }
     } else {
       switch (ctype) {
-        case '好物':
+        case '首页':
           ret = 1;
           break;
-        case 1:
+        case '好物':
           ret = 2;
           break;
-        case '经验':
+        case '专刊':
           ret = 3;
           break;
-        case '专刊':
+        case '活动':
           ret = 4;
           break;
-        case '专题':
+        case '经验':
           ret = 5;
+          break;
+        case '专题':
+          ret = 9;
+          break;
+        case '评测集合':
+          ret = 10;
           break;
       }
     }
