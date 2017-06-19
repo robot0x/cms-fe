@@ -4,7 +4,8 @@
      <raw-editor
        class="raw-editor"
        :class="{'left-small': leftSmall}"
-       :content="text">
+       :content="text"
+       from="help">
      </raw-editor>
      <render-editor class="render-editor" :class="{'right-small': rightSmall}"></render-editor>
      <max-window @open="open"></max-window>

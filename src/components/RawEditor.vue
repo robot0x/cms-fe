@@ -14,7 +14,8 @@ export default {
     },
     content: String,
     insertImage: String,
-    id: String
+    id: String,
+    from: String
   },
   data () {
     return { text: '' }
@@ -35,8 +36,10 @@ export default {
      * 不用每次监控，只有编辑按键 `ctrl + s` 才渲染
      */
     text () {
-      // console.log('RawEditor.vue watcher named text exec ...')
-      this.commit()
+      console.log('RawEditor.vue watcher named text exec ...')
+      if (this.from === 'help') {
+        this.commit()
+      }
     },
     insertImage (val) {
       if (val) {
@@ -50,7 +53,7 @@ export default {
   methods: {
     keyup (event) {
       if (event.keyCode === 83 && event.ctrlKey) {
-        console.log(this.$store)
+        this.commit()
       }
     },
     commit (text = this.text) {
