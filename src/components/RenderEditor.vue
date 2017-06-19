@@ -1,12 +1,24 @@
 <template>
   <div class="component-render-editor">
-    <div class="article-area" v-html="html.content"></div>
+    <div class="article-area" v-html="html"></div>
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
+import bus from '../event/'
 export default {
-  computed: { ...mapGetters(['html']) }
+  // computed: { ...mapGetters(['html']) },
+  data () {
+    return {
+      html: ''
+    }
+  },
+  created () {
+    bus.$on('mdchange', () => {
+      console.log('mdchange ....')
+      this.html = this.$store.getters.html
+    })
+  }
 }
 </script>
 <style lang="scss">

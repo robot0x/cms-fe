@@ -6,6 +6,7 @@
 <script>
 import Utils from '../utils/Utils'
 import Content from '../service/Content'
+import bus from '../event/'
 export default {
   props: {
     locked: {
@@ -37,8 +38,9 @@ export default {
      */
     text () {
       console.log('RawEditor.vue watcher named text exec ...')
+      this.commit()
       if (this.from === 'help') {
-        this.commit()
+        bus.$emit('mdchange')
       }
     },
     insertImage (val) {
@@ -53,7 +55,8 @@ export default {
   methods: {
     keyup (event) {
       if (event.keyCode === 83 && event.ctrlKey) {
-        this.commit()
+        // this.commit()
+        bus.$emit('mdchange')
       }
     },
     commit (text = this.text) {

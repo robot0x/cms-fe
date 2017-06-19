@@ -314,7 +314,7 @@ export default {
     MaxWindow
   },
   computed: {
-    ...mapGetters(['html']),
+    ...mapGetters(['markdown']),
     href: function () {
       return `//z.diaox2.com:3001/?m=${Utils.ctypeToM(this.ctype)}&id=${this.id}`
     }
@@ -332,7 +332,8 @@ export default {
           type：根据image.types生成
           used: 根据image.types是否为空，为空为0，否则为1
      */
-    html ( {md} ) {
+    markdown ( md ) {
+      // console.log('markdown:', md)
       try{
         const {images} = this
         // console.log('[Edit.vue] html:', images)
@@ -928,7 +929,7 @@ export default {
         render_specials,
         render_similars,
 
-        html
+        markdown
       } = this
       // console.log('要保存的timetopublish为',  moment(timetopublish).format('YYYYMMDD'))
       // 2017-05-16 title不需要从markdown中拿，而是要从title的input中拿
@@ -946,6 +947,12 @@ export default {
       if(!author){
         this.loading = false
         return this.$alert('必须填写作者', '作者未填写', { confirmButtonText: '确定' })
+      }
+      // console.log('要保存的markdown为：', markdown)
+      // return this.loading = false
+      if (!markdown || !markdown.trim()) {
+         this.loading = false
+         return this.$alert('必须填写文章内容', '文章内容未填写', { confirmButtonText: '确定' })
       }
       let select_tags = []
       // TODO: 标签相关的逻辑前后端
@@ -1016,7 +1023,7 @@ export default {
         tags: select_tags,
         images: images_handled,
         // 需要做非空处理，否则保存之后，在diaodiao_article_content内为null
-        content: this.html.md || '',
+        content: markdown,
         // "gift": { "used_for_gift": 1, "hints": "{\"scenes\":\"3 0\",\"relations\":\"3\"}" }
         gift: {
           // used_for_gift: used_for_gift === true? 1 : 0,
