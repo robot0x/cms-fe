@@ -767,7 +767,7 @@ export default {
 
     insert(index) {
       this.insertImage = ''
-      setTimeout(() => { this.insertImage = '//' + this.images[index].url })
+      setTimeout(() => { this.insertImage = this.images[index].url })
     },
     // raw-editor 必须要监听dragover事件，否则safari的drop事件将不会执行（chrome没有这个问题）
     // dragover() {
