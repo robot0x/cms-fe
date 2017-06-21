@@ -2,11 +2,54 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-16 11:47:18
+ * @Last Modified time: 2017-06-21 16:16:38
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
 class Utils {
+  /**
+   * 判断一个url是否包含 形如 http:// or https:// or // 协议头
+   */
+  static hasProtocol (url) {
+    return url && Utils.HTTP_PROTOCOL_REG.test(url)
+  }
+
+  /**
+   * 输入形如：
+   *  1. //content.image.alimmdn.com/cms/sites/default/files/20160122/experience/kk.jpg
+   *  2. http://content.image.alimmdn.com/cms/sites/default/files/20141014/firstpage/coffeelast.jpg
+   *  3. https://content.image.alimmdn.com/cms/sites/default/files/20150120/experience/0_0.jpg
+   * 输出：
+   *  1. content.image.alimmdn.com/cms/sites/default/files/20160122/experience/kk.jpg
+   *  2. content.image.alimmdn.com/cms/sites/default/files/20141014/firstpage/coffeelast.jpg
+   *  3. content.image.alimmdn.com/cms/sites/default/files/20150120/experience/0_0.jpg
+   */
+  static removeProtocolHead (url) {
+    try {
+      // 如果url不存在或者不是以 http:// or https:// or // 开头，则直接返回url
+      if (!Utils.hasProtocol(url)) {
+        return url
+      }
+      url = url.replace(Utils.HTTP_PROTOCOL_REG, '')
+      return url
+    } catch (e) {
+      return url
+    }
+  }
+
+  /**
+   * @static
+   * @param {String} url
+   * @param {string} [protocol='https']
+   * @returns 如果url含有协议头，直接返回，否则加上protocol参数指定的协议再返回，protocol默认为https
+   * @memberof Utils
+   */
+  static addProtocolHead (url, protocol = 'https') {
+    if (!url) return ''
+    // 移除协议头
+    return `${protocol}://${Utils.removeProtocolHead(url)}`
+  }
+
   static typeToCtype (type) {
     // 1-首页/2-好物/3-专刊/4-活动/5-经验/7-值得买/8-评测/9-专题
     let ctype = 0;
@@ -415,6 +458,7 @@ class Utils {
     }
   }
 }
+Utils.HTTP_PROTOCOL_REG = /^(https?:)?\/\//i
 // Utils.anchorHandler('aanchor 这是一段儿文本')
 // Utils.anchorHandler('a锚点 这是一段儿文本')
 // Utils.anchorHandler('a锚点 a呵呵 这是一段儿文本')
