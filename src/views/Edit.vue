@@ -337,10 +337,14 @@ export default {
       try{
         const {images} = this
         // console.log('[Edit.vue] html:', images)
-        if(!_.isEmpty(images)){
-          for (let image of images) {
-            this.setImageType(image,  Utils.isUsed(md, image.url)? 1: 0, true)
-          }
+        if (!_.isEmpty(images)) {
+          images.forEach((image, index) => {
+            this.setImageType(index,  Utils.isUsed(md, image.url)? 1: 0, true)
+          })
+          // for (let image of images) {
+          //   // console.log(`url: ${image.url} is useded? ${Utils.isUsed(md, image.url)}`)
+          //   this.setImageType(image,  Utils.isUsed(md, image.url)? 1: 0, true)
+          // }
           // this.images = images.map(image => {
           //   let { url, types } = image
           //   let used = Utils.isUsed(md, url)
@@ -540,14 +544,16 @@ export default {
     // 第1位-内容图(1)/第2位cover图(2)/第3位coverex图(4)/第4位thumb图(8)/第5位swipe图(16)/第6位banner图(32)
     // 目前只用 2/4/8/16
     setImageType(index, code, notRemove = false) {
-      let image = null
-      if(_.isNumber(index)) {
-        image = this.images[index]
-      } else {
-        image = index
-      }
+      let image = image = this.images[index]
+      // if(_.isNumber(index)) {
+      //   image = this.images[index]
+      // } else {
+      //   image = index
+      // }
       if(!image) return;
       let {types} = image
+      console.log('image types:', types)
+      console.log('image code:', code)
       // console.log('传入的code为:', code)
       // console.log('types:', types)
       // 如果已经存在这个type，则删除
@@ -559,9 +565,6 @@ export default {
       }
       types = _.union(types)
       types.sort((i, j) => i - j)
-      // _.union(types.sort((i, j) => i - j))
-      // console.log('types:', types)
-      // image.type = Utils.getNewType(image.type, code, true)
       // 当image.type的长度为0时，不能简单地认为这张图片没有被使用
       // 而应该看看是否在markdown中存在
       // 最后，根据types的内容，更新type字段
