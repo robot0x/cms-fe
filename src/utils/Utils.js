@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-21 16:16:38
+ * @Last Modified time: 2017-06-22 15:01:44
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -49,7 +49,9 @@ class Utils {
     // 移除协议头
     return `${protocol}://${Utils.removeProtocolHead(url)}`
   }
-
+  static ctypeToType (type, english) {
+    
+  }
   static typeToCtype (type) {
     // 1-首页/2-好物/3-专刊/4-活动/5-经验/7-值得买/8-评测/9-专题
     let ctype = 0;

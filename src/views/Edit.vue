@@ -959,6 +959,22 @@ export default {
          this.loading = false
          return this.$alert('必须填写文章内容', '文章内容未填写', { confirmButtonText: '确定' })
       }
+
+      if (id == 7216  && ctype !== 10) {
+        this.loading = false
+        return this.$alert(`这是是一篇测评集合，但是文章类型填写的却是"${Utils.convertCtype(ctype)}"。请检查，确认无误后再次保存`, '文章内容跟文章类型不匹配', { confirmButtonText: '确定' })
+      }
+
+      if ((/ztdesc/i.test(markdown) || /ztarticle/i.test(markdown)) && ctype !== 9) {
+        this.loading = false
+        return this.$alert(`这是似乎是一篇专题文章，但是文章类型填写的却是"${Utils.convertCtype(ctype)}"。请检查，确认无误后再次保存`, '文章内容跟文章类型不匹配', { confirmButtonText: '确定' })
+      }
+
+      if ((/zkdesc/i.test(markdown) || /zkarticle/i.test(markdown)) && ctype !== 3) {
+        this.loading = false
+        return this.$alert(`这是似乎是一篇专刊文章，但是文章类型填写的却是"${Utils.convertCtype(ctype)}"。请检查，确认无误后再次保存`, '文章内容跟文章类型不匹配', { confirmButtonText: '确定' })
+      }
+      
       let select_tags = []
       // TODO: 标签相关的逻辑前后端
       if (!_.isEmpty(tags)) {
