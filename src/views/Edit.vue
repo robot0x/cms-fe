@@ -113,8 +113,8 @@
                 :on-error="handleError"
                 multiple>
                 <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过500kb</div>
+                <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过10M</div>
               </el-upload>
             </el-form-item>
           </el-col>
@@ -790,8 +790,8 @@ export default {
         this.$alert('只能上传格式为jpg/jpeg/png/gif的图片文件', `上传文件格式不符合要求`, { confirmButtonText: '确定' })
         return false
       }
-      if( (file.size / 1024) > 500 ){
-        this.$alert('上传图片大小不能超过500kb', `上传文件大小不符合要求`, { confirmButtonText: '确定' })
+      if( (file.size / 1048576) > 10 ){
+        this.$alert('上传图片大小不能超过10M', `上传文件大小不符合要求`, { confirmButtonText: '确定' })
         return false
       }
     },
