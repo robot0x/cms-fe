@@ -114,7 +114,7 @@
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过10M</div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过10M。<span style="color:#e60012;">为了提高上传速度及成功率，建议每次上传的图片不要超过5张。</span></div>
               </el-upload>
             </el-form-item>
           </el-col>
