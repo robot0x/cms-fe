@@ -15,8 +15,13 @@
 <script>
 // import Vue from 'vue'
 // const bus = new Vue()
-
+import bus from '../event/'
 export default {
+  created () {
+    bus.$on('ctrls_should_open_right', () => {
+      this.$emit('open')
+    })
+  },
   methods: {
     leftOpenWindow () {
       // 左边被点击，右边最大化
