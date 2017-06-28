@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-28 00:05:03
+ * @Last Modified time: 2017-06-28 17:36:59
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -434,6 +434,7 @@ class Utils {
     const expire = new Date();
     // expire.setTime(expire.getTime() + days * 24 * 60 * 60 * 1000)
     // expire.setTime(expire.getTime() + days * 86400000)
+    // path一定要设置为 / 否则由于cookie默认为同目录下可共享的，并不是整站共享
     if (days) {
       expire.setTime(expire.getTime() + days * 864e5);
       document.cookie =
@@ -442,9 +443,9 @@ class Utils {
         encodeURIComponent(value) +
         ';expires=' +
         expire.toUTCString() +
-        ';';
+        ';path=/';
     } else {
-      document.cookie = key + '=' + encodeURIComponent(value);
+      document.cookie = key + '=' + encodeURIComponent(value) + ';path=/';
     }
   }
 
