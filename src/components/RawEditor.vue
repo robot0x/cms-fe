@@ -1,6 +1,6 @@
 <template>
   <div class="component-raw-editor">
-    <textarea v-model="text" :disabled="locked" ref="textarea" v-on:keydown.prevent.stop="keydown"></textarea>
+    <textarea v-model="text" :disabled="locked" ref="textarea" v-on:keydown.stop="keydown"></textarea>
   </div>
 </template>
 <script>
@@ -54,9 +54,11 @@ export default {
   },
   methods: {
     keydown (event) {
-      console.log('ctrl + s 被点击了 .....')
-      bus.$emit('mdchange')
-      bus.$emit('ctrls_should_open_right')
+      if (event.keyCode === 83 && event.ctrlKey) {
+        console.log('ctrl + s 被点击了 .....')
+        bus.$emit('mdchange')
+        bus.$emit('ctrls_should_open_right')
+      }
     },
     // keydown: _.debounce((event) => {
     //   if (event.keyCode === 83 && event.ctrlKey) {

@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-22 15:01:44
+ * @Last Modified time: 2017-06-28 00:05:03
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -11,7 +11,7 @@ class Utils {
    * 判断一个url是否包含 形如 http:// or https:// or // 协议头
    */
   static hasProtocol (url) {
-    return url && Utils.HTTP_PROTOCOL_REG.test(url)
+    return url && Utils.HTTP_PROTOCOL_REG.test(url);
   }
 
   /**
@@ -28,12 +28,12 @@ class Utils {
     try {
       // 如果url不存在或者不是以 http:// or https:// or // 开头，则直接返回url
       if (!Utils.hasProtocol(url)) {
-        return url
+        return url;
       }
-      url = url.replace(Utils.HTTP_PROTOCOL_REG, '')
-      return url
+      url = url.replace(Utils.HTTP_PROTOCOL_REG, '');
+      return url;
     } catch (e) {
-      return url
+      return url;
     }
   }
 
@@ -45,30 +45,30 @@ class Utils {
    * @memberof Utils
    */
   static addProtocolHead (url, protocol = 'https') {
-    if (!url) return ''
+    if (!url) return '';
+    if (protocol === '//') {
+      return `//${Utils.removeProtocolHead(url)}`;
+    }
     // 移除协议头
-    return `${protocol}://${Utils.removeProtocolHead(url)}`
-  }
-  static ctypeToType (type, english) {
-    
+    return `${protocol}://${Utils.removeProtocolHead(url)}`;
   }
   static typeToCtype (type) {
     // 1-首页/2-好物/3-专刊/4-活动/5-经验/7-值得买/8-评测/9-专题
     let ctype = 0;
     if (type === '首页' || type === 'firstpage') {
-      ctype = 1
+      ctype = 1;
     } else if (type === '好物' || type === 'goodthing') {
-      ctype = 2
+      ctype = 2;
     } else if (type === '专刊' || type === 'zhuankan') {
-      ctype = 3
+      ctype = 3;
     } else if (type === '活动' || type === 'activity') {
-      ctype = 4
+      ctype = 4;
     } else if (type === '经验' || type === 'experience') {
-      ctype = 5
+      ctype = 5;
     } else if (type === '专题' || type === 'zhuanti') {
-      ctype = 9
+      ctype = 9;
     } else if (type === '评测集合') {
-      ctype = 10
+      ctype = 10;
     }
     return ctype;
   }
@@ -128,23 +128,23 @@ class Utils {
    *      输出 {isAnchor: true, anchor:'youdiao', text: '<img src="http://content.image.alimmdn.com/cms/sites/default/files/20170517/firstpage/guanyupingce.jpg" alt="">'}
    */
   static anchorHandler (text) {
-    if (!text) return text
+    if (!text) return text;
     /**
      * 必须是非贪婪的，只匹配到第一个空格即可，不然若后面还有空格，就会出现错误
      * 例如 $$$youdiao <img src="http://content.image.alimmdn.com/cms/sites/default/files/20170517/firstpage/guanyupingce.jpg" alt="">
      * 若是贪婪的，则会一直匹配到 alt="" 前面的空格
      */
-    const anchorReg = /^\${3}(.+?) /
-    const match = text.match(anchorReg)
-    const ret = Object.create(null)
-    ret.isAnchor = false
-    ret.anchor = ''
+    const anchorReg = /^\${3}(.+?) /;
+    const match = text.match(anchorReg);
+    const ret = Object.create(null);
+    ret.isAnchor = false;
+    ret.anchor = '';
     if (match) {
-      ret.isAnchor = true
-      ret.anchor = match[1]
+      ret.isAnchor = true;
+      ret.anchor = match[1];
     }
-    ret.text = text.replace(anchorReg, '')
-    return ret
+    ret.text = text.replace(anchorReg, '');
+    return ret;
   }
   /**
    *
@@ -431,36 +431,46 @@ class Utils {
 
   static setCookie (key, value, days = 5) {
     // 设置cookie过期事件,默认是30天
-    const expire = new Date()
+    const expire = new Date();
     // expire.setTime(expire.getTime() + days * 24 * 60 * 60 * 1000)
     // expire.setTime(expire.getTime() + days * 86400000)
-    expire.setTime(expire.getTime() + days * 864e5)
-    document.cookie =
-      key + '=' + encodeURIComponent(value) + ';expires=' + expire.toUTCString() + ';'
+    if (days) {
+      expire.setTime(expire.getTime() + days * 864e5);
+      document.cookie =
+        key +
+        '=' +
+        encodeURIComponent(value) +
+        ';expires=' +
+        expire.toUTCString() +
+        ';';
+    } else {
+      document.cookie = key + '=' + encodeURIComponent(value);
+    }
   }
 
   static deleteCookie (key) {
-    const expire = new Date()
-    expire.setTime(expire.getTime() - 1)
-    const cval = Utils.getCookie(key)
+    const expire = new Date();
+    expire.setTime(expire.getTime() - 1);
+    const cval = Utils.getCookie(key);
     // 把toGMTString改成了toUTCString，两者等价。但是ECMAScript推荐使用toUTCString方法。toGMTString的存在仅仅是
     // 为了向下兼容
     if (cval != null) {
-      document.cookie = key + '=' + cval + ';expires=' + expire.toUTCString() + ';'
+      document.cookie =
+        key + '=' + cval + ';expires=' + expire.toUTCString() + ';';
     }
   }
 
   static getCookie (key) {
-    let arr
-    const reg = new RegExp('(^| )' + key + '=([^;]*)(;|$)')
+    let arr;
+    const reg = new RegExp('(^| )' + key + '=([^;]*)(;|$)');
     if ((arr = document.cookie.match(reg))) {
-      return decodeURIComponent(arr[2])
+      return decodeURIComponent(arr[2]);
     } else {
-      return null
+      return null;
     }
   }
 }
-Utils.HTTP_PROTOCOL_REG = /^(https?:)?\/\//i
+Utils.HTTP_PROTOCOL_REG = /^(https?:)?\/\//i;
 // Utils.anchorHandler('aanchor 这是一段儿文本')
 // Utils.anchorHandler('a锚点 这是一段儿文本')
 // Utils.anchorHandler('a锚点 a呵呵 这是一段儿文本')

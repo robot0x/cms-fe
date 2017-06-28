@@ -157,8 +157,21 @@ export default {
         this.loading = false
         this.$router.push({ name: 'edit', params: { id: newArticle.id }})
       })
-      .catch(message => {
+      .catch(res => {
         this.loading = false
+        if (res.status === 401) {
+          this.$alert('token过期，请重新登录', '提示', {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }).then(() => {
+            this.$router.replace({name: 'login'})
+          })
+        } else {
+          this.$notify({
+            title: '发生错误',
+            message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+          })
+        }
       })
     },
     doQuery (query = {}, resetPage = true) {
@@ -201,8 +214,21 @@ export default {
         }
         this.loading = false
       })
-      .catch(message => {
+      .catch(res => {
         this.loading = false
+        if (res.status === 401) {
+          this.$alert('token过期，请重新登录', '提示', {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }).then(res => {
+            this.$router.replace({name: 'login'})
+          })
+        } else {
+          this.$notify({
+            title: '发生错误',
+            message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+          })
+        }
       })
     },
     handleSizeChange(val) {

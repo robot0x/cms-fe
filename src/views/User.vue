@@ -24,6 +24,20 @@ export default {
   activated () {
     User.getUserAndCount().then(items => {
       this.items = items
+    }).catch(res => {
+      if (res.status === 401) {
+        this.$alert('token过期，请重新登录', '提示', {
+          confirmButtonText: '确定',
+          type: 'warning'
+        }).then(res => {
+          this.$router.replace({name: 'login'})
+        })
+      } else {
+        this.$notify({
+          title: '发生错误',
+          message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+        })
+      }
     })
   },
   data () {

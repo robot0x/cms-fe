@@ -38,13 +38,13 @@ class LoginUtils {
   // 否则用cookie
   static setLoginInfo (username, reme = true) {
 
-    if( reme ){
+    if( reme ) {
       Utils.setCookie(LoginUtils.IS_LOGIN, LoginUtils.FLAG)
       Utils.setCookie(LoginUtils.USERNAME, username)
 
       sessionStorage.removeItem(LoginUtils.IS_LOGIN)
       sessionStorage.removeItem(LoginUtils.USERNAME)
-    }else{
+    } else {
       sessionStorage.setItem(LoginUtils.IS_LOGIN, LoginUtils.FLAG)
       sessionStorage.setItem(LoginUtils.USERNAME, username)
 

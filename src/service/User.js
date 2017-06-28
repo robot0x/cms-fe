@@ -1,15 +1,16 @@
 // import iFetch from '../Utils/iFetch'
-import fetch from 'isomorphic-fetch'
-import API from '../config/api'
-const successCode = 'SUCCESS'
+import fetch from 'isomorphic-fetch';
+import API from '../config/api';
+import Utils from '../utils/Utils';
+const successCode = 'SUCCESS';
 
 export default class User {
   static modifyPassword (username, password) {
-    let msg = ''
+    let msg = '';
     if (!username) {
-      msg = '用户名不能为空'
+      msg = '用户名不能为空';
     } else if (!password) {
-      msg = '密码不能为空'
+      msg = '密码不能为空';
     }
     return new Promise((resolve, reject) => {
       try {
@@ -18,71 +19,78 @@ export default class User {
             method: 'PUT',
             mode: 'cors',
             body: JSON.stringify({
-              username, password
+              username,
+              password
             }),
             headers: new Headers({
               'Content-Type': 'json'
             })
-          }).then(response => response.json())
+          })
+            .then(response => response.json())
             .then(result => {
-              console.log(result)
+              console.log(result);
               if (result.message !== successCode) {
-                reject(result.message)
+                reject(result.message);
               } else {
                 if (result.res.action) {
-                  resolve()
+                  resolve();
                 } else {
-                  reject('修改失败，请联系管理员@大哥')
+                  reject('修改失败，请联系管理员@大哥');
                 }
               }
             })
             .catch(({ message }) => {
-              reject(message)
-            })
+              reject(message);
+            });
         } else {
-          reject(msg)
+          reject(msg);
         }
       } catch (e) {
-        console.log(e)
-        reject(e.message)
+        console.log(e);
+        reject(e.message);
       }
-    })
+    });
   }
   static auth (username, password) {
-    let msg = ''
+    let msg = '';
     if (!username) {
-      msg = '用户名不能为空'
+      msg = '用户名不能为空';
     } else if (!password) {
-      msg = '密码不能为空'
+      msg = '密码不能为空';
     }
     return new Promise((resolve, reject) => {
       try {
         if (!msg) {
-          fetch(`${API.users.url}/?user=${username}&password=${password}`)
+          fetch(`${API.users.url}/?user=${username}&password=${password}`, {
+            credentials: 'include'
+          })
             .then(response => response.json())
             .then(result => {
-              console.log(result)
+              console.log(result);
               if (result.message !== successCode) {
-                reject(result.message)
+                reject(result.message);
               } else {
                 if (result.res.auth) {
-                  resolve()
+                  resolve();
+                  console.log('result.res.token:', result.res.token);
+                  Utils.setCookie('token', result.res.token, 0);
+                  // reject()
                 } else {
-                  reject('帐号或密码错误，请重试')
+                  reject('帐号或密码错误，请重试');
                 }
               }
             })
             .catch(({ message }) => {
-              reject(message)
-            })
+              reject(message);
+            });
         } else {
-          reject(msg)
+          reject(msg);
         }
       } catch (e) {
-        console.log(e)
-        reject(e.message)
+        console.log(e);
+        reject(e.message);
       }
-    })
+    });
   }
   /**
    * 获取按照作者名的统计数据
@@ -93,20 +101,25 @@ export default class User {
         fetch(API.users.url)
           .then(response => response.json())
           .then(result => {
-            if (result.message !== successCode) {
-              reject(result.message)
+            const { message, res, status } = result;
+            if (status !== 200) {
+              reject(result);
             } else {
-              resolve(result.res)
+              if (message !== successCode) {
+                reject(result);
+              } else {
+                resolve(result.res);
+              }
             }
           })
           .catch(({ message }) => {
-            reject(message)
-          })
+            reject(message);
+          });
       } catch (e) {
-        console.log(e)
-        reject(e.message)
+        console.log(e);
+        reject(e.message);
       }
-    })
+    });
   }
   /**
    * select * from table limit offset pageSize where query
@@ -115,9 +128,9 @@ export default class User {
     return new Promise((resolve, reject) => {
       try {
       } catch (e) {
-        console.log(e)
-        reject(e.message)
+        console.log(e);
+        reject(e.message);
       }
-    })
+    });
   }
 }

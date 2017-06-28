@@ -178,6 +178,7 @@
                   <i class="el-icon-view" @click="viewImage(image.url)" title="查看大图"></i>
                   <i class="el-icon-check" @click="insert(index)" title="插入到文章内"></i>
                   <a :href="image.url | addProtocol" target="_blank" title="跳转到图片所在链接"><i class="el-icon-picture"></i></a>
+                  <i class="el-icon-close" @click="deleteImage(index)" title="删除图片"></i>
                 </div>
                 <div class="set-image-type">
                   <el-tooltip effect="light" content="设置为封面图" placement="top">
@@ -533,7 +534,7 @@ export default {
       this.open('left')
     }
     this.images = []
-    this.ctype = 2
+    this.ctype = 2 // 我们的好物最多，所以，默认为好物类型
     this.loadData(id)
     // Tags.getAllTags().then(all_tags => {
     //   this.all_tags = all_tags
@@ -669,7 +670,7 @@ export default {
                     console.log('timetopublish else ....', timetopublish)
                     this.timetopublish = Date.now()
                   }
-                  // console.log('tags:', tags)
+                  console.log('tags:', tags)
                   // console.log('this.all_tags:', this.all_tags)
                   // console.log('from:', from)
                   // 处理tags
@@ -760,6 +761,20 @@ export default {
                 if(/function/.test(typeof cb)){
                   cb()
                 }
+          }).catch(res => {
+            if (res.status === 401) {
+              this.$alert('token过期，请重新登录', '提示', {
+                confirmButtonText: '确定',
+                type: 'warning'
+              }).then(res => {
+                this.$router.replace({name: 'login'})
+              })
+            } else {
+              this.$notify({
+                title: '发生错误',
+                message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+              })
+            }
           })
       }
     },
@@ -771,8 +786,14 @@ export default {
     insert(index) {
       this.insertImage = ''
       setTimeout(() => { 
-        this.insertImage = Utils.addProtocolHead(this.images[index].url, '//')
+        console.log('removed url：', Utils.removeProtocolHead(this.images[index].url))
+        this.insertImage = Utils.addProtocolHead(Utils.removeProtocolHead(this.images[index].url), '//')
+        console.log('insertImage：', this.insertImage)
       })
+    },
+    
+    deleteImage (index) {
+      this.$delete(this.images, index)
     },
     // raw-editor 必须要监听dragover事件，否则safari的drop事件将不会执行（chrome没有这个问题）
     // dragover() {
@@ -899,6 +920,21 @@ export default {
         .then(res => {
           this.$router.replace({name: 'content'})
         })
+        .catch(res => {
+          if (res.status === 401) {
+            this.$alert('token过期，请重新登录', '提示', {
+              confirmButtonText: '确定',
+              type: 'warning'
+            }).then(res => {
+              this.$router.replace({name: 'login'})
+            })
+          } else {
+            this.$notify({
+              title: '发生错误',
+              message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+            })
+          }
+        })
       })
     },
     save() {
@@ -1020,6 +1056,7 @@ export default {
           return ret
         })
       }
+      console.log('images_handled:', images_handled)
       const postData = {
         id,
         meta: {
@@ -1106,8 +1143,19 @@ export default {
         Utils.clearCache(id)
       }).catch( message => {
         this.loading = false
-        console.log(message)
-        this.$notify({ message: message, type: 'error' })
+        if (res.status === 401) {
+          this.$alert('token过期，请重新登录', '提示', {
+            confirmButtonText: '确定',
+            type: 'warning'
+          }).then(res => {
+            this.$router.replace({name: 'login'})
+          })
+        } else {
+          this.$notify({
+            title: '发生错误',
+            message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+          })
+        }
       })
       // setTimeout(() => {
       //   this.loading = false
@@ -1206,12 +1254,15 @@ export default {
       .images-oper-tool {
         font-size: 17px;
         .el-icon-check {
-          margin-left: 20px;
+          margin-left: 15px;
         }
         a {
           text-decoration: none;
           color: #fff;
-          margin-left: 20px;
+          margin-left: 15px;
+        }
+        .el-icon-close {
+          margin-left:15px;
         }
       }
       .set-image-type {
