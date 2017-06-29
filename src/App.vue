@@ -14,6 +14,11 @@
               </router-link>
             </li>
             <li>
+              <router-link class="nav-link" to="/video">
+                <i class="el-icon-upload"></i><span>视频管理</span>
+              </router-link>
+            </li>
+            <li>
               <router-link class="nav-link" to="/archive">
                 <i class="el-icon-menu"></i><span>归档</span>
               </router-link>

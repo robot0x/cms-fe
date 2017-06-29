@@ -37,7 +37,6 @@ class LoginUtils {
   // 设置本地的登录标志，如果是记住我，则使用sessionStorage来存储
   // 否则用cookie
   static setLoginInfo (username, reme = true) {
-
     if( reme ) {
       Utils.setCookie(LoginUtils.IS_LOGIN, LoginUtils.FLAG)
       Utils.setCookie(LoginUtils.USERNAME, username)

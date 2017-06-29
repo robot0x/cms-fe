@@ -22,6 +22,10 @@ const API = (function () {
     // 作者编辑相关接口
     authors: {
       url: `${fetchURL}/authors`
+    },
+    // 作者编辑相关接口
+    vid: {
+      url: `${fetchURL}/vid`
     }
   }
 }())

@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-28 17:36:59
+ * @Last Modified time: 2017-06-29 11:50:23
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -457,7 +457,7 @@ class Utils {
     // 为了向下兼容
     if (cval != null) {
       document.cookie =
-        key + '=' + cval + ';expires=' + expire.toUTCString() + ';';
+        key + '=' + cval + ';expires=' + expire.toUTCString() + ';path=/';
     }
   }
 
