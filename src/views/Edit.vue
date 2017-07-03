@@ -317,7 +317,8 @@ export default {
   computed: {
     ...mapGetters(['markdown']),
     href: function () {
-      return `//z.diaox2.com:3001/?m=${Utils.ctypeToM(this.ctype)}&id=${this.id}`
+      // return `//z.diaox2.com:3001/?m=${Utils.ctypeToM(this.ctype)}&id=${this.id}`
+      return `//z.diaox2.com/view/app/?m=${Utils.ctypeToM(this.ctype)}&id=${this.id}`
     }
   },
   watch: {
