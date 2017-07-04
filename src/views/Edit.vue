@@ -185,20 +185,23 @@
                   <el-tooltip effect="light" content="设置为封面图" placement="top">
                     <el-button type="primary" size="mini" @click="setImageType(index, 2)">C</el-button>
                   </el-tooltip>
-                   <el-tooltip effect="light" content="设置为封面图2" placement="top">
+                  <el-tooltip effect="light" content="设置为封面图2" placement="top">
                     <el-button type="success" size="mini" @click="setImageType(index, 4)">CE</el-button>
                   </el-tooltip>
-                   <el-tooltip effect="light" content="设置为thumb图" placement="top">
+                  <el-tooltip effect="light" content="设置为thumb图" placement="top">
                     <el-button type="danger" size="mini" @click="setImageType(index, 8)">T</el-button>
                   </el-tooltip>
-                   <el-tooltip effect="light" content="设置为走马灯图" placement="top">
+                  <el-tooltip effect="light" content="设置为走马灯图" placement="top">
                     <el-button type="warning" size="mini" @click="setImageType(index, 16)">S</el-button>
+                  </el-tooltip>
+                  <el-tooltip effect="light" content="设置为banner图" placement="top">
+                    <el-button style="background-color:#9900FF;" size="mini" @click="setImageType(index, 32)">B</el-button>
                   </el-tooltip>
                 </div>
               </figcaption>
               <span class="used-label" v-if="image.used"><i class="el-icon-check"></i></span>
               <div class="image-types clearfix" v-if="image.type">
-                <span v-for="t in image.types.filter(type => /^(2|4|8|16)$/.test(type))" :style="{backgroundColor:imageTypeColorFilter(t)}"></span>
+                <span v-for="t in image.types.filter(type => /^(2|4|8|16|32)$/.test(type))" :style="{backgroundColor:imageTypeColorFilter(t)}"></span>
               </div>
               <!-- <div class="image-types" v-if="image.type && image.type.split(',').filter(t => t == 1 || t == 2).length > 0">
                 <span v-for="t in image.type.split(',').filter(t => t == 1 || t == 2)" :style="t == 1 ? {'backgroundColor':'#20a0ff'}: {'backgroundColor':'#FF4949'}" :title="t == 1 ? '此图为封面图': '此图为缩略图'"></span>
@@ -555,6 +558,8 @@ export default {
       // }
       if(!image) return;
       let {types} = image
+      // 新上传的图片没有types属性
+      types = types || []
       console.log('image types:', types)
       console.log('image code:', code)
       // console.log('传入的code为:', code)
@@ -1182,6 +1187,9 @@ export default {
           break;
          case 16: // swipe 返回黄色
           ret = '#F7BA2A'
+          break;
+         case 32: // swipe 返回黄色
+          ret = '#9900FF'
           break;
        }
        return ret
