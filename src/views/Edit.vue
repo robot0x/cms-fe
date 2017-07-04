@@ -50,7 +50,8 @@
             </div>
 
             <el-form-item label="发布时间">
-              <el-date-picker type="date" placeholder="选择发布时间" v-model="timetopublish" style="width: 100%;" :editable="false" format="yyyyMMdd" :clearable="false" :readonly="locked"></el-date-picker>
+              <el-date-picker type="date" placeholder="选择发布时间" v-model="timetopublish" style="width: 100%;" format="yyyyMMdd" :clearable="false" :readonly="locked"></el-date-picker>
+              <!--<el-date-picker type="date" placeholder="选择发布时间" v-model="timetopublish" style="width: 100%;" :editable="false" format="yyyyMMdd" :clearable="false" :readonly="locked"></el-date-picker>-->
             </el-form-item>
 
             <el-form-item label="类型">
@@ -114,7 +115,7 @@
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，且不超过10M。<span style="color:#e60012;">为了提高上传速度及成功率，建议每次上传的图片不要超过5张。</span></div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，<span style="color:#e60012;">且单张图片不超过1M。</span>为了提高上传速度及成功率，建议每次<span style="color:#e60012;">上传的图片不要超过20张。</span></div>
               </el-upload>
             </el-form-item>
           </el-col>
@@ -807,13 +808,13 @@ export default {
     //   event.dataTransfer.setData('src', event.target.src)
     // },
 
-    handleBeforeUpload (file){
-      if(['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) === -1){
+    handleBeforeUpload (file) {
+      if (['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(file.type) === -1) {
         this.$alert('只能上传格式为jpg/jpeg/png/gif的图片文件', `上传文件格式不符合要求`, { confirmButtonText: '确定' })
         return false
       }
-      if( (file.size / 1048576) > 10 ){
-        this.$alert('上传图片大小不能超过10M', `上传文件大小不符合要求`, { confirmButtonText: '确定' })
+      if ( (file.size / 1048576) > 1 ) {
+        this.$alert('上传图片单张不能超过1M', `上传文件大小不符合要求`, { confirmButtonText: '确定' })
         return false
       }
     },
@@ -1011,7 +1012,6 @@ export default {
         this.loading = false
         return this.$alert(`这是似乎是一篇专刊文章，但是文章类型填写的却是"${Utils.convertCtype(ctype)}"。请检查，确认无误后再次保存`, '文章内容跟文章类型不匹配', { confirmButtonText: '确定' })
       }
-      
       let select_tags = []
       // TODO: 标签相关的逻辑前后端
       if (!_.isEmpty(tags)) {

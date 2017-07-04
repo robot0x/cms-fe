@@ -54,7 +54,9 @@ export default {
   },
   methods: {
     keydown (event) {
-      if (event.keyCode === 83 && event.ctrlKey) {
+      // command + s OR ctrl + s OR windows + s 触发渲染
+      if (event.keyCode === 83 && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault()
         console.log('ctrl + s 被点击了 .....')
         bus.$emit('mdchange')
         bus.$emit('ctrls_should_open_right')
@@ -88,6 +90,7 @@ export default {
    position: relative;
    display: flex;
    flex-direction: column;
+   border: 1px #20A0FF solid;
  }
 
  .component-raw-editor textarea {

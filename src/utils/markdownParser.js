@@ -224,7 +224,7 @@ function rende (md) {
 
   renderer.paragraph = content => {
     const { isAnchor, anchor, text } = Utils.anchorHandler(content)
-    const edsReg = /^eds\s+/i
+    const edsReg = /^eds\s*?(?!desc)/i
     const edsdescReg = /^edsdesc\s+/i
     const liftReg = /^lift\s+/i
     const lift2Reg = /^lift2\s+/i
@@ -233,7 +233,8 @@ function rende (md) {
     if (isAnchor) {
       ret = `<p id="${anchor}">${text}</p>`
     } else if (edsReg.test(text)) {
-      ret = `<p class="editorhead">${text.replace(edsReg, '')}</p>`
+      let edscontent = text.replace(edsReg, '') || '小编说'
+      ret = `<p class="editorhead">${edscontent}</p>`
     } else if (edsdescReg.test(text)) {
       ret = `<p class="editorcontent">${text.replace(edsdescReg, '')}</p>`
     } else if (liftReg.test(text)) {
