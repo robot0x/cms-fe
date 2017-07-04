@@ -77,7 +77,6 @@ export default class Content {
         } else {
           // 如果没有缓存，从服务器上拿数据
           try {
-            console.log('从服务器上拿数据 .... ');
             const url = `${API.articles.url}/?type=all&id=${id}&user=${user}`;
             fetch(url, {
               credentials: 'include'

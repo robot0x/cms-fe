@@ -26,7 +26,7 @@ export default {
       this.items = items
     }).catch(res => {
       if (res.status === 401) {
-        this.$alert('token过期，请重新登录', '提示', {
+        this.$alert(res.message, '提示', {
           confirmButtonText: '确定',
           type: 'warning'
         }).then(res => {

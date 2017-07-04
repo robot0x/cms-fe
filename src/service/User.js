@@ -98,7 +98,9 @@ export default class User {
   static getUserAndCount () {
     return new Promise((resolve, reject) => {
       try {
-        fetch(API.users.url)
+        fetch(API.users.url, {
+          credentials: 'include'
+        })
           .then(response => response.json())
           .then(result => {
             const { message, res, status } = result;
