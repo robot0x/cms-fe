@@ -779,7 +779,7 @@ export default {
             } else {
               this.$notify({
                 title: '发生错误',
-                message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+                message: res.message || '发生错误，请联系@大哥'
               })
             }
           })
@@ -938,7 +938,7 @@ export default {
           } else {
             this.$notify({
               title: '发生错误',
-              message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+              message: res.message || '发生错误，请联系@大哥'
             })
           }
         })
@@ -1159,7 +1159,7 @@ export default {
         } else {
           this.$notify({
             title: '发生错误',
-            message: h('p', { style: 'color: red'}, res.message || '发生错误，请联系@大哥')
+            message: res.message || '发生错误，请联系@大哥'
           })
         }
       })
