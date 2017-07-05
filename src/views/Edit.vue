@@ -1003,6 +1003,8 @@ export default {
          return this.$alert('必须填写文章内容', '文章内容未填写', { confirmButtonText: '确定' })
       }
 
+      console.log('要保存的markdown为：', markdown)
+
       if (id == 7216  && ctype !== 10) {
         this.loading = false
         return this.$alert(`这是是一篇测评集合，但是文章类型填写的却是"${Utils.convertCtype(ctype)}"。请检查，确认无误后再次保存`, '文章内容跟文章类型不匹配', { confirmButtonText: '确定' })
