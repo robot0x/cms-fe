@@ -1147,7 +1147,7 @@ export default {
           message: '文章保存成功'
         })
         Utils.clearCache(id)
-      }).catch( message => {
+      }).catch( res => {
         this.loading = false
         if (res.status === 401) {
           this.$alert('token过期，请重新登录', '提示', {
