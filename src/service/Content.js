@@ -49,7 +49,10 @@ export default class Content {
           // const url = `${API.articles.url}/?type=lock&id=${id}&user=${user}`
           const url = `${API.articles.url}/?type=lock&id=${id}`;
           fetch(url, {
-            credentials: 'include'
+            credentials: 'include',
+            headers: new Headers({
+              'Content-Type': 'json;charset=UTF-8'
+            })
           })
             .then(response => response.json())
             .then(result => {
