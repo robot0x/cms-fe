@@ -105,9 +105,9 @@ export default class Content {
                     // render_specials: [],
                     // similar: '',
                     // render_similars: [],
-                    const ret = result.res;
-                    let { gift, keywords, tags } = ret;
-                    console.log('加载的数据keywords:', keywords);
+                    const ret = result.res
+                    let { gift, keywords, tags } = ret
+                    console.log('加载的数据keywords:', keywords)
                     if (keywords) {
                       keywords = JSON.parse(keywords);
                       const {
