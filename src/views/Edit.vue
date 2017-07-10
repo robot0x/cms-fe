@@ -179,7 +179,7 @@
                   <i class="el-icon-view" @click="viewImage(image.url)" title="查看大图"></i>
                   <i class="el-icon-check" @click="insert(index)" title="插入到文章内"></i>
                   <a :href="image.url | addProtocol" target="_blank" title="跳转到图片所在链接"><i class="el-icon-picture"></i></a>
-                  <i class="el-icon-close" @click="deleteImage(index)" title="删除图片"></i>
+                  <!--<i class="el-icon-close" @click="deleteImage(index)" title="删除图片"></i>-->
                 </div>
                 <div class="set-image-type">
                   <el-tooltip effect="light" content="设置为封面图" placement="top">
