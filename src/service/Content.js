@@ -206,12 +206,13 @@ export default class Content {
         }
         console.log('type:', data.type)
         fetch(API.articles.url, {
-          method: 'PUT',
+          // method: 'PUT',
+          method: 'put',
           mode: 'cors',
           body: JSON.stringify(data),
           credentials: 'include',
           headers: new Headers({
-            'Content-Type': 'json'
+            'Accept': 'application/json'
           })
         })
           .then(response => response.json())
