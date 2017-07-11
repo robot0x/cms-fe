@@ -112,7 +112,7 @@ lift2 这是紧贴着标题的说明
 
 滁河日党务，旱地和下土
 
-<span style="color:red;">我是红色的字体</span>
+<span style="color:#e60012;">我是红色的字体</span>
 
 ~~我是有删除线的文本~~
 
