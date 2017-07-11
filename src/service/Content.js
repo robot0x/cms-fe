@@ -160,7 +160,7 @@ export default class Content {
                     //   tags = JSON.parse(tags)
                     // }
 
-                    let { lock_by } = ret;
+                    let { lock_by } = ret
                     // 如果点击“新建文章”之后，那么自动跳转到编辑也的话，此时可能拿不到lock_by字段
                     // 所以在前端赋予lock_by字段的值
                     if (!lock_by) {
@@ -191,7 +191,7 @@ export default class Content {
         //   resolve(Content.getContentFormLocal())
         // }
       } catch (e) {
-        reject(e.message);
+        reject(e.message)
       }
     });
   }
@@ -204,6 +204,7 @@ export default class Content {
         } else {
           return reject('您还未填写信息');
         }
+        console.log('type:', data.type)
         fetch(API.articles.url, {
           method: 'PUT',
           mode: 'cors',
