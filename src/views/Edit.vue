@@ -102,7 +102,6 @@
                 <el-tag v-for="tag in render_similars" :closable="!locked" :type="tag.type" @close="removeTag('similar',tag)"> {{tag.name}} </el-tag>
               </el-form-item>
             </div>
-
             <el-form-item label="上传图片" v-if="!locked">
               <el-upload
                 action="//z.diaox2.com/view/app/upfornewcms.php"
@@ -115,7 +114,31 @@
                 multiple>
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将图片拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/jpeg/png/gif文件，<span style="color:#e60012;">且单张图片不超过5M。</span>为了提高上传速度及成功率，建议每次<span style="color:#e60012;">上传的图片不要超过20张。</span></div>
+                <div class="el-upload__tip" slot="tip">
+                  只能上传jpg/jpeg/png/gif文件，<span style="color:#e60012;">且单张图片不超过5M。</span>为了提高上传速度及成功率，建议每次<span style="color:#e60012;">上传的图片不要超过20张。</span>
+                  <p style="color:#e60012;">各种类型的文章对应的图片尺寸规则（若不符合规则，则不显示设置图片类型按钮）：</p>
+                  <p style="color:#e60012;">
+                    首页：
+                    封面图  596*866，
+                    封面图二 640*504；
+                  </p>
+                  <p style="color:#e60012;">
+                  活动：
+                  封面图 640*416，
+                  封面图二 640*416；
+                  </p>
+                  <p style="color:#e60012;">
+                  好物：
+                  封面图 596*486，
+                  封面图二 640*416，
+                  走马灯图 640*370；
+                  </p>
+                  <p style="color:#e60012;">
+                    所有类型的文章都要满足：<br>
+                    Thumb图 188 * 188<br>
+                    Banner图 640*416
+                  </p>
+                </div>
               </el-upload>
             </el-form-item>
           </el-col>
@@ -182,19 +205,61 @@
                   <i class="el-icon-close" @click="deleteImage(index)" title="删除图片"></i>
                 </div>
                 <div class="set-image-type">
-                  <el-tooltip effect="light" content="设置为封面图" placement="top">
+                  <!--
+                    图片尺寸策略：
+
+                    首页：
+                    cover  596*866
+                    coverex 640*504
+
+                    活动：
+                    cover 640*416
+                    coverex 640*416 
+
+
+                    好物：
+                    cover 596*486
+                    coverex 640*416
+                    swpie 640*370
+
+                    thumb: 188 * 188
+                    banner: 640*416
+                    -->
+                  <el-tooltip
+                  v-if="
+                  (ctype === 1 && image.width === 596 && image.height === 866) || 
+                  (ctype === 2 && image.width === 596 && image.height === 486) ||
+                  (ctype === 4 && image.width === 640 && image.height === 416) 
+                  "
+                  effect="light" 
+                  content="设置为封面图" 
+                  placement="top">
                     <el-button type="primary" size="mini" @click="setImageType(index, 2)">C</el-button>
                   </el-tooltip>
-                  <el-tooltip effect="light" content="设置为封面图2" placement="top">
+                  <el-tooltip
+                  v-if="
+                  (ctype === 1 && image.width === 640 && image.height === 504) || 
+                  (ctype === 2 && image.width === 640 && image.height === 416) ||
+                  (ctype === 4 && image.width === 640 && image.height === 416) 
+                  "
+                  effect="light" 
+                  content="设置为封面图二" 
+                  placement="top">
                     <el-button type="success" size="mini" @click="setImageType(index, 4)">CE</el-button>
                   </el-tooltip>
-                  <el-tooltip effect="light" content="设置为thumb图" placement="top">
+                  <!--thumb图，必须得是一张1:1的方图，我们规定是188 x 188 作为thumb图  -->
+                  <el-tooltip effect="light" v-if="image.width === 188 && image.height === 188" content="设置为thumb图" placement="top">
                     <el-button type="danger" size="mini" @click="setImageType(index, 8)">T</el-button>
                   </el-tooltip>
-                  <el-tooltip effect="light" content="设置为走马灯图" placement="top">
+                  <el-tooltip
+                  v-if="ctype === 2 && image.width === 640 && image.height === 370"
+                  effect="light"
+                  content="设置为走马灯图" 
+                  placement="top">
                     <el-button type="warning" size="mini" @click="setImageType(index, 16)">S</el-button>
                   </el-tooltip>
-                  <el-tooltip effect="light" content="设置为banner图" placement="top">
+                  <!--banner图，我们规定是640 x 416 作为banner图 -->
+                  <el-tooltip effect="light" v-if="image.width === 640 && image.height === 416" content="设置为banner图" placement="top">
                     <el-button style="background-color:#9900FF;" size="mini" @click="setImageType(index, 32)">B</el-button>
                   </el-tooltip>
                 </div>
@@ -1032,6 +1097,11 @@ export default {
       if (!(/ztdesc/i.test(markdown) || /ztarticle/i.test(markdown)) && ctype === 9) {
         this.loading = false
         return this.$alert(`这是似乎不是一篇专题文章，但是文章类型填写的却是"${Utils.convertCtype(ctype)}"。请检查，确认无误后再次保存`, '文章内容跟文章类型不匹配', { confirmButtonText: '确定' })
+      }
+
+      if (!ctype) {
+        this.loading = false
+        return this.$alert(`未选择文章类型，请选择正确的类型之后重新保存`, '未选择文章类型', { confirmButtonText: '确定' })
       }
 
       let select_tags = []
