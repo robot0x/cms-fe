@@ -1173,7 +1173,7 @@ export default {
           return ret
         })
       }
-      if (id !== 7216){
+      if (id != 7216) {
         let imagesVerify = Utils.verifyImages(images_handled, ctype)
         if (!imagesVerify.pass) {
           this.loading = false
