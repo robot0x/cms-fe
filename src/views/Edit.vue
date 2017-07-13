@@ -134,6 +134,10 @@
                   走马灯图 640*370；
                   </p>
                   <p style="color:#e60012;">
+                  专刊：
+                  封面图 640*416，
+                  </p>
+                  <p style="color:#e60012;">
                     所有类型的文章都要满足：<br>
                     Thumb图 188*188<br>
                     Banner图 640*416
@@ -222,13 +226,17 @@
                     coverex 640*416
                     swpie 640*370
 
-                    thumb: 188 * 188
+                    专刊：
+                    cover 640*416
+
+                    thumb: 188*188
                     banner: 640*416
                     -->
                   <el-tooltip
                   v-if="
-                  (ctype === 1 && image.width === 640 && image.height === 504) || 
+                  ((ctype === 1 || ctype === 5) && image.width === 640 && image.height === 504) || 
                   (ctype === 2 && image.width === 596 && image.height === 486) ||
+                  (ctype === 3 && image.width === 640 && image.height === 416) ||
                   (ctype === 4 && image.width === 640 && image.height === 416) 
                   "
                   effect="light" 
@@ -238,7 +246,7 @@
                   </el-tooltip>
                   <el-tooltip
                   v-if="
-                  (ctype === 1 && image.width === 640 && image.height === 504) || 
+                  ((ctype === 1 || ctype === 5) && image.width === 640 && image.height === 504) || 
                   (ctype === 2 && image.width === 640 && image.height === 416) ||
                   (ctype === 4 && image.width === 640 && image.height === 416) 
                   "
