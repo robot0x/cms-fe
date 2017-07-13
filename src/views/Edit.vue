@@ -209,7 +209,7 @@
                     图片尺寸策略：
 
                     首页：
-                    cover  596*866
+                    cover  640*504
                     coverex 640*504
 
                     活动：
@@ -227,7 +227,7 @@
                     -->
                   <el-tooltip
                   v-if="
-                  (ctype === 1 && image.width === 596 && image.height === 866) || 
+                  (ctype === 1 && image.width === 640 && image.height === 504) || 
                   (ctype === 2 && image.width === 596 && image.height === 486) ||
                   (ctype === 4 && image.width === 640 && image.height === 416) 
                   "
