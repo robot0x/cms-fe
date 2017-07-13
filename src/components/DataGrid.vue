@@ -32,6 +32,9 @@
             <el-form-item label="创建时间">
               <span>{{ props.row.create_time }}</span>
             </el-form-item>
+            <el-form-item label="发布时间">
+              <span>{{ props.row.timetopublish }}</span>
+            </el-form-item>
             <el-form-item label="最后修改人">
               <span>{{ props.row.last_update_by }}</span>
             </el-form-item>
