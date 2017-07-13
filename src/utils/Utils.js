@@ -2,11 +2,60 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-06-29 11:50:23
+ * @Last Modified time: 2017-07-13 12:16:51
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
 class Utils {
+  /**
+   * @param {array} images
+   * @memberof Utils
+   * 图片验证：
+   *  1. 必须有图片
+   *  2. 图片必须有且仅有一张cover
+   *  3. 图片必须有且仅有一张coverex
+   */
+  static verifyImages (images) {
+    let ret = {pass: true, message: 'ok'}
+    if (!Utils.isValidArray(images)) {
+      ret.pass = false
+      ret.message = '还没有可用的图片，请上传图片重新保存'
+      return ret
+    }
+    // 1 => content, 2 => cover, 4 => coverex, 8 => thumb, 16 => swipe, 32 => banner
+    let coverCount = 0
+    let coverexCount = 0
+    for (let image of images) {
+      let {type} = image
+      if ((type & 2) === 2) {
+        coverCount++
+      }
+      if ((type & 4) === 4) {
+        coverexCount++
+      }
+    }
+    if (coverCount === 0) {
+      ret.pass = false
+      ret.message = '没有设置封面图（C），请设置完之后再次保存'
+      return ret
+    }
+    if (coverexCount === 0) {
+      ret.pass = false
+      ret.message = '没有设置封面图二（CE），请设置完之后再次保存'
+      return ret
+    }
+    if (coverCount > 1) {
+      ret.pass = false
+      ret.message = '只能设置一张封面图（C），请取消多余的封面图，再次保存'
+      return ret
+    }
+    if (coverexCount > 1) {
+      ret.pass = false
+      ret.message = '只能设置一张封面图二（CE），请取消多余的封面图，再次保存'
+      return ret
+    }
+    return ret
+  }
   /**
    * 判断一个url是否包含 形如 http:// or https:// or // 协议头
    */

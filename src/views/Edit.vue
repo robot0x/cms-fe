@@ -1079,6 +1079,11 @@ export default {
           return ret
         })
       }
+      let imagesVerify = Utils.verifyImages(images_handled)
+      if (!imagesVerify.pass) {
+        this.loading = false
+        return this.$alert(`${imagesVerify.message}`, '图片不符合要求', { confirmButtonText: '确定' })
+      }
       console.log('images_handled:', images_handled)
       const postData = {
         id,
