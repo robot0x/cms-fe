@@ -135,7 +135,7 @@
                   </p>
                   <p style="color:#e60012;">
                     所有类型的文章都要满足：<br>
-                    Thumb图 188 * 188<br>
+                    Thumb图 188*188<br>
                     Banner图 640*416
                   </p>
                 </div>
