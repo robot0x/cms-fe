@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-07-13 12:16:51
+ * @Last Modified time: 2017-07-13 14:55:43
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -12,19 +12,28 @@ class Utils {
    * @memberof Utils
    * 图片验证：
    *  1. 必须有图片
+   * 如果是专题，可以没有cover、coverex、thumb，因为专题没有meta
+   * 如果是专刊，可以没有coverex
+   * 其他类型文章的必须要满足：
    *  2. 图片必须有且仅有一张cover
    *  3. 图片必须有且仅有一张coverex
+   *  4. 图片必须有且仅有一张thumb
    */
-  static verifyImages (images) {
+  static verifyImages (images, ctype) {
     let ret = {pass: true, message: 'ok'}
     if (!Utils.isValidArray(images)) {
       ret.pass = false
       ret.message = '还没有可用的图片，请上传图片重新保存'
       return ret
     }
+    // 专题可以没有cover、coverex、thumb图，所以不往下进行判断了
+    if (ctype == 9) {
+      return ret
+    }
     // 1 => content, 2 => cover, 4 => coverex, 8 => thumb, 16 => swipe, 32 => banner
     let coverCount = 0
     let coverexCount = 0
+    let thumbCount = 0
     for (let image of images) {
       let {type} = image
       if ((type & 2) === 2) {
@@ -33,25 +42,41 @@ class Utils {
       if ((type & 4) === 4) {
         coverexCount++
       }
+      if ((type & 8) === 8) {
+        thumbCount++
+      }
     }
+    // let isShow = /1|2|4|5/.test(ctype)
     if (coverCount === 0) {
       ret.pass = false
       ret.message = '没有设置封面图（C），请设置完之后再次保存'
       return ret
     }
-    if (coverexCount === 0) {
+    // 专刊现在暂时用不到coverex
+    if (coverexCount === 0 && ctype != 3) {
       ret.pass = false
       ret.message = '没有设置封面图二（CE），请设置完之后再次保存'
       return ret
     }
-    if (coverCount > 1) {
+    if (thumbCount === 0) {
       ret.pass = false
-      ret.message = '只能设置一张封面图（C），请取消多余的封面图，再次保存'
+      ret.message = '没有设置Thumb图（T），请设置完之后再次保存'
       return ret
     }
-    if (coverexCount > 1) {
+    if (coverCount > 1) {
       ret.pass = false
-      ret.message = '只能设置一张封面图二（CE），请取消多余的封面图，再次保存'
+      ret.message = '只能设置一张封面图（C），请取消多余的，再次保存'
+      return ret
+    }
+    // 专刊现在暂时用不到coverex
+    if (coverexCount > 1 && ctype != 3) {
+      ret.pass = false
+      ret.message = '只能设置一张封面图二（CE），请取消多余的，再次保存'
+      return ret
+    }
+    if (thumbCount > 1) {
+      ret.pass = false
+      ret.message = '只能设置一张Thumb图（T），请取消多余的，再次保存'
       return ret
     }
     return ret

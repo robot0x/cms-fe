@@ -231,13 +231,21 @@
 
                     thumb: 188*188
                     banner: 640*416
+
+                    如果是专题，可以没有cover、coverex、thumb，因为专题没有meta
+                    如果是专刊，可以没有coverex
+                    除了专刊和专题之外其他类型文章的必须要满足：
+                      图片必须有且仅有一张cover
+                      图片必须有且仅有一张coverex
+                      图片必须有且仅有一张thumb
                     -->
                   <el-tooltip
                   v-if="
-                  ((ctype === 1 || ctype === 5) && image.width === 640 && image.height === 504) || 
+                  (ctype !== 9) && 
+                  (((ctype === 1 || ctype === 5) && image.width === 640 && image.height === 504) || 
                   (ctype === 2 && image.width === 596 && image.height === 486) ||
                   (ctype === 3 && image.width === 640 && image.height === 416) ||
-                  (ctype === 4 && image.width === 640 && image.height === 416) 
+                  (ctype === 4 && image.width === 640 && image.height === 416) )
                   "
                   effect="light" 
                   content="设置为封面图" 
@@ -246,9 +254,10 @@
                   </el-tooltip>
                   <el-tooltip
                   v-if="
-                  ((ctype === 1 || ctype === 5) && image.width === 640 && image.height === 504) || 
+                  (ctype !== 9 || ctype !== 3) && 
+                  (((ctype === 1 || ctype === 5) && image.width === 640 && image.height === 504) || 
                   (ctype === 2 && image.width === 640 && image.height === 416) ||
-                  (ctype === 4 && image.width === 640 && image.height === 416) 
+                  (ctype === 4 && image.width === 640 && image.height === 416))
                   "
                   effect="light" 
                   content="设置为封面图二" 
@@ -256,7 +265,7 @@
                     <el-button type="success" size="mini" @click="setImageType(index, 4)">CE</el-button>
                   </el-tooltip>
                   <!--thumb图，必须得是一张1:1的方图，我们规定是188 x 188 作为thumb图  -->
-                  <el-tooltip effect="light" v-if="image.width === 188 && image.height === 188" content="设置为thumb图" placement="top">
+                  <el-tooltip effect="light" v-if="(ctype !== 9) && (image.width === 188 && image.height === 188)" content="设置为thumb图" placement="top">
                     <el-button type="danger" size="mini" @click="setImageType(index, 8)">T</el-button>
                   </el-tooltip>
                   <el-tooltip
@@ -1157,7 +1166,7 @@ export default {
           return ret
         })
       }
-      let imagesVerify = Utils.verifyImages(images_handled)
+      let imagesVerify = Utils.verifyImages(images_handled, ctype)
       if (!imagesVerify.pass) {
         this.loading = false
         return this.$alert(`${imagesVerify.message}`, '图片不符合要求', { confirmButtonText: '确定' })
