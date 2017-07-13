@@ -17,6 +17,7 @@
 </template>
 <script>
 import LoginUtils from '../utils/LoginUtils'
+import Utils from '../utils/Utils'
 import User from '../service/User'
 
 export default {
@@ -40,6 +41,11 @@ export default {
       }
       return content
     }
+  },
+  created () {
+    // 不管从何而来，只要到了登录页，先清空掉token再说。发现在一些编辑的电脑上有时候会有两个token，导致token验证通不过
+    Utils.deleteCookie('token')
+    console.log('现在在登录页 ....')
   },
   methods: {
     login () {
