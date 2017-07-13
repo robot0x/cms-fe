@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-07-13 14:55:43
+ * @Last Modified time: 2017-07-13 18:37:57
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -18,6 +18,7 @@ class Utils {
    *  2. 图片必须有且仅有一张cover
    *  3. 图片必须有且仅有一张coverex
    *  4. 图片必须有且仅有一张thumb
+   *  5. 如果是好物，必须有至少有一张swipe图
    */
   static verifyImages (images, ctype) {
     let ret = {pass: true, message: 'ok'}
@@ -34,6 +35,7 @@ class Utils {
     let coverCount = 0
     let coverexCount = 0
     let thumbCount = 0
+    let swipeCount = 0
     for (let image of images) {
       let {type} = image
       if ((type & 2) === 2) {
@@ -44,6 +46,9 @@ class Utils {
       }
       if ((type & 8) === 8) {
         thumbCount++
+      }
+      if ((type & 16) === 16) {
+        swipeCount++
       }
     }
     // let isShow = /1|2|4|5/.test(ctype)
@@ -77,6 +82,11 @@ class Utils {
     if (thumbCount > 1) {
       ret.pass = false
       ret.message = '只能设置一张Thumb图（T），请取消多余的，再次保存'
+      return ret
+    }
+    if (ctype == 2 && swipeCount === 0) {
+      ret.pass = false
+      ret.message = '好物类型的文章，必须设置至少一张swipe图，请检查无误后再次保存'
       return ret
     }
     return ret
