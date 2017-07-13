@@ -1256,6 +1256,10 @@ export default {
       position: relative;
       img {
           height: 160px;
+          // 加上这个是为了防止图片宽度过小，上面的空间排列不全的问题
+          min-width: 188px;
+          // 加上这个是为了防止图片宽度过大，太占用空间的问题
+          max-width: 300px;
       }
       .image-info {
         position: absolute;
