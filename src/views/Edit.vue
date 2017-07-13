@@ -241,11 +241,18 @@
                     -->
                   <el-tooltip
                   v-if="
-                  (ctype !== 9) && 
-                  (((ctype === 1 || ctype === 5) && image.width === 640 && image.height === 504) || 
-                  (ctype === 2 && image.width === 596 && image.height === 486) ||
-                  (ctype === 3 && image.width === 640 && image.height === 416) ||
-                  (ctype === 4 && image.width === 640 && image.height === 416) )
+                  (id === 7216) || 
+                  (
+                    (ctype !== 9) && 
+                    (
+                      (
+                        (ctype === 1 || ctype === 5) && image.width === 640 && image.height === 504
+                      ) || 
+                      (ctype === 2 && image.width === 596 && image.height === 486) ||
+                      (ctype === 3 && image.width === 640 && image.height === 416) ||
+                      (ctype === 4 && image.width === 640 && image.height === 416)
+                    )
+                  )
                   "
                   effect="light" 
                   content="设置为封面图" 
@@ -1166,10 +1173,12 @@ export default {
           return ret
         })
       }
-      let imagesVerify = Utils.verifyImages(images_handled, ctype)
-      if (!imagesVerify.pass) {
-        this.loading = false
-        return this.$alert(`${imagesVerify.message}`, '图片不符合要求', { confirmButtonText: '确定' })
+      if (id !== 7216){
+        let imagesVerify = Utils.verifyImages(images_handled, ctype)
+        if (!imagesVerify.pass) {
+          this.loading = false
+          return this.$alert(`${imagesVerify.message}`, '图片不符合要求', { confirmButtonText: '确定' })
+        }
       }
       console.log('images_handled:', images_handled)
       const postData = {
