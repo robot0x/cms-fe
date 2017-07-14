@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-07-14 15:58:37
+ * @Last Modified time: 2017-07-14 16:11:29
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -515,21 +515,21 @@ class Utils {
 
   static setCookie (key, value, days = 5) {
     // 设置cookie过期事件,默认是30天
-    const expire = new Date();
+    const expire = new Date()
     // expire.setTime(expire.getTime() + days * 24 * 60 * 60 * 1000)
     // expire.setTime(expire.getTime() + days * 86400000)
     // path一定要设置为 / 否则由于cookie默认为同目录下可共享的，并不是整站共享
     if (days) {
-      expire.setTime(expire.getTime() + days * 864e5);
+      expire.setTime(expire.getTime() + days * 864e5)
       document.cookie =
         key +
         '=' +
         encodeURIComponent(value) +
         ';expires=' +
         expire.toUTCString() +
-        ';path=/';
+        ';path=/'
     } else {
-      document.cookie = key + '=' + encodeURIComponent(value) + ';path=/';
+      document.cookie = key + '=' + encodeURIComponent(value) + ';path=/'
     }
   }
 
