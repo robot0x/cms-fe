@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-07-13 18:37:57
+ * @Last Modified time: 2017-07-14 15:58:37
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -534,15 +534,16 @@ class Utils {
   }
 
   static deleteCookie (key) {
-    const expire = new Date();
-    expire.setTime(expire.getTime() - 1);
-    const cval = Utils.getCookie(key);
-    // 把toGMTString改成了toUTCString，两者等价。但是ECMAScript推荐使用toUTCString方法。toGMTString的存在仅仅是
-    // 为了向下兼容
-    if (cval != null) {
-      document.cookie =
-        key + '=' + cval + ';expires=' + expire.toUTCString() + ';path=/';
-    }
+    Utils.setCookie(key, '', -1)
+    // const expire = new Date();
+    // expire.setTime(expire.getTime() - 1);
+    // const cval = Utils.getCookie(key);
+    // // 把toGMTString改成了toUTCString，两者等价。但是ECMAScript推荐使用toUTCString方法。toGMTString的存在仅仅是
+    // // 为了向下兼容
+    // if (cval != null) {
+    //   document.cookie =
+    //     key + '=' + cval + ';expires=' + expire.toUTCString() + ';path=/';
+    // }
   }
 
   static getCookie (key) {
