@@ -5,11 +5,21 @@
        <el-input v-model="username" placeholder="请输入用户名" size="large" @keyup.native.enter.stop.prevent="login"></el-input>
        <el-input v-model="password" placeholder="请输入密码" type="password" size="large" @keyup.native.enter.stop.prevent="login"></el-input>
        <div class="reme-box">
-         <el-tooltip class="item" effect="dark" :content="content" placement="right-start">
-            <span class="reme-desc">记住我</span>
-         </el-tooltip>
-         <el-switch v-model="reme" on-color="#13ce66" off-color="#ff4949"></el-switch>
-         <a href="javascript:void(0);" @click="modifyPassword" class="modify-password">修改密码</a>
+         <el-row>
+           <el-col :span="8">
+             <el-tooltip class="item" effect="dark" :content="content" placement="right-start">
+              <span class="reme-desc">记住我</span>
+             </el-tooltip>
+             <el-switch v-model="reme" on-color="#13ce66" off-color="#ff4949"></el-switch>
+           </el-col>
+           <el-col :span="8">
+            <a href="javascript:void(0);" @click="clearToken" class="modify-password">清空token</a>
+           </el-col>
+           <el-col :span="8">
+            <a href="javascript:void(0);" @click="modifyPassword" class="modify-password">修改密码</a>
+           </el-col>
+         </el-row>
+         
        </div>
        <el-button type="primary" @click="login" :loading="loading">{{ loginMsg }}</el-button>
      </div>
@@ -80,6 +90,13 @@ export default {
       //   this.$store.commit('setUsername', username)
       //   this.$router.replace('/')
       // }, 2000)
+    },
+    clearToken () {
+      Utils.deleteCookie('token')
+      this.$notify({
+        message: 'token清空成功',
+        type: 'success'
+      })
     },
     modifyPassword () {
       // 防止多次点击
