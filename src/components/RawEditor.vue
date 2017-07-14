@@ -110,6 +110,8 @@ export default {
     color: #616161;
     resize: none;
     flex: 1;
+    /* 在safari下编辑框过小，所以加上一个最小高度，强制撑开  */
+    min-height:1200px;
   }
 
   .operate-area {

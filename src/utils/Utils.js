@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-07-14 16:11:52
+ * @Last Modified time: 2017-07-14 16:36:16
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -525,11 +525,11 @@ class Utils {
         key +
         '=' +
         encodeURIComponent(value) +
-        ';expires=' +
+        '; expires=' +
         expire.toUTCString() +
-        ';path=/'
+        '; path=/'
     } else {
-      document.cookie = key + '=' + encodeURIComponent(value) + ';path=/'
+      document.cookie = key + '=' + encodeURIComponent(value) + '; path=/'
     }
   }
 

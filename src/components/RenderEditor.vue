@@ -88,6 +88,8 @@ export default {
     max-width: 800px;
     height: 100%;
     margin: 0 auto;
+    // 在safari下编辑框过小，所以加上一个最小高度，强制撑开
+    min-height: 1200px;
     h1,h2,h3,h4,h5 {font-weight:normal;}
 
     h1 {
