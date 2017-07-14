@@ -598,11 +598,6 @@ export default {
       }
     },
     timetopublish (val) {
-      // console.log('watch timetopublish the new val is', val)
-      // console.log('!this.locked &&  val > Date.now()', !this.locked &&  val > Date.now())
-      // if(!this.locked &&  val > Date.now()){
-      // console.log('timetopublish is modified ... the new val is ', val)
-      // console.log('timetopublish is modified ... the 处理后的 new val is ', moment(val).format('YYYYMMDD'))
       if(!this.locked && val){
         // console.log('if ....', val)
         Content.setContentToLocal(this.id, 'timetopublish', moment(val).format('YYYYMMDD'))
@@ -759,12 +754,18 @@ export default {
                     from
                   } = content
                   // timetopublish = timetopublish || Date.now()
+                  /**
+                  * 发现一个问题，timetopublish如果默认是今天，则会马上上线，也就是说，在编辑的时候就已经上线了，
+                  * 所以，需要把默认值设置为 20141106 之前的日期，这样才不再合法的发布日期范围内，问了下编辑，他们通常
+                  * 填的日期是20141004，所以默认值就定这个日期了，等要上线时，让他们自己去选择
+                  * 这个问题很严重
+                  */
                   if(timetopublish) {
                     console.log('timetopublish if ....', timetopublish)
                     this.timetopublish = moment(timetopublish, 'YYYYMMDD').valueOf()
                   } else {
                     console.log('timetopublish else ....', timetopublish)
-                    this.timetopublish = Date.now()
+                    this.timetopublish = moment(20141005, 'YYYYMMDD').valueOf()
                   }
                   console.log('tags:', tags)
                   // console.log('this.all_tags:', this.all_tags)
