@@ -77,9 +77,26 @@ export default {
       }
     }
   }
-
+/* 在safari下编辑框过小，所以加上一个最小高度，强制撑开  */
+/* Safari 9.0-10.0 (not 10.1) (non-iOS) */
+_::-webkit-:host:not(:root:root), .article-area {
+  min-height:1200px;
+}
+/* Safari 9 */
+@supports (overflow:-webkit-marquee) and (justify-content:inherit) 
+{
   .article-area {
-
+      min-height:1200px;
+  }
+}
+/* Safari 10.1+ (alternate method) */
+@media not all and (min-resolution:.001dpcm)
+{ @supports (-webkit-appearance:none) {
+    .article-area {
+      min-height:1200px;
+    }
+}}
+  .article-area {
     background:#fff;
     line-height: 2;
     font-size: 18px;
@@ -88,8 +105,6 @@ export default {
     max-width: 800px;
     height: 100%;
     margin: 0 auto;
-    // 在safari下编辑框过小，所以加上一个最小高度，强制撑开
-    min-height: 1200px;
     h1,h2,h3,h4,h5 {font-weight:normal;}
 
     h1 {
