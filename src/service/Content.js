@@ -37,33 +37,44 @@ export default class Content {
     console.log('getContent执行 ...');
     return new Promise((resolve, reject) => {
       try {
+        // 取本地缓存
         const content = Content.getContentFormLocal(id);
+        // 取本地存的当前登录用户（也可能被篡改过）
         const user = LoginUtils.getUsername();
-        // const content = null
-        // 虽然缓存中有数据，但是也别忘了上锁
-        if (content) {
-          /**
+        /**
+         * BUG：无论数据从哪儿来的，都要上锁，
+         * 原来的逻辑是，如果本地还有有数据，则调用上锁接口，然后返回数据
+         * 本地没有数据，直接从服务器上拿数据，这儿有一个逻辑问题
+         * 如果一人，本地没有数据，则不会上锁，则另外一个人也可以编辑这篇文章
+         * 
          * 文章解锁和上锁，不用显示传递username的方式，因为username是存在前端cookie里的
          * 这样是不安全的，如果有人修改了cookie，则锁住文章的可能是一个很奇怪的用户名
          */
-          // const url = `${API.articles.url}/?type=lock&id=${id}&user=${user}`
-          const url = `${API.articles.url}/?type=lock&id=${id}`;
-          fetch(url, {
-            credentials: 'include',
-            headers: new Headers({
-              'Content-Type': 'json;charset=UTF-8'
-            })
+        // 上锁接口
+        // const url = `${API.articles.url}/?type=lock&id=${id}&user=${user}`
+        const url = `${API.articles.url}/?type=lock&id=${id}`;
+        // 先上锁，在说话
+        fetch(url, {
+          credentials: 'include',
+          headers: new Headers({
+            'Content-Type': 'json;charset=UTF-8'
           })
-            .then(response => response.json())
-            .then(result => {
-              console.log(url, result);
-              const { message, res, status } = result;
-              if (status !== 200) {
+        })
+          .then(response => response.json())
+          .then(result => {
+            console.log(url, result);
+            const { message, res, status } = result;
+            if (status !== 200) {
+              // 上锁失败
+              reject(result);
+            } else {
+              if (message !== successCode) {
+                // 上锁失败
                 reject(result);
               } else {
-                if (message !== successCode) {
-                  reject(result);
-                } else {
+                // 上锁成功之后，看看有没有本地缓存
+                if (content) {
+                  // 有本地缓存的话，进行简单的数据变型之后，resolve出去
                   if (res && res.lock_by) {
                     content.lock_by = res.lock_by;
                   } else {
@@ -71,127 +82,121 @@ export default class Content {
                   }
                   content.from = 'cache';
                   resolve(content);
-                }
-              }
-            })
-            .catch(e => {
-              resolve(e.message);
-            });
-        } else {
-          // 如果没有缓存，从服务器上拿数据
-          try {
-            const url = `${API.articles.url}/?type=all&id=${id}&user=${user}`;
-            fetch(url, {
-              credentials: 'include'
-            })
-              .then(response => response.json())
-              .then(result => {
-                console.log(url, result);
-                const { message, res, status } = result;
-                if (status !== 200) {
-                  reject(result);
                 } else {
-                  if (message !== successCode) {
-                    reject(message);
-                  } else {
-                    // used_for_search: false, // 是否可搜
-                    // category: '',
-                    // render_categorys: [],
-                    // brand: '',
-                    // render_brands: [],
-                    // scene: '',
-                    // render_scenes: [],
-                    // special: '',
-                    // render_specials: [],
-                    // similar: '',
-                    // render_similars: [],
-                    const ret = result.res
-                    let { gift, keywords, tags } = ret
-                    console.log('加载的数据keywords:', keywords)
-                    if (keywords) {
-                      keywords = JSON.parse(keywords);
-                      const {
-                        category,
-                        brand,
-                        scene,
-                        special,
-                        similar
-                      } = keywords;
-                      // 品类
-                      if (category) {
-                        ret.render_categorys = Content._handleKeywords(
-                          category
-                        );
-                      }
-                      // 品牌
-                      if (brand) {
-                        ret.render_brands = Content._handleKeywords(brand);
-                      }
-                      // 使用场景
-                      if (scene) {
-                        ret.render_scenes = Content._handleKeywords(scene);
-                      }
-                      // 特别之处
-                      if (special) {
-                        ret.render_specials = Content._handleKeywords(special);
-                      }
-                      // 类似产品
-                      if (similar) {
-                        ret.render_similars = Content._handleKeywords(similar);
-                      }
-                    }
+                  // 如果没有缓存，从服务器上拿数据
+                  try {
+                    const url = `${API.articles.url}/?type=all&id=${id}&user=${user}`;
+                    fetch(url, {
+                      credentials: 'include'
+                    })
+                      .then(response => response.json())
+                      .then(result => {
+                        console.log(url, result);
+                        const { message, res, status } = result;
+                        if (status !== 200) {
+                          reject(result);
+                        } else {
+                          if (message !== successCode) {
+                            reject(message);
+                          } else {
+                            // used_for_search: false, // 是否可搜
+                            // category: '',
+                            // render_categorys: [],
+                            // brand: '',
+                            // render_brands: [],
+                            // scene: '',
+                            // render_scenes: [],
+                            // special: '',
+                            // render_specials: [],
+                            // similar: '',
+                            // render_similars: [],
+                            const ret = result.res;
+                            let { gift, keywords, tags } = ret;
+                            console.log('加载的数据keywords:', keywords);
+                            if (keywords) {
+                              keywords = JSON.parse(keywords);
+                              const {
+                                category,
+                                brand,
+                                scene,
+                                special,
+                                similar
+                              } = keywords;
+                              // 品类
+                              if (category) {
+                                ret.render_categorys = Content._handleKeywords(
+                                  category
+                                );
+                              }
+                              // 品牌
+                              if (brand) {
+                                ret.render_brands = Content._handleKeywords(
+                                  brand
+                                );
+                              }
+                              // 使用场景
+                              if (scene) {
+                                ret.render_scenes = Content._handleKeywords(
+                                  scene
+                                );
+                              }
+                              // 特别之处
+                              if (special) {
+                                ret.render_specials = Content._handleKeywords(
+                                  special
+                                );
+                              }
+                              // 类似产品
+                              if (similar) {
+                                ret.render_similars = Content._handleKeywords(
+                                  similar
+                                );
+                              }
+                            }
 
-                    if (gift) {
-                      gift = JSON.parse(gift);
-                      const scenes = gift.scene;
-                      const relations = gift.relation;
-                      const characters = gift.character;
-                      if (scenes) {
-                        ret.scenes = Content._handleGift(scenes);
-                      }
-                      if (relations) {
-                        ret.relations = Content._handleGift(relations);
-                      }
-                      if (characters) {
-                        ret.characters = Content._handleGift(characters);
-                      }
-                    }
-                    // if (tags) {
-                    //   tags = JSON.parse(tags)
-                    // }
-
-                    let { lock_by } = ret
-                    // 如果点击“新建文章”之后，那么自动跳转到编辑也的话，此时可能拿不到lock_by字段
-                    // 所以在前端赋予lock_by字段的值
-                    if (!lock_by) {
-                      ret.lock_by = user;
-                    }
-                    ret.from = 'server';
-                    resolve(ret);
+                            if (gift) {
+                              gift = JSON.parse(gift);
+                              const scenes = gift.scene;
+                              const relations = gift.relation;
+                              const characters = gift.character;
+                              if (scenes) {
+                                ret.scenes = Content._handleGift(scenes);
+                              }
+                              if (relations) {
+                                ret.relations = Content._handleGift(relations);
+                              }
+                              if (characters) {
+                                ret.characters = Content._handleGift(
+                                  characters
+                                );
+                              }
+                            }
+                            let { lock_by } = ret;
+                            // 如果点击“新建文章”之后，那么自动跳转到编辑页的话，此时可能拿不到lock_by字段
+                            // 所以在前端赋予lock_by字段的值
+                            if (!lock_by) { // eslint-disable-line
+                              ret.lock_by = user;
+                            }
+                            ret.from = 'server';
+                            resolve(ret);
+                          }
+                        }
+                      })
+                      .catch(e => {
+                        reject(e);
+                      });
+                  } catch (e) {
+                    reject(e);
                   }
                 }
-              })
-              .catch(e => {
-                reject(e);
-              });
-          } catch (e) {
-            reject(e);
-          }
-        }
-        // if(id){
-        //   // 组装数据
-        //   const lockedBy = content.lockedBy
-        //   if(lockedBy){
-        //     content.locked = true
-        //   }
-        //   content.keywords = Content.handleError(content.keywords)
-        //   content.ctypes = content.ctypes.map((ctype, i) => { return { label: ctype, value: i } })
-        //   resolve(content)
-        // } else {
-        //   resolve(Content.getContentFormLocal())
-        // }
+              }
+            }
+          })
+          .catch(e => {
+            resolve(e.message);
+          });
       } catch (e) {
-        reject(e.message)
+        reject(e.message);
       }
     });
   }
@@ -204,7 +209,7 @@ export default class Content {
         } else {
           return reject('您还未填写信息');
         }
-        console.log('type:', data.type)
+        console.log('type:', data.type);
         fetch(API.articles.url, {
           // method: 'PUT',
           method: 'put',
@@ -212,7 +217,7 @@ export default class Content {
           body: JSON.stringify(data),
           credentials: 'include',
           headers: new Headers({
-            'Accept': 'application/json'
+            Accept: 'application/json'
           })
         })
           .then(response => response.json())
