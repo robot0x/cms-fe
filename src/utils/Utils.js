@@ -2,11 +2,15 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-07-14 16:36:16
+ * @Last Modified time: 2017-07-18 15:27:03
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
 class Utils {
+  static removeInvilidChar (char) {
+    if (!char || typeof char !== 'string') return ''
+    return char.trim().replace(/[\x00-\x1F\x7F-\x9F]/g, '')
+  }
   /**
    * @param {array} images
    * @memberof Utils

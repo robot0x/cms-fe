@@ -693,7 +693,11 @@ export default {
         array.concat(
           // 去重，防止一次输入多个相同的keywords
           _.union(
-            this[type].split(/ +|,|，/).filter(tag => tag.trim()) // 过滤非空的字符串
+            this[type].split(/ +|,|，/)
+              // 去掉每个tag的首尾空格，去掉每个tag中的控制字符
+             .map(tag => Utils.removeInvilidChar(tag)) 
+              // 过滤非空的字符串
+             .filter(tag => tag.trim())
           ).filter(tag => { // 去重
             const alreadyHasTag = this._getIndexByTags(type, tag) !== -1
             if (alreadyHasTag) {
