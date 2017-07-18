@@ -867,6 +867,7 @@ export default {
                 this.$router.replace({name: 'login'})
               })
             } else {
+              console.log('[Edit.vue] loadData:', res)
               this.$notify({
                 title: '发生错误',
                 message: res.message || '发生错误，请联系@大哥'
@@ -1026,6 +1027,7 @@ export default {
               this.$router.replace({name: 'login'})
             })
           } else {
+            console.log('[Edit.vue] clearCache:', res)
             this.$notify({
               title: '发生错误',
               message: res.message || '发生错误，请联系@大哥'
@@ -1276,6 +1278,7 @@ export default {
             this.$router.replace({name: 'login'})
           })
         } else {
+          console.log('[Edit.vue] save:', res)
           this.$notify({
             title: '发生错误',
             message: res.message || '发生错误，请联系@大哥'

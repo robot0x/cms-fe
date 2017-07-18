@@ -37,6 +37,7 @@ export default {
           this.$router.replace({name: 'login'})
         })
       } else {
+        console.log('[Monthly.vue] activated:', res)
         this.$notify({
           title: '发生错误',
           message: res.message || '发生错误，请联系@大哥'
