@@ -615,6 +615,9 @@ export default {
   },
   created () {
     console.log('Edit.vue created exec ...')
+    // 显示地置空选中的tags，因为elementui可能会在内存中记录上次的tree的状态，导致新建的文章
+    // 中的tag树还是上次编辑的文章的选中状态
+    this.tags = []
     // BUG:当编辑有图片的文章时，然后再编辑新建文章，图片还是显示上一篇文章的图片
     // 所以，显式地清空一下图片
     const id = this.$route.params.id
