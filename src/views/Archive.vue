@@ -2,7 +2,7 @@
    <div class="page-archive">
      <div class="route-box">
          <el-radio class="radio" label="monthly" v-model="archive" @click.native.stop="route('monthly')">按月</el-radio>
-         <el-radio class="radio" label="user" v-model="archive" @click.native.stop="route('user')">按人</el-radio>
+         <el-radio class="radio" label="author" v-model="archive" @click.native.stop="route('author')">按作者</el-radio>
      </div>
      <!-- 加载 Monthly.vue页 和 Author.vue页 -->
      <transition name="slide-fade">
@@ -28,7 +28,7 @@ export default {
       this.$router.replace({ name })
     },
     routeChange () {
-      this.archive = this.$route.path.indexOf('user') !== -1 ? 'user' : 'monthly'
+      this.archive = this.$route.path.indexOf('author') !== -1 ? 'author' : 'monthly'
     }
   },
   // 不能只在created中监听routeChange。不然的话，在地址栏输入地址，页面无刷新的话，就不会走Archive的created的钩子了

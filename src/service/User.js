@@ -93,37 +93,6 @@ export default class User {
     });
   }
   /**
-   * 获取按照作者名的统计数据
-   */
-  static getUserAndCount () {
-    return new Promise((resolve, reject) => {
-      try {
-        fetch(API.users.url, {
-          credentials: 'include'
-        })
-          .then(response => response.json())
-          .then(result => {
-            const { message, res, status } = result;
-            if (status !== 200) {
-              reject(result);
-            } else {
-              if (message !== successCode) {
-                reject(result);
-              } else {
-                resolve(result.res);
-              }
-            }
-          })
-          .catch(({ message }) => {
-            reject(message);
-          });
-      } catch (e) {
-        console.log(e);
-        reject(e.message);
-      }
-    });
-  }
-  /**
    * select * from table limit offset pageSize where query
    */
   static getArticles (query) {

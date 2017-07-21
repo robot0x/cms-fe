@@ -5,10 +5,10 @@ import Content from '../views/Content'
 import Edit from '../views/Edit'
 import Archive from '../views/Archive'
 import Monthly from '../views/Monthly'
-import User from '../views/User'
+import Author from '../views/Author'
 import Login from '../views/Login'
 import Help from '../views/Help'
-import Author from '../views/Author'
+import AuthorManage from '../views/AuthorManage'
 import Video from '../views/Video'
 // import Password from '../views/Password'
 // import Register from '../views/Register'
@@ -41,11 +41,11 @@ const routes = [
     children: [
       { path: '', component: Monthly }, // 进入到 Archive.vue 页面中，默认加载 Monthly.vue
       { path: 'monthly', name: 'monthly', component: Monthly },
-      { path: 'user', name: 'user', component: User }
+      { path: 'author', name: 'author', component: Author }
     ]
   },
   // { path: '/monthly', component: Monthly },
-  { path: '/author', component: Author },
+  { path: '/author', component: AuthorManage },
   { path: '/video', component: Video },
   { path: '/help', component: Help },
   { path: '/login/', name: 'login', component: Login },

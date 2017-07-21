@@ -42,6 +42,37 @@ export default class Author {
       }
     });
   }
+  /**
+   * 获取按照作者名的统计数据
+   */
+  static getUserAndCount () {
+    return new Promise((resolve, reject) => {
+      try {
+        fetch(API.authors.url, {
+          credentials: 'include'
+        })
+          .then(response => response.json())
+          .then(result => {
+            const { message, res, status } = result;
+            if (status !== 200) {
+              reject(result);
+            } else {
+              if (message !== successCode) {
+                reject(result);
+              } else {
+                resolve(result.res);
+              }
+            }
+          })
+          .catch(({ message }) => {
+            reject(message);
+          });
+      } catch (e) {
+        console.log(e);
+        reject(e.message);
+      }
+    });
+  }
   static update (data) {
     console.log(data);
     return new Promise((resolve, reject) => {
