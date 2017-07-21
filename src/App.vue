@@ -47,7 +47,9 @@
       </header>
       <main>
         <transition name="slide-fade">
-          <router-view></router-view>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
         </transition>
       </main>
   </div>
