@@ -613,11 +613,10 @@ export default {
   data() {
     return defaultData
   },
-  created () {
+  activated () {
     console.log('Edit.vue created exec ...')
     // 显示地置空选中的tags，因为elementui可能会在内存中记录上次的tree的状态，导致新建的文章
     // 中的tag树还是上次编辑的文章的选中状态
-    this.tags = []
     // BUG:当编辑有图片的文章时，然后再编辑新建文章，图片还是显示上一篇文章的图片
     // 所以，显式地清空一下图片
     const id = this.$route.params.id
@@ -628,11 +627,27 @@ export default {
     this.images = []
     this.ctype = 2 // 我们的好物最多，所以，默认为好物类型
     this.loadData(id)
-    // Tags.getAllTags().then(all_tags => {
-    //   this.all_tags = all_tags
-    //   console.log('created.all_tags:', JSON.stringify(all_tags))
-    // })
   },
+  // created () {
+  //   console.log('Edit.vue created exec ...')
+  //   // 显示地置空选中的tags，因为elementui可能会在内存中记录上次的tree的状态，导致新建的文章
+  //   // 中的tag树还是上次编辑的文章的选中状态
+  //   this.tags = []
+  //   // BUG:当编辑有图片的文章时，然后再编辑新建文章，图片还是显示上一篇文章的图片
+  //   // 所以，显式地清空一下图片
+  //   const id = this.$route.params.id
+  //   // 如果是测评集合页（pcollection），则只显示编辑框即可，无需展示渲染框，造成编辑的困扰
+  //   if (id == 7216) {
+  //     this.open('left')
+  //   }
+  //   this.images = []
+  //   this.ctype = 2 // 我们的好物最多，所以，默认为好物类型
+  //   this.loadData(id)
+  //   // Tags.getAllTags().then(all_tags => {
+  //   //   this.all_tags = all_tags
+  //   //   console.log('created.all_tags:', JSON.stringify(all_tags))
+    // })
+  // },
   methods: {
     // 第1位-内容图(1)/第2位cover图(2)/第3位coverex图(4)/第4位thumb图(8)/第5位swipe图(16)/第6位banner图(32)
     // 目前只用 2/4/8/16
@@ -784,8 +799,12 @@ export default {
                       const shouldSelectTags = Utils.findByTag2(all_tags, ts)
                       this.$refs.tree.setCheckedKeys(shouldSelectTags)
                     } else {
-                       this.$refs.tree.setCheckedKeys(tags)
+                      this.$refs.tree.setCheckedKeys(tags)
                     }
+                  } else {
+                    // 如果没有tags数据，则应该恢复为没有checked状态的树，不然的话，树是在内容中的，
+                    // 没有tags数据，还是上一次 this.$refs.tree.setCheckedKeys(tags) 设置的checked状态
+                    this.$refs.tree.setCheckedKeys([])
                   }
                   // 默认是好物，因为我们的好物文章最多
                   // 第1位-内容图(1)/第2位cover图(2)/第3位coverex图(4)/第4位thumb图(8)/第5位swipe图(16)/第6位banner图(32)
