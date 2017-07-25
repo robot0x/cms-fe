@@ -428,48 +428,12 @@ export default {
           used: 根据image.types是否为空，为空为0，否则为1
      */
     markdown ( md ) {
-      // console.log('markdown:', md)
       try{
         const {images} = this
-        // console.log('[Edit.vue] html:', images)
         if (!_.isEmpty(images)) {
           images.forEach((image, index) => {
             this.setImageType(index,  Utils.isUsed(md, image.url)? 1: 0, true)
           })
-          // for (let image of images) {
-          //   // console.log(`url: ${image.url} is useded? ${Utils.isUsed(md, image.url)}`)
-          //   this.setImageType(image,  Utils.isUsed(md, image.url)? 1: 0, true)
-          // }
-          // this.images = images.map(image => {
-          //   let { url, types } = image
-          //   let used = Utils.isUsed(md, url)
-            // 进一步确定是否是swipe图
-            // const swipeReg = /```swipe\s*(.|\n)+\s*```/g
-            // const hasSwipe = md.match(swipeReg)
-            // 是否是内容图
-            // const isContent = Utils.isUsed(md.replace(swipeReg, ''), url)
-            // 是否是swipe图
-            // const isSwipe = hasSwipe && Utils.isUsed(hasSwipe[0], url)
-            // image.type = type
-            // image.used = (isContent || isSwipe || type.length > 0) ? 1 : 0
-            // image.used = Utils.getCode(isContent || isSwipe || type.length > 0)
-            // let used = Utils.isUsed(md, url)
-            // if(used) {
-            //   _.remove(types, n => n == 1)
-            // } else {
-            //   // 否则，添加到types中去
-            //   types.push(1)
-            // }
-            // _.union(types.sort((i, j) => i - j))
-            // if(_.isEmpty(types)) {
-            //   image.type = 0
-            // } else {
-            //   image.type = types.reduce((m, n) => (m | n))
-            // }
-            // image.types = types
-            // image.used = types.length > 0
-            // return image
-          // })
         }
       }catch(e){
         console.log(e)
@@ -479,8 +443,6 @@ export default {
     used_for_gift (val) {
       console.log('used_for_gift:', val)
       if(!this.locked){
-        // Content.setContentToLocal(this.id || this.$route.params.id, 'used_for_gift',  val? 1 : 0)
-        // Content.setContentToLocal(this.id, 'used_for_gift',  val? 1 : 0)
         Content.setContentToLocal(this.id, 'used_for_gift',  Utils.getCode(val))
       }
     },
@@ -547,7 +509,7 @@ export default {
     },
 
     images (val) {
-      if(!this.locked && Utils.isValidArray(val)  ){
+      if(!this.locked && Utils.isValidArray(val)){
         Content.setContentToLocal(this.id, 'images', val)
       }
     },
@@ -614,7 +576,7 @@ export default {
     return defaultData
   },
   activated () {
-    console.log('Edit.vue created exec ...')
+    console.log('Edit.vue activated exec ...')
     // 显示地置空选中的tags，因为elementui可能会在内存中记录上次的tree的状态，导致新建的文章
     // 中的tag树还是上次编辑的文章的选中状态
     // BUG:当编辑有图片的文章时，然后再编辑新建文章，图片还是显示上一篇文章的图片
@@ -731,10 +693,6 @@ export default {
         )
       this[type] = ''
     },
-    // routeChange () {
-    //   console.log('routeChange exec ...');
-    //   this.loadData(this.$route.params.id)
-    // },
     loadData (id, cb) {
       console.log('loadData exce ... id is ', id)
       if(id){
@@ -1094,7 +1052,6 @@ export default {
         render_scenes,
         render_specials,
         render_similars,
-
         markdown
       } = this
       // console.log('要保存的timetopublish为',  moment(timetopublish).format('YYYYMMDD'))

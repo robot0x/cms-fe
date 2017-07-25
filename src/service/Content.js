@@ -34,7 +34,7 @@ const successCode = 'SUCCESS';
 
 export default class Content {
   static getContent (id) {
-    console.log('getContent执行 ...');
+    console.log('getContent执行 ...')
     return new Promise((resolve, reject) => {
       try {
         // 取本地缓存
