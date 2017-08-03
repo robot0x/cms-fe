@@ -71,9 +71,9 @@ export default class User {
                 reject(result.message);
               } else {
                 if (result.res.auth) {
-                  resolve();
                   console.log('result.res.token:', result.res.token);
-                  Utils.setCookie('token', result.res.token, 0);
+                  Utils.setCookie('token', result.res.token)
+                  resolve();
                   // reject()
                 } else {
                   reject('帐号或密码错误，请重试');
