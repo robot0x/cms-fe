@@ -1,32 +1,6 @@
 import Utils from '../utils/Utils'
 import marked from 'marked'
 import _ from 'lodash'
-// function rendeEds (content, eds) {
-//   return `
-//     <p class="editorhead">${eds}</p>
-//     <p class="editorcontent">${content}</p>
-//   `
-// }
-
-// function rendeBanner (content) {
-//   const reg = /([^()]+)(?=\))/g
-//   const banners = content.match(reg)
-//   let html = ''
-//   if (banners) {
-//     html = `
-//     <div class="article-banner">
-//         <ul class="banner-list">
-//           ${banners
-//       .map((banner, index) => {
-//         return `<li><img src="${banner}" alt="" height="120"><span>${index + 1}</span></li>`
-//       })
-//       .join('')}
-//         </ul>
-//       </div>
-//     `
-//   }
-//   return html
-// }
 
 function rendeSku (content = '') {
   // const idReg = /id[:：]\s*(\d+)\s*title[:：]/
@@ -61,15 +35,6 @@ function rendeSku (content = '') {
                 </div>
               </div>`
 }
-
-// function rendeArticle (content) {
-//   return ''
-// }
-
-// function rendeDesc (content = '') {
-//   console.log(content)
-//   return `<p>${content}</p>`
-// }
 
 // ```zk
 //     title: 三百元以下的情趣小厨具
@@ -212,12 +177,27 @@ function rende (md) {
   // 2017-05-16 title不需要从markdown中拿，而是要从Edit.vue中的title的input中拿
   // let title = ''
   renderer.heading = (content, level) => {
-    const { isAnchor, anchor, text } = Utils.anchorHandler(content)
+    let { isAnchor, anchor, text } = Utils.anchorHandler(content)
+    let decollapseReg = / ={3}(\w+)$/
+    let match = text.match(decollapseReg)
+    let collapse = ''
+    if (match) {
+      text = text.replace(decollapseReg, '')
+      collapse = match[1]
+    }
     let ret = ''
     if (isAnchor) {
-      ret = `<h${level} id="${anchor}">${text}</h${level}>`
+      if (collapse) {
+        ret = `<h${level} id="${anchor}" data-collapse="${collapse}">${text}</h${level}>`
+      } else {
+        ret = `<h${level} id="${anchor}">${text}</h${level}>`
+      }
     } else {
-      ret = `<h${level}>${text}</h${level}>`
+      if (collapse) {
+        ret = `<h${level} data-collapse="${collapse}">${text}</h${level}>`
+      } else {
+        ret = `<h${level}>${text}</h${level}>`
+      }
     }
     return ret
   }
@@ -309,24 +289,6 @@ function rende (md) {
     }
     return `<a target="_blank" href="${href}">${text || href}</a>`
   }
-  // renderer.image = (href, title, text) => {
-  //   return `<img src="${href}" alt="${title || ''}"></img>`
-  // }
-  // renderer.paragraph = (text) => {
-  //   // console.log(text)
-  //   // if(!text || /^\s+$/.test(text)){
-  //   //   console.log('!text.trim()命中：',text)
-  //   //   // return ''
-  //   // }
-  //   // if(/^<img.+>$/.test(text)){
-  //   //   console.log('/\^<img.*\>&/命中：', text)
-  //   //   return text
-  //   // }
-  //   // console.log(!text || /^\s+$/.test(text))
-  //   // console.log(/^<img.+>$/.test(text))
-  //   // return `<p>${text}</p>`
-  //   return text
-  // }
   // ```zk
   //     title: 三百元以下的情趣小厨具
   //     desc: 无论是单身狗还是一对汪，一年之中总有那么几个周末想窝在家中，望望天花板，剥剥手指甲，吃吃小食，看看电视，度过一天。所以啊，小食很重要，样样不能少！怎么做？且听我慢慢道来。
