@@ -2,7 +2,7 @@
  * @Author: liyanfeng
  * @Date: 2017-05-16 17:53:58
  * @Last Modified by: liyanfeng
- * @Last Modified time: 2017-08-03 17:14:46
+ * @Last Modified time: 2017-08-07 22:03:24
  */
 import _ from 'lodash';
 import LoginUtils from './LoginUtils';
@@ -497,6 +497,7 @@ class Utils {
     if (document.selection) {
       let sel = document.selection.createRange();
       sel.text = str;
+      console.log('document.selection:', true)
     } else if (
       typeof obj.selectionStart === 'number' &&
       typeof obj.selectionEnd === 'number'
@@ -505,14 +506,20 @@ class Utils {
       let endPos = obj.selectionEnd;
       let cursorPos = startPos;
       let tmpStr = obj.value;
+      console.log('startPos:', startPos)
+      console.log('endPos:', endPos)
+      console.log('cursorPos:', cursorPos)
+      console.log('tmpStr:', tmpStr)
       obj.value =
         tmpStr.substring(0, startPos) +
         str +
         tmpStr.substring(endPos, tmpStr.length);
       cursorPos += str.length;
       obj.selectionStart = obj.selectionEnd = cursorPos;
+      console.log('typeof obj.selectionStart === \'number\' && typeof obj.selectionEnd === \'number\':', true)
     } else {
       obj.value += str;
+      console.log('insertContent else:', obj.value)
     }
     return obj.value;
   }

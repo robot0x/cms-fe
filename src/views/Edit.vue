@@ -624,8 +624,8 @@ export default {
       let {types} = image
       // 新上传的图片没有types属性
       types = types || []
-      console.log('image types:', types)
-      console.log('image code:', code)
+      // console.log('image types:', types)
+      // console.log('image code:', code)
       // console.log('传入的code为:', code)
       // console.log('types:', types)
       // 如果已经存在这个type，则删除
@@ -867,8 +867,8 @@ export default {
 
     insert(index) {
       this.insertImage = ''
-      setTimeout(() => { 
-        console.log('removed url：', Utils.removeProtocolHead(this.images[index].url))
+      setTimeout(() => {
+        // console.log('removed url：', Utils.removeProtocolHead(this.images[index].url))
         this.insertImage = Utils.addProtocolHead(Utils.removeProtocolHead(this.images[index].url), '//')
         console.log('insertImage：', this.insertImage)
       })

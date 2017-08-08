@@ -47,9 +47,6 @@ export default {
       if (val) {
         this.commit(Utils.insertContent(this.$refs.textarea, `\n![](${val})\n`))
       }
-      // if(val){
-      //   this.commit(Utils.insertContent(this.$refs.textarea, `\n![](${val})\n`))
-      // }
     }
   },
   methods: {
