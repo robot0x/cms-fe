@@ -12,10 +12,7 @@
              </el-tooltip>
              <el-switch v-model="reme" on-color="#13ce66" off-color="#ff4949"></el-switch>
            </el-col>
-           <el-col :span="8">
-            <a href="javascript:void(0);" @click="clearToken" class="modify-password">清空token</a>
-           </el-col>
-           <el-col :span="8">
+           <el-col :span="16">
             <a href="javascript:void(0);" @click="modifyPassword" class="modify-password">修改密码</a>
            </el-col>
          </el-row>
@@ -78,24 +75,6 @@ export default {
         this.loading = false
         this.loginMsg = '登录'
         this.$notify({ message: message, type: 'warning' })
-      })
-      // setTimeout(() => {
-      //   this.loading = false
-      //   this.loginMsg = '登录'
-      //   console.log('记住我.....');
-      //   console.log(this.reme);
-      //   LoginUtils.login(username, this.reme)
-      //   // 存到 store 中不靠谱，刷新页面的话，会重新实例化 store，导致状态不能长存
-      //   // 应该结合着本地存储来做
-      //   this.$store.commit('setUsername', username)
-      //   this.$router.replace('/')
-      // }, 2000)
-    },
-    clearToken () {
-      Utils.deleteCookie('cms_token')
-      this.$notify({
-        message: 'token清空成功',
-        type: 'success'
       })
     },
     modifyPassword () {
