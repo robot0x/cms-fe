@@ -337,10 +337,6 @@ function rende (md) {
   options.renderer = renderer
   marked.setOptions(options)
   const lexer = new marked.Lexer(options)
-  // console.log('markdown.js md:', md)
-  // console.log(lexer)
-  // const tokens = lexer.lex(md)
-  // console.log(tokens)
   return marked(md, (err, content = '') => {
     if (err) {
       console.log(err)

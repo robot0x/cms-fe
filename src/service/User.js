@@ -73,7 +73,7 @@ export default class User {
                 if (result.res.auth) {
                   console.log('result.res.token:', result.res.token);
                   // 一定要设置第三个参数，不然其值就为5，这不是我们想要的
-                  Utils.setCookie('token', result.res.token, 0)
+                  Utils.setCookie('cms_token', result.res.token, 0)
                   resolve();
                   // reject()
                 } else {

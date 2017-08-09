@@ -54,7 +54,7 @@ export default {
   },
   created () {
     // 不管从何而来，只要到了登录页，先清空掉token再说。发现在一些编辑的电脑上有时候会有两个token，导致token验证通不过
-    Utils.deleteCookie('token')
+    Utils.deleteCookie('cms_token')
     console.log('现在在登录页 ....')
   },
   methods: {
@@ -92,7 +92,7 @@ export default {
       // }, 2000)
     },
     clearToken () {
-      Utils.deleteCookie('token')
+      Utils.deleteCookie('cms_token')
       this.$notify({
         message: 'token清空成功',
         type: 'success'
