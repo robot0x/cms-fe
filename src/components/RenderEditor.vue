@@ -159,12 +159,12 @@ _::-webkit-:host:not(:root:root), .article-area {
 
     h2, h3 {
       color: #333;
-       margin: 30px 0 0 40px;
-       font-weight: 400;
-       font-size: 16px;
-       line-height: 1;
-       border-left: 6px #ff0014 solid;
-       padding-left: 6px;
+      margin: 30px 0 0 40px;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1;
+      border-left: 6px #ff0014 solid;
+      padding-left: 6px;
     }
 
     h3 {
