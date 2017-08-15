@@ -4,6 +4,7 @@ const debug = process.env.NODE_ENV !== 'production'
 const port = 3000
 const API = (function () {
   const fetchURL = debug ? '//127.0.0.1:' + port : 'http://z.diaox2.com:' + port
+  const videoFetchURL = debug ? '//127.0.0.1:3002' : 'http://z.diaox2.com:3002'
   // 下列接口都是GET请求
   return {
     articles: {
@@ -25,7 +26,7 @@ const API = (function () {
     },
     // 作者编辑相关接口
     vid: {
-      url: `${fetchURL}/vid`
+      url: `${videoFetchURL}/vid`
     }
   }
 }())
