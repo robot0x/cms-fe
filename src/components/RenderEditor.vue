@@ -106,15 +106,22 @@ _::-webkit-:host:not(:root:root), .article-area {
     height: 100%;
     margin: 0 auto;
     h1,h2,h3,h4,h5 {font-weight:normal;}
-
     h1 {
-      height:100px;
-      line-height:100px;
-      text-align:center;
-      color:#333;
-      font-size:20px;
-      font-weight: normal;
+      display: inline-block;
+      margin: 80px 0 24px 50%;
+      font-size: 18px;
+      color: #000;
+      text-align: center;
+      -moz-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+      -o-transform: translateX(-50%);
+      -webkit-transform: translateX(-50%);
+      transform: translateX(-50%);
+      line-height: 1;
+      padding-bottom: 8px;
+      border-bottom: 3px #e60012 solid;
       font-family:$fontFamily;
+      font-weight: 500;
     }
     .lift {
       margin-left: 40px;
