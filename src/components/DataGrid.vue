@@ -80,10 +80,6 @@
            @click="handleEdit(scope.$index, scope.row)"
            type="success"
            size="small">编辑</el-button>
-           <!-- <el-button
-            @click="refrshCDN(scope.$index, scope.row)"
-            type="info"
-            size="small">刷新CDN</el-button>   -->
        </template>
       </el-table-column>
     </el-table>
