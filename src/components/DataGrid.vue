@@ -1,5 +1,6 @@
 <template>
   <div class="component-data-grid">
+    
     <el-table
       v-loading="loading"
       element-loading-text="玩命加载中..."
@@ -79,10 +80,10 @@
            @click="handleEdit(scope.$index, scope.row)"
            type="success"
            size="small">编辑</el-button>
-         <!-- <el-button
-           size="small"
-           @click="handleDelete(scope.$index, scope.row)"
-           type="danger">删除</el-button> -->
+           <!-- <el-button
+            @click="refrshCDN(scope.$index, scope.row)"
+            type="info"
+            size="small">刷新CDN</el-button>   -->
        </template>
       </el-table-column>
     </el-table>

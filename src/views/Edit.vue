@@ -4,14 +4,21 @@
   <!-- <panel title="操作" closeable class="panel" v-if="!locked"> -->
   <!--<panel :title="lock_by | lockedByFormat" closeable class="panel" :close="true">-->
   <panel :title="lock_by | lockedByFormat" closeable class="panel">
-
     <span slot="panel-heading-middle">
       <el-button type="success" size="small" icon="upload" @click="save" v-if="!locked">保存</el-button>
       <el-button type="info" size="small" @click="releaseLock" v-if="!locked">解除锁定</el-button>
       <el-button type="danger" size="small" icon="delete" @click="clearCache">清空缓存</el-button>
-      <el-button type="warning" size="small" icon="search">
-        <a :href="href" style="color:#fff;" target="_blank">预览线上版本</a>
-      </el-button>
+      <el-tooltip class="item" effect="dark" content="查看实时修改后的效果" placement="top-start">
+        <el-button type="warning" size="small" icon="search">
+          <a :href="href" style="color:#fff;" target="_blank">效果预览</a>
+        </el-button>
+      </el-tooltip>
+      <form action="//bj1.a.dx2rd.com/cdn/refresh" method="POST" target="_blank" style="display:none" ref="refrshcdn">
+        <input type="hidden" name="refresh" :value="id | cidTorefrshCDNUrl(ctype)">
+      </form>
+      <el-tooltip class="item" effect="dark" content="若要实时修改后的效果在线上生效，请刷新CDN" placement="right-start">
+        <el-button type="info" size="small" icon="time" @click="refrshCDN">刷新CDN</el-button>
+      </el-tooltip>
     </span>
 
     <div slot="panel-body" class="panel-body">
@@ -971,7 +978,9 @@ export default {
           this.rightSmall = false
       }
     },
-    
+    refrshCDN () {
+      this.$refs.refrshcdn.submit()
+    },
     // 没必要，全选删除即可
     clearCache () {
       console.log('清空缓存 ...')
@@ -1313,6 +1322,9 @@ export default {
     },
     imageWidthAndHeightFormat (width, height) {
       return width && height ? width + ' X ' + height : ''
+    },
+    cidTorefrshCDNUrl (id, ctype) {
+      return `http://c.diaox2.com/view/app/?m=${Utils.ctypeToM(ctype)}&id=${id}`
     },
     imageUrlFilter (url) {
       return `//${url}`

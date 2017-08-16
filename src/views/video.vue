@@ -10,7 +10,6 @@
         </div>
    </div>
 </template>
-
 <script>
 import Video from '../service/Video'
 import uploader from '../utils/upfile'
